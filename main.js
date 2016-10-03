@@ -408,6 +408,7 @@ skill_checks.forEach(function (el) {
  * Model for character data
  */
 var character_model = {
+	app: 'character-sheet-5e',
 	key: '',
 	charname: '',
 	charclass: '',
@@ -500,6 +501,7 @@ var character_model = {
 	}
 };
 // @todo add an app property once we decide on the app name
+// how do we make sure the old stored items get the new property??
 // @todo add a last updated prop?
 
 /**
@@ -563,11 +565,23 @@ var Storage = {
  * Manager:
  * Interface for save/backup/restore of data...
  */
-var Manager = {
+var Manager = exports.manager = {
 	/**
   * Currently loaded character data is here
   */
 	cur_character: null,
+	/**
+  * Get a json string as a character backup of the current character
+  * In this way we make sure any new properties are included in the backup when saving
+  * @return {String}
+  */
+	characterJSON: function characterJSON() {
+		var obj = {};
+		for (var prop in this.cur_character) {
+			obj[prop] = this.cur_character[prop];
+		}
+		return JSON.stringify(obj);
+	},
 	/**
   * Generate a random key for character storage
   * @return {String}
@@ -744,7 +758,7 @@ var Manager = {
   * Falls back to showing the data for copy/pasting
   */
 	downloadBackup: function downloadBackup() {
-		var data = JSON.stringify(this.cur_character);
+		var data = this.characterJSON();
 		if (typeof window.Blob !== 'function') {
 			// fallback to displaying the data for copy/pasting
 			var content = [];
@@ -777,7 +791,7 @@ var Manager = {
   * Open an email with the character data and instructions
   */
 	emailBackup: function emailBackup() {
-		var data = JSON.stringify(this.cur_character);
+		var data = this.characterJSON();
 		var body = 'Below is the backup data for your character ' + this.cur_character.charname + '.\n\t\t\nTo use this data, go to: ' + window.location.href + ' and click the "Restore Backup" button. Then paste the text below into the box.\n\t\t\n---\n\t\t\n' + data;
 
 		var url = 'mailto:?subject=' + encodeURIComponent('Character backup ' + this.cur_character.charname) + '&body=' + encodeURIComponent(body);
@@ -807,8 +821,8 @@ var Manager = {
 			var char_obj = JSON.parse(data);
 			// @todo imrpove validation?
 			// @todo somehow make sure we didnt end up with the same key for different characters (test against what?)
-			if (!char_obj.key || !char_obj.charname) {
-				throw 'Data appears to be invalid.';
+			if (!char_obj.key || char_obj.app !== 'character-sheet-5e') {
+				throw new Error('Data appears to be invalid.');
 			}
 			Storage.set(char_obj.key, data);
 			LoadMenu.addCharacter(char_obj.key);
@@ -817,6 +831,7 @@ var Manager = {
 				this.loadCharacter(char_obj.key);
 			}
 		} catch (e) {
+			console.log(e);
 			var _p2 = document.createElement('p');
 			_p2.innerHTML = 'Error processing backup data: ' + e.message;
 			Alert.setContent(_p2);

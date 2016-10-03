@@ -398,6 +398,7 @@ skill_checks.forEach((el) => {
  * Model for character data
  */
 const character_model = {
+	app: 'character-sheet-5e',
 	key: '',
 	charname: '',
 	charclass: '',
@@ -490,6 +491,7 @@ const character_model = {
 	}
 };
 // @todo add an app property once we decide on the app name
+// how do we make sure the old stored items get the new property??
 // @todo add a last updated prop?
 
 /**
@@ -553,11 +555,23 @@ const Storage = {
  * Manager:
  * Interface for save/backup/restore of data...
  */
-const Manager = {
+const Manager = exports.manager = {
 	/**
 	 * Currently loaded character data is here
 	 */
 	cur_character: null,
+	/**
+	 * Get a json string as a character backup of the current character
+	 * In this way we make sure any new properties are included in the backup when saving
+	 * @return {String}
+	 */
+	characterJSON: function () {
+		const obj = {};
+		for (let prop in this.cur_character) {
+			obj[prop] = this.cur_character[prop];
+		}
+		return JSON.stringify(obj);
+	},
 	/**
 	 * Generate a random key for character storage
 	 * @return {String}
@@ -724,7 +738,7 @@ const Manager = {
 	 * Falls back to showing the data for copy/pasting
 	 */
 	downloadBackup: function () {
-		const data = JSON.stringify(this.cur_character);
+		const data = this.characterJSON();
 		if (typeof window.Blob !== 'function') {
 			// fallback to displaying the data for copy/pasting
 			const content = [];
@@ -757,7 +771,7 @@ const Manager = {
 	 * Open an email with the character data and instructions
 	 */
 	emailBackup: function () {
-		const data = JSON.stringify(this.cur_character);
+		const data = this.characterJSON();
 		const body = `Below is the backup data for your character ${this.cur_character.charname}.
 		
 To use this data, go to: ${window.location.href} and click the "Restore Backup" button. Then paste the text below into the box.
@@ -793,8 +807,8 @@ ${data}`;
 			const char_obj = JSON.parse(data);
 			// @todo imrpove validation?
 			// @todo somehow make sure we didnt end up with the same key for different characters (test against what?)
-			if (!char_obj.key || !char_obj.charname) {
-				throw 'Data appears to be invalid.';
+			if (!char_obj.key || char_obj.app !== 'character-sheet-5e') {
+				throw new Error('Data appears to be invalid.');
 			}
 			Storage.set(char_obj.key, data);
 			LoadMenu.addCharacter(char_obj.key);
