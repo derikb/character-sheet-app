@@ -399,7 +399,7 @@ h1 {
 	padding: 2rem;
 	border: 2px solid rgb(207,0,15);
 	border-radius: 4px;
-	z-index: 100;
+	z-index: 50;
 	max-width: 50%;
 }
 .dropdown.open {
@@ -435,17 +435,11 @@ h1 {
 	background-color: #fefefe;
 }
 .alert-main {
-/*
-	padding: 2rem;
-	border: 2px solid rgb(207,0,15);
-	border-radius: 4px;
-	background-color: #fefefe;
-*/
 	margin: 2rem;
 	position: fixed;
 	top: 2rem;
 	width: auto;
-	z-index: 10;
+	z-index: 75;
 	box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
 }
 .alert-main:empty {
@@ -456,13 +450,6 @@ h1 {
 	margin-left: 2rem;
 }
 .dialog-backup {
-/*
-	margin: 2rem auto;
-	padding: 2rem;
-	border: 2px solid rgb(207,0,15);
-	border-radius: 4px;
-	background-color: #fefefe;
-*/
 	display: none;
 }
 .dialog-backup.open {
@@ -474,10 +461,23 @@ h1 {
 	position: absolute;
 	top: 2rem;
 	width: auto;
-	z-index: 10;
+	z-index: 100;
 	box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
 }
 #dialog_help.open {
+	display: block;
+}
+.alert-unsaved.dialog {
+    position: fixed;
+    bottom: 0;
+    right: 2rem;
+    z-index: 125;
+    font-weight: bold;
+    padding: 1rem 2rem;
+    color: rgb(207,0,15);
+    display: none;
+}
+.alert-unsaved.open {
 	display: block;
 }
 @media (min-width: 40.0rem) {

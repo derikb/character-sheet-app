@@ -271,6 +271,7 @@ LoadMenu.initialize();
 const attribute_fields = Array.from(document.querySelectorAll('.pc-attributes input[type=number]'));
 const attribute_saves = Array.from(document.querySelectorAll('.pc-attributes input[type=checkbox]'));
 const skill_checks = Array.from(document.querySelectorAll('input[data-name="skills"]'));
+const dialog_unsaved = document.querySelector('.alert-unsaved');
 
 /**
  * Calculate the attribute modifier based on the score
@@ -342,6 +343,7 @@ document.querySelector('.container').addEventListener('blur', (e) => {
 		if (before !== e.target.innerHTML) {
 			console.log('Changed');
 			e.target.removeAttribute('data-before');
+			dialog_unsaved.classList.add('open');
 			
 			// if proficiency then update saves and skills
 			if (e.target.getAttribute('data-name') === 'proficiency') {
@@ -373,6 +375,7 @@ attribute_fields.forEach((el) => {
 		skills.forEach((el) => {
 			calcSkillMod(el);
 		});
+		dialog_unsaved.classList.add('open');
 	});
 });
 /**
@@ -382,6 +385,7 @@ attribute_saves.forEach((el) => {
 	el.addEventListener('change', (e) => {
 		const attr = e.currentTarget.getAttribute('data-subfield');
 		calcSaveMod(attr);
+		dialog_unsaved.classList.add('open');
 	});
 });
 /**
@@ -391,6 +395,7 @@ skill_checks.forEach((el) => {
 	el.addEventListener('change', (e) => {
 		console.log('check change');
 		calcSkillMod(e.currentTarget);
+		dialog_unsaved.classList.add('open');
 	});
 });
 
@@ -614,6 +619,7 @@ const Manager = exports.manager = {
 	 */
 	loadCharacter: function (key) {
 		console.log(`loadcharacter ${key}`);
+		dialog_unsaved.classList.remove('open');
 		const json = Storage.get(key);
 		if (json === '') {
 			console.log('no character found');
@@ -682,6 +688,7 @@ const Manager = exports.manager = {
 				calcSkillMod(el);
 			});
 		});
+		dialog_unsaved.classList.remove('open');
 	},
 	/**
 	 * Save character data to localStorage
@@ -738,6 +745,7 @@ const Manager = exports.manager = {
 		});
 		this.cur_character.updated = this.currentTimestamp();
 		Storage.set(this.cur_character.key, JSON.stringify(this.cur_character));
+		dialog_unsaved.classList.remove('open');
 		LoadMenu.addCharacter(this.cur_character.key);
 	},
 	/**
