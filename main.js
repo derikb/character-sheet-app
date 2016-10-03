@@ -906,10 +906,10 @@ Storage.getAllKeys().forEach(function (key) {
 if (LoadMenu.isEmpty()) {
 	var content = [];
 	var h = document.createElement('h2');
-	h.innerHTML = 'Character Sheet.';
+	h.innerHTML = 'Character Sheet. 5e.';
 	content.push(h);
 	var p1 = document.createElement('p');
-	p1.innerHTML = 'An online character sheet for 5th edition D&D, usable offline.';
+	p1.innerHTML = 'An online character sheet for 5th edition D&D, usable offline (in some browsers).';
 	content.push(p1);
 	var p4 = document.createElement('p');
 	p4.innerHTML = 'Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.';

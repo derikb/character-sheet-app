@@ -890,10 +890,10 @@ Storage.getAllKeys().forEach((key) => {
 if (LoadMenu.isEmpty()) {
 	const content = [];
 	const h = document.createElement('h2');
-	h.innerHTML = 'Character Sheet.';
+	h.innerHTML = 'Character Sheet. 5e.';
 	content.push(h);
 	const p1 = document.createElement('p');
-	p1.innerHTML = `An online character sheet for 5th edition D&D, usable offline.`;
+	p1.innerHTML = `An online character sheet for 5th edition D&D, usable offline (in some browsers).`;
 	content.push(p1);
 	const p4 = document.createElement('p');
 	p4.innerHTML = `Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.`;

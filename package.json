@@ -1,7 +1,7 @@
 {
-  "name": "character_sheet",
+  "name": "character-sheet-5e",
   "version": "0.0.1",
-  "description": "Online/offline character sheet for D&D",
+  "description": "Online character sheet for D&D",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/derikb/character-sheet-5e.git"
