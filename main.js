@@ -498,11 +498,9 @@ var character_model = {
 		7: '',
 		8: '',
 		9: ''
-	}
+	},
+	updated: ''
 };
-// @todo add an app property once we decide on the app name
-// how do we make sure the old stored items get the new property??
-// @todo add a last updated prop?
 
 /**
  * Storage:
@@ -581,6 +579,14 @@ var Manager = exports.manager = {
 			obj[prop] = this.cur_character[prop];
 		}
 		return JSON.stringify(obj);
+	},
+	/**
+  * Return UTC datetime string for right now
+  * @return {String}
+  */
+	currentTimestamp: function currentTimestamp() {
+		var d = new Date();
+		return d.toUTCString();
 	},
 	/**
   * Generate a random key for character storage
@@ -750,6 +756,7 @@ var Manager = exports.manager = {
 					break;
 			}
 		});
+		this.cur_character.updated = this.currentTimestamp();
 		Storage.set(this.cur_character.key, JSON.stringify(this.cur_character));
 		LoadMenu.addCharacter(this.cur_character.key);
 	},
@@ -819,7 +826,6 @@ var Manager = exports.manager = {
 			// convert linebreaks to html br else JSON.parse breaks
 			data = data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 			var char_obj = JSON.parse(data);
-			// @todo imrpove validation?
 			// @todo somehow make sure we didnt end up with the same key for different characters (test against what?)
 			if (!char_obj.key || char_obj.app !== 'character-sheet-5e') {
 				throw new Error('Data appears to be invalid.');
@@ -831,7 +837,6 @@ var Manager = exports.manager = {
 				this.loadCharacter(char_obj.key);
 			}
 		} catch (e) {
-			console.log(e);
 			var _p2 = document.createElement('p');
 			_p2.innerHTML = 'Error processing backup data: ' + e.message;
 			Alert.setContent(_p2);
