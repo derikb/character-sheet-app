@@ -4,7 +4,7 @@ A responsive, online/offline web app to act as a character sheet for 5e D&D.
 
 ## Synopsis
 
-If you just want to use the app, I am running a copy of it here: https://rpg.derikbadman.com/pc/ Try it out. Check out the "Help" link in the footer for some instructions.
+If you just want to use the app, I am running a copy of it here: [https://charsheet5e.derikbadman.com] Try it out. Check out the "Help" link in the footer for some instructions.
 
 If you want to run the app on your own server, assist in development, or fork your own, continue on...
 

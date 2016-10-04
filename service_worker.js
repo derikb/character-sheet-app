@@ -10,10 +10,10 @@
 var config = {
 	cacheName: 'static-v003',
 	staticCacheItems: [
-		'/pc/index.html',
-		'/pc/main.min.js',
-		'/pc/styles.css',
-		'/pc/'
+		'/index.html',
+		'/main.min.js',
+		'/styles.css',
+		'/'
 	]
 };
 
