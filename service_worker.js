@@ -8,7 +8,7 @@
  * Caching all the files we use except the service worker itself
  */
 var config = {
-	cacheName: 'static-v0.0.1',
+	cacheName: 'static-v0.0.2',
 	staticCacheItems: [
 		'/index.html',
 		'/main.min.js',
