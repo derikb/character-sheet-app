@@ -833,8 +833,11 @@ ${data}`;
 	 */
 	restoreCharacter: function (data) {
 		console.log('restoreCharacter');
-		data = data.trim();
 		try {
+			// strip out everything before the first "{" and after the last "}"
+			data = data.substring(data.indexOf('{'));
+			data = data.substring(0, data.lastIndexOf('}')+1);
+			data = data.trim(); // just in case
 			// convert linebreaks to html br else JSON.parse breaks
 			data = data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 			const char_obj = JSON.parse(data);
