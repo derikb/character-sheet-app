@@ -18,6 +18,7 @@
     "concat:css": "cat ./node_modules/normalize.css/normalize.css src/styles.css | cleancss -o styles.css",
     "browserify": "./node_modules/.bin/browserify src/main.js --s charsheet -o main.js -t [ babelify --presets [ es2015 ] ]",
     "browserify:min": "./node_modules/.bin/browserify src/main.js --s charsheet -o main.min.js -t [ babelify --presets [ es2015 ] ] -d -p [minifyify --map main.js.map --output main.js.map]",
+    "versioncache": "./node_modules/.bin/replace ' v[0-9.]+ ' ' v${npm_package_version} ' site.manifest",
     "build": "npm run browserify && npm run browserify:min && npm run concat:css"
   },
   "keywords": [

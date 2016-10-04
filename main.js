@@ -15,6 +15,9 @@ var checkFeatures = function checkFeatures() {
 	}
 };
 
+/**
+ * Register service worker if it's supported
+ */
 if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.register('service_worker.js', {
 		scope: '/'
@@ -85,6 +88,21 @@ if (checkFeatures() === false) {
 	var p = document.createElement('p');
 	p.textContent = 'Sorry, your browser does not supported the required features for this app to work. Try using the latest Chrome or Firefox for best results.';
 	Alert.setContent(p);
+}
+
+/**
+ * If AppCache is supported and used, this prompts for reloa
+ */
+if ('applicationCache' in window) {
+	var updateAppCache = function updateAppCache(event) {
+		var p = document.createElement('p');
+		p.textContent = 'Character Sheet has been updated with new features or bug fixes. Please reload the page to get the newest code. If you have this site open in multiple tabs/windows please close them all.';
+		Alert.setContent(p);
+	};
+	window.applicationCache.addEventListener('updateready', updateAppCache, false);
+	if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+		updateAppCache();
+	}
 }
 
 /**

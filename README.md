@@ -4,7 +4,7 @@ A responsive, online/offline web app to act as a character sheet for 5e D&D.
 
 ## Synopsis
 
-If you just want to use the app, I am running a copy of it here: [https://charsheet5e.derikbadman.com] Try it out. Check out the "Help" link in the footer for some instructions.
+If you just want to use the app, I am running a copy of it here: https://charsheet5e.derikbadman.com Try it out. Check out the "Help" link in the footer for some instructions.
 
 If you want to run the app on your own server, assist in development, or fork your own, continue on...
 
@@ -20,7 +20,20 @@ Just open up index.html in a browser.
 
 ### Server
 
-Point your server at the repo so it opens index.html. If you want to take advantage of the offline mode then you'll need to use a HTTPS connection.
+* Point your server at the repo so it opens index.html. That's about it...
+
+If you want to take advantage of the offline mode, it's a little more complicated:
+* you'll need to use a HTTPS connection (Let's Encrypt is really easy to set-up to get a free SSL cert)
+* In most cases you'll need to set the site.manifest file to be delivered with the text/cache-manifest mime type/
+  * In nginx you can add: ```text/cache-manifest    manifest;``` to the nginx mime.types file
+* Make sure site.manifest and the other files are set to not cache
+  * In nginx I added:
+  ```
+  location / {
+	expires -1;  
+  }
+  ```
+
 
 ## Tests
 
