@@ -26,12 +26,12 @@ If you want to take advantage of the offline mode, it's a little more complicate
 * you'll need to use a HTTPS connection (Let's Encrypt is really easy to set-up to get a free SSL cert)
 * In most cases you'll need to set the site.manifest file to be delivered with the text/cache-manifest mime type. In nginx you can add: ```text/cache-manifest    manifest;``` to the nginx mime.types file (mine was in ```/etc/nginx/mime.types```).
 * Make sure site.manifest and the other files are set to not cache In nginx I added the following to my server block:
-  ```
+```
   // if you already have location blocks, just add the expires line
   location / {
 	expires -1;  
   }
-  ```
+```
 
 
 ## Tests
