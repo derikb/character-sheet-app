@@ -603,10 +603,15 @@ const Manager = exports.manager = {
 	},
 	/**
 	 * Generate a random key for character storage
+	 * make sure key is not already existing
 	 * @return {String}
 	 */
 	generateKey: function () {
-		return (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
+		let key = (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
+		while (Storage.get(key) !== '') {
+			key = (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
+		}
+		return key;
 	},
 	/**
 	 * Set data on character object
@@ -841,11 +846,23 @@ ${data}`;
 			// convert linebreaks to html br else JSON.parse breaks
 			data = data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 			const char_obj = JSON.parse(data);
-			// @todo somehow make sure we didnt end up with the same key for different characters (test against what?)
 			if (!char_obj.key || char_obj.app !== 'character-sheet-5e') {
 				throw new Error('Data appears to be invalid.');
 			}
-			Storage.set(char_obj.key, data);
+			const ex_char = Storage.get(char_obj.key);
+			if (ex_char !== '' && ex_char.charname !== char_obj.charname) {
+				// existing key but different name
+				if (!char_obj.key_prev) {
+					char_obj.key_prev = char_obj.key;
+					char_obj.key = this.generateKey();
+				} else {
+					const temp_key = char_obj.key_prev;
+					char_obj.key_prev = char_obj.key;
+					char_obj.key = temp_key;
+				}
+			}
+			
+			Storage.set(char_obj.key, JSON.stringify(char_obj));
 			LoadMenu.addCharacter(char_obj.key);
 			// if its the current character we should reload them
 			if (char_obj.key === this.cur_character.key) {
