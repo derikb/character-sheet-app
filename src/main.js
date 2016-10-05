@@ -344,7 +344,29 @@ const calcSkillMod = function (el) {
 	const raw = 0 + prof + attr_mod;
 	mod_field.innerText = (raw > 0) ? `+${raw}` : raw;
 };
-
+/**
+ * Calculate proficiency modifier based on level
+ */
+const calcProfMod = function () {
+	const prof = document.querySelector(`[data-name=proficiency]`);
+	const before = prof.innerHTML;
+	const level = parseInt(document.querySelector(`[data-name=level]`).innerHTML, 10);
+	const bonus = Math.ceil(level / 4) + 1;
+	const after = `+${bonus}`;
+	// did it change?
+	if (before !== after) {
+		prof.innerHTML = `+${bonus}`;
+		// recalculate saves and skills
+		const attribute_fields = Array.from(document.querySelectorAll('.pc-attributes input[type=number]'));
+		attribute_fields.forEach((el) => {
+			calcSaveMod(el.getAttribute('data-name'));
+		});
+		const skill_checks = Array.from(document.querySelectorAll('input[data-name="skills"]'));
+		skill_checks.forEach((el) => {
+			calcSkillMod(el);
+		});
+	}
+};
 /**
  * Event: Listen for contenteditable changes
  * delegate focus/blur from container (body didn't seem to work)
@@ -363,16 +385,9 @@ document.querySelector('.container').addEventListener('blur', (e) => {
 			e.target.removeAttribute('data-before');
 			dialog_unsaved.classList.add('open');
 			
-			// if proficiency then update saves and skills
-			if (e.target.getAttribute('data-name') === 'proficiency') {
-				const attribute_fields = Array.from(document.querySelectorAll('.pc-attributes input[type=number]'));
-				attribute_fields.forEach((el) => {
-					calcSaveMod(el.getAttribute('data-name'));
-				});
-				const skill_checks = Array.from(document.querySelectorAll('input[data-name="skills"]'));
-				skill_checks.forEach((el) => {
-					calcSkillMod(el);
-				});
+			// if level then update proficiency
+			if (e.target.getAttribute('data-name') === 'level') {
+				calcProfMod();
 			}
 			
 			// Do something here... Save?
@@ -699,7 +714,8 @@ const Manager = exports.manager = {
 				}
 			}
 		});
-		// Update attr/save/skill modifiers
+		// Update proficiency/attr/save/skill modifiers
+		calcProfMod();
 		attribute_fields.forEach((el) => {
 			const field = el.parentNode;
 			const mod_field = field.querySelector('.pc-attribute-mod');
