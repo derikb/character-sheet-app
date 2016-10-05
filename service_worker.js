@@ -1,5 +1,6 @@
 /**
  * Service worker for character sheet app
+ * Currently disabled in favor of AppCache
  */
 
 /**
@@ -8,7 +9,7 @@
  * Caching all the files we use except the service worker itself
  */
 var config = {
-	cacheName: 'static-v0.0.2',
+	cacheName: 'static-v0.0.5',
 	staticCacheItems: [
 		'/index.html',
 		'/main.min.js',
@@ -58,14 +59,17 @@ self.addEventListener('activate', function(event) {
  */
 self.addEventListener('fetch', (event) => {
 	event.respondWith(
-    	caches.match(event.request)
-			.then(function(response) {
-				if (response) {
-					return response;
-        		}
-				return fetch(event.request);
-    		})
-    		.catch(function (e) {
+		caches.match(event.request)
+			.then(function(resp) {
+				return resp || fetch(event.request)
+					.then(function(response) {
+						return caches.open(config.cacheName)
+							.then(function(cache) {
+								cache.put(event.request, response.clone());
+								return response;
+							});  
+					});
+			}).catch(function (e) {
 	    		console.log('Service worker fetch failed.'); 
     		})
 	);

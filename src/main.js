@@ -92,9 +92,9 @@ if ('applicationCache' in window) {
 		const p = document.createElement('p');
 		p.textContent = `Character Sheet has been updated with new features or bug fixes. Please reload the page to get the newest code. If you have this site open in multiple tabs/windows please close them all.`;
 		Alert.setContent(p);
-	}
+	};
 	window.applicationCache.addEventListener('updateready', updateAppCache, false);
-	if(window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+	if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
 		updateAppCache();
 	}
 }
@@ -841,7 +841,7 @@ ${data}`;
 		try {
 			// strip out everything before the first "{" and after the last "}"
 			data = data.substring(data.indexOf('{'));
-			data = data.substring(0, data.lastIndexOf('}')+1);
+			data = data.substring(0, data.lastIndexOf('}') + 1);
 			data = data.trim(); // just in case
 			// convert linebreaks to html br else JSON.parse breaks
 			data = data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
@@ -850,7 +850,7 @@ ${data}`;
 				throw new Error('Data appears to be invalid.');
 			}
 			const ex_char = Storage.get(char_obj.key);
-			if (ex_char !== '' && ex_char.charname !== char_obj.charname) {
+			if (ex_char !== '' && ex_char.charname !== '' && ex_char.charname !== char_obj.charname) {
 				// existing key but different name
 				if (!char_obj.key_prev) {
 					char_obj.key_prev = char_obj.key;

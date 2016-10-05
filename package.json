@@ -1,6 +1,6 @@
 {
   "name": "character-sheet-5e",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Online character sheet for D&D",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "browserify": "./node_modules/.bin/browserify src/main.js --s charsheet -o main.js -t [ babelify --presets [ es2015 ] ]",
     "browserify:min": "./node_modules/.bin/browserify src/main.js --s charsheet -o main.min.js -t [ babelify --presets [ es2015 ] ] -d -p [minifyify --map main.js.map --output main.js.map]",
     "versioncache": "sed -i \"s/v[0-9.]\\+/v${npm_package_version}/\" site.manifest service_worker.js",
-    "build": "npm run browserify && npm run browserify:min && npm run concat:css && npm run versioncache"
+    "build": "npm run browserify:min && npm run concat:css && npm run versioncache"
   },
   "keywords": [
     "d&d",
