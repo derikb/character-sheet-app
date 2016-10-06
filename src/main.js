@@ -782,6 +782,12 @@ const Manager = exports.manager = {
 					break;
 			}
 		});
+		if (this.cur_character.charname === '') {
+			const p = document.createElement('p');
+			p.innerHTML = 'Your character must have name to save!';
+			Alert.setContent(p);
+			return;
+		}
 		this.cur_character.updated = this.currentTimestamp();
 		Storage.set(this.cur_character.key, JSON.stringify(this.cur_character));
 		dialog_unsaved.classList.remove('open');
