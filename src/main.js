@@ -110,7 +110,6 @@ backup_dialog.querySelector('button[type=button]').addEventListener('click', (e)
 backup_dialog.querySelector('form').addEventListener('submit', (e) => {
 	e.preventDefault();
 	const input_file = e.target.querySelector('input[type=file]');
-	console.log(input_file.files);
 	if (input_file.files && input_file.files.length > 0) {
 		Array.from(input_file.files).forEach((f) => {
 			const reader = new FileReader();
@@ -149,7 +148,6 @@ action_opener.addEventListener('click', (e) => {
  * When the menu transitions to open we want to set overflow to visible so the Load dropdown can be visible
  */
 action_menu.addEventListener('transitionend', (e) => {
-	console.log(e);
 	const style = window.getComputedStyle(action_menu);
 	if (style.getPropertyValue('max-height') !== '0px') {
 		action_menu.style.overflow = 'visible';
@@ -273,7 +271,6 @@ const LoadMenu = {
 				// delete link in load menu
 				if (e.target.classList.contains('delete')) {
 					e.preventDefault();
-					console.log('delete!');
 					Manager.deletePrompt(e.target.getAttribute('data-key'));
 					this.close();
 				}
@@ -381,7 +378,6 @@ document.querySelector('.container').addEventListener('blur', (e) => {
 	if (e.target.getAttribute('contenteditable') === 'true') {
 		const before = e.target.getAttribute('data-before');
 		if (before !== e.target.innerHTML) {
-			console.log('Changed');
 			e.target.removeAttribute('data-before');
 			dialog_unsaved.classList.add('open');
 			
@@ -426,7 +422,6 @@ attribute_saves.forEach((el) => {
  */
 skill_checks.forEach((el) => {
 	el.addEventListener('change', (e) => {
-		console.log('check change');
 		calcSkillMod(e.currentTarget);
 		dialog_unsaved.classList.add('open');
 	});
@@ -647,7 +642,6 @@ const Manager = exports.manager = {
 	 */
 	changeCharacter: function () {
 		const urlhash = window.location.hash.substr(1);
-		console.log('changecharacter');
 		this.loadCharacter(urlhash);
 		LoadMenu.close();
 	},
@@ -656,11 +650,9 @@ const Manager = exports.manager = {
 	 * @param {String} key character identifier...????
 	 */
 	loadCharacter: function (key) {
-		console.log(`loadcharacter ${key}`);
 		dialog_unsaved.classList.remove('open');
 		const json = Storage.get(key);
 		if (json === '') {
-			console.log('no character found');
 			// prompt to load backup?
 			this.cur_character = Object.create(character_model);
 			this.cur_character.key = key;
@@ -733,7 +725,6 @@ const Manager = exports.manager = {
 	 * Save character data to localStorage
 	 */
 	saveCharacter: function () {
-		console.log('save');
 		if (this.cur_character === null) {
 			this.cur_character = Object.create(character_model);
 		}
@@ -859,7 +850,6 @@ ${data}`;
 	 * @param {String} data JSON data (we hope)
 	 */
 	restoreCharacter: function (data) {
-		console.log('restoreCharacter');
 		try {
 			// strip out everything before the first "{" and after the last "}"
 			data = data.substring(data.indexOf('{'));
