@@ -592,9 +592,10 @@ const Storage = {
 	getAllKeys: function () {
 		const keys = [];
 		if (localStorage.length > 0) {
+			const key_regex = new RegExp(`^(${this.prefix })+`, 'i');
 			for (let i = 0; i < localStorage.length; i++) {
 				// limit to 
-				const key = localStorage.key(i);
+				let key = localStorage.key(i);
 				// check for prefix
 				if (key.indexOf(this.prefix) !== 0) {
 					// backwards compatibility for a little while @todo remove
@@ -602,6 +603,7 @@ const Storage = {
 						continue;
 					}
 				}
+				key = key.replace(key_regex, '');
 				keys.push(key);
 			}
 		}
