@@ -381,6 +381,14 @@ document.querySelector('.container').addEventListener('focus', (e) => {
 document.querySelector('.container').addEventListener('blur', (e) => {
 	if (e.target.getAttribute('contenteditable') === 'true') {
 		const before = e.target.getAttribute('data-before');
+		// trim out spaces and ending linebreaks
+		const cur_val = e.target.innerHTML;
+		let trimmed_cur_val = cur_val.trim();
+		trimmed_cur_val = trimmed_cur_val.replace(/(<br\/?>)+$/, '');
+		if (trimmed_cur_val !== cur_val) {
+			e.target.innerHTML = trimmed_cur_val;
+		}
+		
 		if (before !== e.target.innerHTML) {
 			e.target.removeAttribute('data-before');
 			dialog_unsaved.classList.add('open');
