@@ -429,7 +429,7 @@ dl.field dd span:last-of-type {
 }
 
 /* Larger than phone screen */
-@media (min-width: 50.0rem) {
+@media (min-width: 50.0rem), print {
 	dl.field {
 		flex-direction: row;
 		align-items: center;
@@ -532,4 +532,42 @@ footer {
 	footer ul {
 		flex: 1 1 50%;
 	}
+}
+
+
+@media print {
+   body {
+      color: #000;
+      background: #fff;
+      font-size: 10px;
+   }
+   .app-actions, .btn-open-actions, .dialog, footer {
+	   display: none;
+   }
+   h1 {
+	   font-size: 1.25rem;
+	   line-height: 1.5rem;
+	   margin: .5rem 0 1rem 0;
+   }
+   h2, h3 {
+   	font-size: 1rem;
+    line-height: 1.5rem;
+    margin: 0 0 .5rem;
+/*      page-break-after: avoid; */
+   }
+   dl.field div {
+	   margin: 0 0 0.5rem 0;   
+   }
+   .pc-attributes, .pc-skills {
+	   font-size: inherit;
+	   line-height: inherit;
+   }
+   .pc-attributes li, .pc-skills li {
+	   margin: 0 0 0 0;
+   }
+   .smallarea[contenteditable=true], .largearea[contenteditable=true] {
+   	margin-bottom: .5rem;
+   	min-height: 0;
+   	display: block; /* somehow this makes a big difference with page breaks */
+   }
 }
