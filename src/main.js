@@ -395,7 +395,8 @@ document.querySelector('.container').addEventListener('blur', (e) => {
 				const slevel = e.target.getAttribute('data-subfield');
 				const slots = parseInt(e.target.innerHTML, 10);
 				const spelllist = document.querySelector(`[data-name="spells"][data-subfield="${slevel}"]`);
-				if (slots === 0) {
+				if (!slots) {
+					// this covers 0 and NaN
 					spelllist.parentNode.classList.add('hidden');
 				} else {
 					spelllist.parentNode.classList.remove('hidden');
@@ -457,12 +458,12 @@ const character_model = {
 	experience: 0,
 	inspiration: '',
 	proficiency: '+2',
-	armor_class: 10,
+	armor_class: '',
 	speed: 30,
-	hp_cur: 0,
-	hp_max: 0,
-	hd_cur: 1,
-	hd_max: 1,
+	hp_cur: '',
+	hp_max: '',
+	hd_cur: '',
+	hd_max: '',
 	str: 10,
 	dex: 10,
 	con: 10,
@@ -506,10 +507,10 @@ const character_model = {
 	flaws: '',
 	appearance: '',
 	equipment: '',
-	cp: 0,
-	sp: 0,
-	gp: 0,
-	pp: 0,
+	cp: '',
+	sp: '',
+	gp: '',
+	pp: '',
 	features: '',
 	notes: '',
 	spell_ability: '',
