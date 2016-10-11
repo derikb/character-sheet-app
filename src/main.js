@@ -288,7 +288,6 @@ LoadMenu.initialize();
 const attribute_fields = Array.from(document.querySelectorAll('.pc-attributes input[type=number]'));
 const attribute_saves = Array.from(document.querySelectorAll('.pc-attributes input[type=checkbox]'));
 const skill_checks = Array.from(document.querySelectorAll('input[data-name="skills"]'));
-const spell_slots = Array.from(document.querySelectorAll('input[data-name="spell_slots"]'));
 const dialog_unsaved = document.querySelector('.alert-unsaved');
 
 /**
@@ -617,9 +616,8 @@ const Storage = {
 	getAllKeys: function () {
 		const keys = [];
 		if (localStorage.length > 0) {
-			const key_regex = new RegExp(`^(${this.prefix })+`, 'i');
+			const key_regex = new RegExp(`^(${this.prefix})+`, 'i');
 			for (let i = 0; i < localStorage.length; i++) {
-				// limit to 
 				let key = localStorage.key(i);
 				// check for prefix
 				if (key.indexOf(this.prefix) !== 0) {
@@ -942,6 +940,18 @@ ${data}`;
 			// if its the current character we should reload them
 			if (char_obj.key === this.cur_character.key) {
 				this.loadCharacter(char_obj.key);
+			} else {
+				// prompt to load them
+				const p = document.createElement('p');
+				p.textContent = `${char_obj.charname} has been added. `;
+				const a = document.createElement('a');
+				a.setAttribute('href', `#${char_obj.key}`);
+				a.textContent = 'View character now.';
+				a.addEventListener('click', (e) => {
+					Alert.clear();
+				});
+				p.appendChild(a);
+				Alert.setContent(p);
 			}
 		} catch (e) {
 			const p = document.createElement('p');
