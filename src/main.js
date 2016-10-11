@@ -48,11 +48,13 @@ const Alert = {
 		btn.textContent = 'Close';
 		f.appendChild(btn);
 		this.el.appendChild(f);
+		this.el.classList.add('open');
 	},
 	/**
 	 * Clear the alert (which makes it disappear)
 	 */
 	clear: function () {
+		this.el.classList.remove('open');
 		while (this.el.firstChild) {
 			this.el.removeChild(this.el.firstChild);
 		}
@@ -876,7 +878,9 @@ ${data}`;
 		a.addEventListener('click', (e) => {
 			Alert.clear();
 		});
-		content.push(a);
+		const p = document.createElement('p');
+		p.appendChild(a);
+		content.push(p);
 		Alert.setContent(content);
 	},
 	/**

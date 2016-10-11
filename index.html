@@ -16,12 +16,23 @@
 		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 		<meta name="apple-mobile-web-app-title" content="CharSheet5e">
 		<meta name="theme-color" content="#ffffff">
-		
+
 		<link rel="stylesheet" href="styles.css">		
 	</head>
 	<body>
 		<div class="alert-unsaved dialog">Unsaved changes...</div>
 		<div class="alert-main dialog"></div>
+		<div class="dialog-backup dialog">
+			<form id="form_backup_restore">
+				<label for="files">Restore from file</label>
+				<input type="file" id="files" name="files" />
+				<p>or</p>
+				<label for="backup_data">Paste the character backup data</label>
+				<textarea id="backup_data" name="backup_data"></textarea>
+				<button type="submit">Restore</button>
+				<button type="button">Cancel</button>
+			</form>
+		</div>
 		
 		<div class="container">
 			<div class="app-actions">
@@ -39,22 +50,12 @@
 			</div>
 			<header class="page-header">
 				<h1 class="pc-charname" data-name="charname" placeholder="Character Name" contenteditable=true></h1>
-				<button type="button" class="btn-open-actions">Menu</button>
+				<div class="menu-open">
+					<button type="button" class="btn-open-actions">Menu</button>
+				</div>
 			</header>
 			
 			<main>
-				
-				<div class="dialog-backup dialog">
-					<form id="form_backup_restore">
-						<label for="files">Restore from file</label>
-						<input type="file" id="files" name="files" />
-						<p>or</p>
-						<label for="backup_data">Paste the character backup data</label>
-						<textarea id="backup_data" name="backup_data"></textarea>
-						<button type="submit">Restore</button>
-						<button type="button">Cancel</button>
-					</form>
-				</div>
 				
 				<dl class="field">
 					<div>
@@ -87,10 +88,8 @@
 							<span contenteditable="true" class="small" data-name="hp_cur"></span> <strong>/</strong> 
 							<span contenteditable="true" class="small" data-name="hp_max"></span>
 						</dd>
-
 					</div>
 					<div>
-
 						<dt>Hit Dice</dt>
 						<dd>
 							<span contenteditable="true" class="small" data-name="hd_cur"></span> <strong>/</strong> 
@@ -302,26 +301,27 @@
 								<span class="pc-skill-mod">0</span>
 							</li>
 						</ul>
-						<h2>Languages</h2>
-						<div contenteditable="true" class="largearea" data-name="languages"></div>
 					</div>
 					
 					<div class="field-column-33">
 						<h2>Personality</h2>
 						<h3>Traits</h3>
-						<div contenteditable="true" class="largearea" data-name="traits"></div>
+						<div contenteditable="true" class="smallarea" data-name="traits"></div>
 						<h3>Ideals</h3>
-						<div contenteditable="true" class="largearea" data-name="ideals"></div>
+						<div contenteditable="true" class="smallarea" data-name="ideals"></div>
 						<h3>Bonds</h3>
-						<div contenteditable="true" class="largearea" data-name="bonds"></div>
+						<div contenteditable="true" class="smallarea" data-name="bonds"></div>
 						<h3>Flaws</h3>
-						<div contenteditable="true" class="largearea" data-name="flaws"></div>
-						
+						<div contenteditable="true" class="smallarea" data-name="flaws"></div>
+						<h2>Languages</h2>
+						<div contenteditable="true" class="largearea" data-name="languages"></div>
 					</div>
 					
+<!--
 				</div>
 				
 				<div class="field-row">
+-->
 					<div class="field-column-33">
 						<h2>Equipment</h2>
 						<div contenteditable="true" class="largearea" data-name="equipment"></div>
@@ -391,11 +391,11 @@
 				
 				
 				<div class="field-row wrap">
-					<div class="field-column-50">
+					<div class="field-column-33">
 						<h3>Cantrips</h3>
 						<div contenteditable="true" class="largearea" data-name="spells" data-subfield="0"></div>
 					</div>
-					<div class="field-column-50">
+					<div class="field-column-33">
 						<h3>1st</h3>
 						<div contenteditable="true" class="largearea" data-name="spells" data-subfield="1"></div>
 					</div>
