@@ -491,6 +491,7 @@ const character_model = {
 	ideals: '',
 	bonds: '',
 	flaws: '',
+	appearance: '',
 	equipment: '',
 	cp: 0,
 	sp: 0,
