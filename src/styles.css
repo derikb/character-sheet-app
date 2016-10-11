@@ -386,6 +386,9 @@ h1 {
 	margin-bottom: 1.5rem;
 	min-height: 7.5rem;
 }
+.hidden {
+	display: none;
+}
 
 dl.field {
 	margin: 0;

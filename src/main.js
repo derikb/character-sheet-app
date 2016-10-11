@@ -288,6 +288,7 @@ LoadMenu.initialize();
 const attribute_fields = Array.from(document.querySelectorAll('.pc-attributes input[type=number]'));
 const attribute_saves = Array.from(document.querySelectorAll('.pc-attributes input[type=checkbox]'));
 const skill_checks = Array.from(document.querySelectorAll('input[data-name="skills"]'));
+const spell_slots = Array.from(document.querySelectorAll('input[data-name="spell_slots"]'));
 const dialog_unsaved = document.querySelector('.alert-unsaved');
 
 /**
@@ -366,6 +367,7 @@ const calcProfMod = function () {
 		});
 	}
 };
+
 /**
  * Event: Listen for contenteditable changes
  * delegate focus/blur from container (body didn't seem to work)
@@ -386,8 +388,19 @@ document.querySelector('.container').addEventListener('blur', (e) => {
 			// if level then update proficiency
 			if (e.target.getAttribute('data-name') === 'level') {
 				calcProfMod();
+				return;
 			}
-			
+			// if spell slot changes then show/hide spell level list
+			if (e.target.getAttribute('data-name') === 'spell_slots') {
+				const slevel = e.target.getAttribute('data-subfield');
+				const slots = parseInt(e.target.innerHTML, 10);
+				const spelllist = document.querySelector(`[data-name="spells"][data-subfield="${slevel}"]`);
+				if (slots === 0) {
+					spelllist.parentNode.classList.add('hidden');
+				} else {
+					spelllist.parentNode.classList.remove('hidden');
+				}
+			}
 			// Do something here... Save?
 		}
 	}
@@ -739,6 +752,8 @@ const Manager = exports.manager = {
 						break;
 					default:
 						el.innerHTML = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
+						const event2 = new Event('blur');
+						el.dispatchEvent(event2);
 						break;
 				}
 			}
