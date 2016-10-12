@@ -406,6 +406,9 @@ dl.field div {
 	align-items: center;
 	margin: .5rem 1rem 1rem 0;
 }
+dl.field div.with_icon {
+	margin-top: 0;
+}
 dl.field dt {
 	display: inline-block;
 	font-weight: 500;
@@ -424,15 +427,35 @@ dl.field dd:first-of-type {
 dl.field dd:last-of-type {
 	margin-right: 0rem;
 }
-dl.field dd span:last-of-type {
+span[data-name=hd_max] {
 	text-align: right;
 }
 
 dd[data-name=armor_class] {
-    background-image: url(shield.svg);
+    background-image: url(images/shield.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 2rem;
+    text-align: center;
+    background-position: center;
+    line-height: 2.5rem;
+}
+span[data-name=hp_max] {
+	background-image: url(images/heart.svg);
+    background-repeat: no-repeat;
+    height: 3rem;
+    width: 4rem;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    background-position: center;
+    line-height: 2.5rem;
+}
+span[data-name=hp_cur] {
+	background-image: url(images/heart_broken.svg);
+    background-repeat: no-repeat;
+    height: 3rem;
+    width: 4rem;
+    color: rgb(207,0,15);
     text-align: center;
     background-position: center;
     line-height: 2.5rem;
