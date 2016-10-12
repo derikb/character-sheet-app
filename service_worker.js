@@ -15,6 +15,8 @@ var config = {
 		'/main.min.js',
 		'/styles.css',
 		'/images/shield.svg',
+		'/images/heart.svg',
+		'/images/heart_broken.svg',
 		'/'
 	]
 };
