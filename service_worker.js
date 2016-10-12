@@ -14,6 +14,7 @@ var config = {
 		'/index.html',
 		'/main.min.js',
 		'/styles.css',
+		'/images/shield.svg',
 		'/'
 	]
 };

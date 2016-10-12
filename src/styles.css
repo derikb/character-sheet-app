@@ -393,18 +393,18 @@ h1 {
 dl.field {
 	margin: 0;
 	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
+	flex-direction: row;
+	justify-content: flex-start;
 	align-items: left;
 	flex-wrap: wrap;
 }
 dl.field div {
-	flex: 1 1 auto;
+	flex: 0 1 auto;
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
-	margin: .5rem 0rem 1rem 0;
+	margin: .5rem 1rem 1rem 0;
 }
 dl.field dt {
 	display: inline-block;
@@ -426,6 +426,16 @@ dl.field dd:last-of-type {
 }
 dl.field dd span:last-of-type {
 	text-align: right;
+}
+
+dd[data-name=armor_class] {
+    background-image: url(shield.svg);
+    background-repeat: no-repeat;
+    height: 3rem;
+    width: 2rem;
+    text-align: center;
+    background-position: center;
+    line-height: 2.5rem;
 }
 
 /* Larger than phone screen */
