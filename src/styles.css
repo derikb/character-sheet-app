@@ -512,6 +512,10 @@ dl.field dd span:last-of-type {
 	text-align: right;
 }
 
+ul[data-name=spells] li {
+	display: block;
+}
+
 /*
 	Footer
 */

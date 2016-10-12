@@ -289,6 +289,7 @@ const attribute_fields = Array.from(document.querySelectorAll('.pc-attributes in
 const attribute_saves = Array.from(document.querySelectorAll('.pc-attributes input[type=checkbox]'));
 const skill_checks = Array.from(document.querySelectorAll('input[data-name="skills"]'));
 const dialog_unsaved = document.querySelector('.alert-unsaved');
+const spell_lists = Array.from(document.querySelectorAll('ul[data-name=spells]'));
 
 /**
  * Calculate the attribute modifier based on the score
@@ -449,6 +450,22 @@ skill_checks.forEach((el) => {
 		dialog_unsaved.classList.add('open');
 	});
 });
+/**
+ * Event: Add new li to spell lists when adding to the last item in the list
+ */
+spell_lists.forEach((el) => {
+	el.addEventListener('keypress', (e) => {
+		if (e.target.tagName === 'LI' || e.target.closest(`li`)) {
+			if (e.which === 13) {
+				e.preventDefault();
+				const li = document.createElement('li');
+				li.setAttribute('contenteditable', 'true');
+				e.currentTarget.appendChild(li);
+				li.focus();
+			}
+		}
+	});
+});
 
 /**
  * Model for character data
@@ -535,7 +552,7 @@ const character_model = {
 		9: 0
 	},
 	spells: {
-		0: '',
+		0: [],
 		1: '',
 		2: '',
 		3: '',
@@ -757,6 +774,28 @@ const Manager = exports.manager = {
 						const event = new Event('change');
 						el.dispatchEvent(event);
 						break;
+					case 'UL':
+						// clear list
+						while (el.firstChild) {
+							el.removeChild(el.firstChild);
+						}
+						let items = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
+						if (!Array.isArray(items)) { items = items.split(/;|<br\/?>/); }
+						const li_blank = el.querySelector('li:empty');
+						if (items.length > 0) {
+							items.forEach((i) => {
+								if (i === '') { return; }
+								const li = document.createElement('li');
+								li.setAttribute('contenteditable', 'true');
+								li.innerHTML = i;
+								el.insertBefore(li, li_blank);
+							});
+						}
+						// add a blank one at the end
+						const li = document.createElement('li');
+						li.setAttribute('contenteditable', 'true');
+						el.appendChild(li);
+						break;
 					default:
 						el.innerHTML = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
 						const event2 = new Event('blur');
@@ -821,6 +860,22 @@ const Manager = exports.manager = {
 						this.cur_character[f][subf] = el.value;
 					} else {
 						this.cur_character[f] = el.value;
+					}
+					break;
+				case 'UL':
+					const items = [];
+					const lis = Array.from(el.querySelectorAll('li'));
+					if (lis.length > 0) {
+						lis.forEach((li) => {
+							const val = li.innerHTML;
+							if (val === '') { return; }
+							items.push(val);
+						});
+					}
+					if (subf) {
+						this.cur_character[f][subf] = items;
+					} else {
+						this.cur_character[f] = items;
 					}
 					break;
 				default:
