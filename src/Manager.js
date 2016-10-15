@@ -103,7 +103,7 @@ const ActionMenu = {
 	 * Add event handlers, etc.
 	 * @param {Object} Manager the object
 	 */
-	initialize: function (Manager) {
+	initialize: function () {
 		this.el = document.querySelector('.app-actions');
 		this.opener = document.querySelector('.btn-open-actions');
 		// opener click handler
@@ -658,6 +658,7 @@ const Manager = module.exports = {
 	 */
 	emailBackup: function () {
 		const data = this.characterJSON();
+		const date = new Date();
 		const body = `Below is the backup data for your character ${this.cur_character.charname}.
 		
 To use this data, go to: ${window.location.href} and click the "Restore Backup" button. Then paste the text below into the box.
@@ -666,7 +667,7 @@ To use this data, go to: ${window.location.href} and click the "Restore Backup" 
 		
 ${data}`;
 		
-		const url = `mailto:?subject=${encodeURIComponent(`Character backup ${this.cur_character.charname}`)}&body=${encodeURIComponent(body)}`;
+		const url = `mailto:?subject=${encodeURIComponent(`Character backup ${this.cur_character.charname} (${date.toLocaleString()})`)}&body=${encodeURIComponent(body)}`;
 		
 		// Sadly this simple solution doesn't work in iOS
 		// document.location.href = url;
