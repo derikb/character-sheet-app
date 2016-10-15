@@ -143,6 +143,9 @@ dl {
 ul {
   list-style: dot inside;
 }
+ul ul, ul ol, ol ul, ol ol {
+	margin-left: 1rem;
+}
 
 ol {
   list-style: decimal inside;
