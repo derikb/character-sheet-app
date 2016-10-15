@@ -409,6 +409,9 @@ dl.field div {
 dl.field div.with_icon {
 	margin-top: 0;
 }
+div.with_icon [contenteditable=true]:empty:before {
+	line-height: 2.5rem;	
+}
 dl.field dt {
 	display: inline-block;
 	font-weight: 500;
