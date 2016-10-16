@@ -70,6 +70,8 @@ const character_model = {
 	pp: '',
 	features: '',
 	notes: '',
+	notes_adv: '',
+	notes_cam: '',
 	spell_ability: '',
 	spell_save: '',
 	spell_attack: '',
