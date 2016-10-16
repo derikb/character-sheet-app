@@ -637,6 +637,16 @@ nav ol li:last-of-type a {
 	border-right: 0;
 }
 
+@media (min-width: 50.0rem) {
+	nav a {
+		margin: .5rem 0;
+		font-size: 1.25rem;
+		line-height: 1.75rem;	
+	}	
+	
+}
+
+
 @media print {
    body {
       color: #000;
