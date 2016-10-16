@@ -10,4 +10,7 @@ if ('serviceWorker' in navigator) {
 	});
 }
 
-Manager.initialize(rules);
+Manager.initialize({
+	rules: rules,
+	prefix: 'charsheet-5e-'
+});

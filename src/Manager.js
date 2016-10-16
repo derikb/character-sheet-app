@@ -128,7 +128,9 @@ const ActionMenu = {
 			action_btn_backup.style.display = 'none';
 		}
 		action_btn_backup.addEventListener('click', (e) => {
-			Manager.downloadBackup();
+			// Manager.downloadBackup();
+			// @todo 
+			Alert.setContent(div);
 		});
 		const action_btn_email = this.el.querySelector('.btn-email-backup');
 		action_btn_email.addEventListener('click', (e) => {
@@ -841,13 +843,19 @@ ${data}`;
 	},
 	/**
 	 * Start up the app with some events and such
-	 * @param {Object} rules export object from the rules specific module
+	 * @param {Object} settings things we need to set external to this script
+	 * @param {Object} settings.rules export object from the rules specific module
+	 * @param {String} settings.prefix prefix for localStorage keys
 	 */
-	initialize: function (rules) {
-		this.character_model = rules.model;
-		this.rules_ui = rules.ui;
+	initialize: function (settings) {
+		if (!settings.rules || !settings.prefix) {
+			document.body.innerHTML = '<p>App is missing required settings.</p>';
+			return;
+		}
+		this.character_model = settings.rules.model;
+		this.rules_ui = settings.rules.ui;
 		// set up storage
-		Storage.setPrefix('charsheet-5e-');
+		Storage.setPrefix(settings.prefix);
 		// set up default Alert
 		Alert.initialize();
 		// check for localStorage support
