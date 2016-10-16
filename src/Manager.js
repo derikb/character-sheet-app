@@ -21,7 +21,7 @@ const Storage = {
 	/**
 	 * Returns blank or the value for the key
 	 * @param {String} key
-	 * @return {String}
+	 * @return {Object|String} object or the empty string
 	 */
 	get: function (key) {
 		let txt = localStorage.getItem(`${this.prefix}${key}`);
@@ -32,7 +32,7 @@ const Storage = {
 				this.set(key, txt);
 			}
 		}
-		return (txt !== null) ? txt : '';
+		return (txt !== null) ? JSON.parse(txt) : '';
 	},
 	/**
 	 * Store a value for the key
@@ -43,7 +43,7 @@ const Storage = {
 	 */
 	set: function (key, txt) {
 		try {
-			localStorage.setItem(`${this.prefix}${key}`, txt);
+			localStorage.setItem(`${this.prefix}${key}`, JSON.stringify(txt));
 			// backwards compatible cleanup for non prefixed saved characters @todo remove
 			if (localStorage.getItem(key) !== null) {
 				localStorage.removeItem(key);
@@ -175,16 +175,13 @@ const LoadMenu = {
 	},
 	/**
 	 * Add character to list
-	 * @param {Object|String} char_obj Character object or JSON string
+	 * @param {Object} char_obj Character object or JSON string
 	 */
 	addCharacter: function (char_obj) {
 		if (typeof char_obj === 'undefined' || char_obj === '') {
 			return;
 		}
 		try {
-			if (typeof char_obj === 'string') {
-				char_obj = JSON.parse(char_obj);
-			}
 			if (char_obj.key && char_obj.key !== '') {
 				// check if it's already there
 				const existing = this.el.querySelector(`a[href="#${char_obj.key}"]`);
@@ -362,6 +359,7 @@ const BackupDialog = {
 			this.addDownloadForm();
 		}
 		this.el.classList.add('open');
+		this.el.querySelector('legend').focus();
 	},
 	/**
 	 * Close Dialog (and clear form)
@@ -411,15 +409,14 @@ const BackupDialog = {
 		
 		const checkboxes = [];
 		Storage.getAllKeys().forEach((key) => {
-			const data = Storage.get(key);
-			const char_obj = JSON.parse(data);
+			const char_obj = Storage.get(key);
 			if (!char_obj.key) { return; }
 			const li = `<li><label><input type="checkbox" name="${char_obj.key}" value="${char_obj.key}" /> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</label></li>`;
 			checkboxes.push(li);
 		});
 		
 		const fields = `<fieldset>
-			<legend>Pick characters to download.</legend>
+			<legend tabindex="-1">Pick characters to download.</legend>
 			<ul>
 				${checkboxes.join('')}
 			</ul>
@@ -564,16 +561,14 @@ const Manager = module.exports = {
 	 */
 	loadCharacter: function (key) {
 		this.dialog_unsaved.classList.remove('open');
-		const json = Storage.get(key);
-		if (json === '') {
+		const data = Storage.get(key);
+		if (data === '') {
 			// prompt to load backup?
 			this.cur_character = Object.create(this.character_model);
 			this.cur_character.key = key;
 			this.renderCharacter();
 			return;
 		}
-		const data = JSON.parse(json);
-		
 		this.cur_character = Object.create(this.character_model);
 		this.setCurCharacterData(data);
 		this.renderCharacter();
@@ -724,7 +719,7 @@ const Manager = module.exports = {
 		this.cur_character.updated = this.currentTimestamp();
 		// make sure app name is set
 		this.cur_character.app = this.appname;
-		Storage.set(this.cur_character.key, JSON.stringify(this.cur_character));
+		Storage.set(this.cur_character.key, this.cur_character);
 		this.dialog_unsaved.classList.remove('open');
 		LoadMenu.addCharacter(this.cur_character);
 	},
@@ -740,7 +735,7 @@ const Manager = module.exports = {
 		const form = e.target;
 		const checks = Array.from(form.querySelectorAll('input[type=checkbox]:checked'));
 		checks.forEach((ch) => {
-			const char_obj = JSON.parse(Storage.get(ch.value));
+			const char_obj = Storage.get(ch.value);
 			data.push(char_obj);
 			names.push(char_obj.charname);
 		});
@@ -854,10 +849,7 @@ ${JSON.stringify(data)}`;
 					throw new Error(`Data appears to be invalid. Try removing any text that isn't part of the backup (i.e. email introduction).`);
 				}
 				// do we have this char key already
-				let ex_char = Storage.get(char_obj.key);
-				if (ex_char !== '') {
-					ex_char = JSON.parse(ex_char);
-				}
+				const ex_char = Storage.get(char_obj.key);
 				if (ex_char !== '' && ex_char.charname !== '' && ex_char.charname !== char_obj.charname) {
 					// existing key but different name
 					if (!char_obj.key_prev) {
@@ -869,7 +861,7 @@ ${JSON.stringify(data)}`;
 						char_obj.key = temp_key;
 					}
 				}
-				Storage.set(char_obj.key, JSON.stringify(char_obj));
+				Storage.set(char_obj.key, char_obj);
 				LoadMenu.addCharacter(char_obj);
 				// if its the current character we should reload them
 				if (char_obj.key === this.cur_character.key) {
@@ -903,13 +895,8 @@ ${JSON.stringify(data)}`;
 	 * @param {String} key character key
 	 */
 	deletePrompt: function (key) {
-		let data = Storage.get(key);
+		const data = Storage.get(key);
 		if (data === '') {
-			return;
-		}
-		try {
-			data = JSON.parse(data);
-		} catch (e) {
 			return;
 		}
 		const content = [];
