@@ -1043,6 +1043,14 @@ ${JSON.stringify(data)}`;
 		// set up all the rule specific ui events (attribute modifiers and the like)
 		this.rules_ui.initialize();
 		
+		document.querySelector('nav').addEventListener('click', (e) => {
+			if (e.target.tagName === 'A') {
+				e.preventDefault();
+				const target_id = e.target.getAttribute('href').substring(1);
+				document.getElementById(target_id).scrollIntoView();
+			}
+		});
+		
 		// Event: Listen for hashchange and change the current character
 		window.addEventListener('hashchange', (e) => { this.changeCharacter(); }, false);
 		

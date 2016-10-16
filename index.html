@@ -37,7 +37,7 @@
 				<button type="button" class="btn-backup">Backup</button>
 				<button type="button" class="btn-restore-backup">Restore Backup</button>
 			</div>
-			<header class="page-header">
+			<header id="page-top" class="page-header">
 				<h1 class="pc-charname" data-name="charname" placeholder="Character Name" contenteditable=true></h1>
 				<div class="menu-open">
 					<button type="button" class="btn-open-actions">Menu</button>
@@ -96,7 +96,7 @@
 
 				<div class="field-row">
 					<div class="field-column-33">
-						<h2>Attributes</h2>
+						<h2 id="page-attributes">Attributes</h2>
 						<ul class="pc-attributes">
 							<li>
 								<label for="str">Str</label>
@@ -168,7 +168,7 @@
 					</div>
 									
 					<div class="field-column-33">
-						<h2>Skills</h2>
+						<h2 id="page-skills">Skills</h2>
 						<ul class="pc-skills">
 							<li>
 								<label>
@@ -338,13 +338,13 @@
 					</div>
 					
 					<div class="field-column-33">
-						<h2>Notes</h2>
+						<h2 id="page-notes">Notes</h2>
 						<div contenteditable="true" class="largearea" data-name="notes"></div>
 						
 					</div>
 				</div>
 				
-				<h2>Spells</h2>
+				<h2 id="page-spells">Spells</h2>
 				
 				<dl class="field">
 					<div>
@@ -435,6 +435,15 @@
 					<li><a href="https://github.com/derikb/character-sheet-5e">Github</a></li>
 				</ul>
 			</footer>
+			<nav>
+				<ol>
+					<li><a href="#page-top">Top</a></li>
+					<li><a href="#page-attributes">Attributes</a></li>
+					<li><a href="#page-skills">Skills</a></li>
+					<li><a href="#page-notes">Notes</a></li>
+					<li><a href="#page-spells">Spells</a></li>
+				</ol>
+			</nav>
 		</div>
 		
 		<div id="dialog_help" class="dialog">
