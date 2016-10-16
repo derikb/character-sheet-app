@@ -12,5 +12,6 @@ if ('serviceWorker' in navigator) {
 
 Manager.initialize({
 	rules: rules,
-	prefix: 'charsheet-5e-'
+	prefix: 'charsheet-5e-',
+	appname: 'character-sheet-5e'
 });

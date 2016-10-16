@@ -86,6 +86,21 @@ button.btn-plain:hover, button.btn-plain:focus {
 	opacity: inherit;
 }
 
+fieldset {
+	border: 1px solid rgb(221, 221, 221);
+	margin: 0 0 1rem 0;
+	padding: 0.5rem;
+}
+legend {
+	padding: 0 0.5rem;
+}
+fieldset ul {
+	margin: 0 0.5rem;
+}
+fieldset li:last-of-type {
+	margin-bottom: 0.5rem;
+}
+
 input[type='email'],
 input[type='number'],
 input[type='password'],
@@ -142,6 +157,9 @@ dl {
 
 ul {
   list-style: dot inside;
+}
+form ul  {
+	list-style: none;
 }
 ul ul, ul ol, ol ul, ol ol {
 	margin-left: 1rem;
@@ -326,7 +344,7 @@ h1 {
     min-width: initial;
     margin-right: 1rem;
 }
-.dialog-backup {
+#dialog-backup {
 	position: absolute;
 }
 .dialog button.delete-conf {

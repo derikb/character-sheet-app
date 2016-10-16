@@ -123,18 +123,9 @@ const ActionMenu = {
 		});
 		
 		// event handlers for all the menu buttons
-		const action_btn_backup = this.el.querySelector('.btn-file-backup');
-		if (typeof window.Blob !== 'function') {
-			action_btn_backup.style.display = 'none';
-		}
+		const action_btn_backup = this.el.querySelector('.btn-backup');
 		action_btn_backup.addEventListener('click', (e) => {
-			// Manager.downloadBackup();
-			// @todo 
-			Alert.setContent(div);
-		});
-		const action_btn_email = this.el.querySelector('.btn-email-backup');
-		action_btn_email.addEventListener('click', (e) => {
-			Manager.emailBackup();
+			BackupDialog.open('download');
 		});
 		const action_btn_save = this.el.querySelector('.btn-save');
 		action_btn_save.addEventListener('click', (e) => {
@@ -147,47 +138,13 @@ const ActionMenu = {
 		});
 		const action_btn_restore = this.el.querySelector('.btn-restore-backup');
 		action_btn_restore.addEventListener('click', (e) => {
-			backup_dialog.classList.add('open');
+			BackupDialog.open('restore');
 		});
 		const action_btn_load = this.el.querySelector('.btn-load');
 		action_btn_load.addEventListener('click', (e) => {
-			e.currentTarget.nextElementSibling.classList.toggle('open');
-		});
-		
-		/**
-		 * Restore backup dialog
-		 */
-		const backup_dialog = document.querySelector('.dialog-backup');
-		backup_dialog.querySelector('button[type=button]').addEventListener('click', (e) => {
-			backup_dialog.querySelector('form').reset();
-			backup_dialog.classList.remove('open');
-		});
-		backup_dialog.querySelector('form').addEventListener('submit', (e) => {
-			e.preventDefault();
-			const input_file = e.target.querySelector('input[type=file]');
-			if (input_file.files && input_file.files.length > 0) {
-				Array.from(input_file.files).forEach((f) => {
-					const reader = new FileReader();
-					// Closure to capture the file information.
-					reader.onload = (function (theFile) {
-						return function (e) {
-							Manager.restoreCharacter(e.target.result);
-						};
-					})(f);
-					reader.readAsText(f);
-				});
-			} else {
-				const input = e.target.querySelector('textarea');
-				if (input.value === '') {
-					return;
-				}
-				Manager.restoreCharacter(input.value);
-			}
-			backup_dialog.classList.remove('open');
-			e.target.reset();
+			LoadMenu.toggle();
 		});
 	}
-	
 };
 
 /**
@@ -203,6 +160,12 @@ const LoadMenu = {
 	 */
 	open: function () {
 		this.el.classList.add('open');
+	},
+	/**
+	 * Toggle menu
+	 */
+	toggle: function () {
+		this.el.classList.toggle('open');
 	},
 	/**
 	 * Close menu
@@ -383,6 +346,143 @@ const HelpDialog = {
 	}
 };
 
+const BackupDialog = {
+	/**
+	 * Dialog element
+	 */
+	el: document.getElementById('dialog-backup'),
+	/**
+	 * Open Dialog
+	 * @param {String} type which form to open in the dialog
+	 */
+	open: function (type) {
+		if (type === 'restore') {
+			this.addRestoreForm();
+		} else if (type === 'download') {
+			this.addDownloadForm();
+		}
+		this.el.classList.add('open');
+	},
+	/**
+	 * Close Dialog (and clear form)
+	 */
+	close: function () {
+		this.el.classList.remove('open');
+		while (this.el.firstChild) {
+			this.el.removeChild(this.el.firstChild);
+		}
+	},
+	/**
+	 * Return a close button to use
+	 * @return {DOMElement} button.close
+	 */
+	getCloseButton: function () {
+		const button = document.createElement('button');
+		button.setAttribute('type', 'button');
+		button.classList.add('close');
+		button.textContent = 'Close';
+		return button;
+	},
+	/**
+	 * Add the restore form
+	 */
+	addRestoreForm: function () {
+		const form = document.createElement('form');
+		form.id = 'form_backup_restore';
+		const fields = `<label for="files">Restore from file</label>
+			<input type="file" id="files" name="files" />
+			<p>or</p>
+			<label for="backup_data">Paste the character backup data</label>
+			<textarea id="backup_data" name="backup_data"></textarea>
+			<button type="submit">Restore</button>
+			<button type="button">Cancel</button>`;
+		form.innerHTML = fields;
+		form.addEventListener('submit', (e) => {
+			Manager.restoreFormSubmit(e);
+		});
+		this.el.appendChild(form);
+	},
+	/**
+	 * Add the download options
+	 */
+	addDownloadForm: function () {
+		const form = document.createElement('form');
+		form.id = 'form_backup_download';
+		
+		const checkboxes = [];
+		Storage.getAllKeys().forEach((key) => {
+			const data = Storage.get(key);
+			const char_obj = JSON.parse(data);
+			if (!char_obj.key) { return; }
+			const li = `<li><label><input type="checkbox" name="${char_obj.key}" value="${char_obj.key}" /> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</label></li>`;
+			checkboxes.push(li);
+		});
+		
+		const fields = `<fieldset>
+			<legend>Pick characters to download.</legend>
+			<ul>
+				${checkboxes.join('')}
+			</ul>
+		</fieldset>
+		<fieldset>
+			<legend>Pick a format</legend>
+			<ul>
+			<li><label><input type="radio" name="format" value="file" checked> File download</label></li>
+			<li><label><input type="radio" name="format" value="email"> Email data</label></li>
+		</fieldset>
+		<button type="submit">Download</button>
+		<button type="button">Cancel</button>`;
+		form.innerHTML = fields;
+		form.addEventListener('submit', (e) => {
+			Manager.downloadBackup(e);
+		});
+		this.el.appendChild(form);
+	},
+	/**
+	 * If file download is unavailable offer the data to copy/paste
+	 * @param {String} data the backup data
+	 */
+	altDownload: function (data) {
+		const p = document.createElement('p');
+		p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
+		const text = document.createElement('textarea');
+		text.classList.add('large');
+		text.value = data;
+		while (this.el.firstChild) {
+			this.el.removeChild(this.el.firstChild);
+		}
+		this.el.appendChild(p);
+		this.el.appendChild(text);
+		this.el.appendChild(this.getCloseButton());
+		text.focus();
+		text.select();
+	},
+	/**
+	 * Email download link
+	 * @param {DOMElement} link the email link
+	 */
+	emailDownload: function (link) {
+		const p = document.createElement('p');
+		p.appendChild(link);
+		while (this.el.firstChild) {
+			this.el.removeChild(this.el.firstChild);
+		}
+		this.el.appendChild(p);
+		this.el.appendChild(this.getCloseButton());
+	},
+	/**
+	 * Add events
+	 */
+	initialize: function () {
+		// Event: click closer
+		this.el.addEventListener('click', (e) => {
+			if (e.target.tagName === 'BUTTON' && e.target.getAttribute('type') === 'button') {
+				this.close();
+			}
+		});
+	}
+};
+
 const Manager = module.exports = {
 	/**
 	 * App/rules/game specific character model and UI handling
@@ -396,6 +496,10 @@ const Manager = module.exports = {
 	 * Currently loaded character data is here
 	 */
 	cur_character: null,
+	/**
+	 * App name used in character model app property
+	 */
+	appname: '',
 	/**
 	 * Unsaved dialog
 	 */
@@ -616,7 +720,10 @@ const Manager = module.exports = {
 			Alert.setContent(p);
 			return;
 		}
+		// update saved timestamp
 		this.cur_character.updated = this.currentTimestamp();
+		// make sure app name is set
+		this.cur_character.app = this.appname;
 		Storage.set(this.cur_character.key, JSON.stringify(this.cur_character));
 		this.dialog_unsaved.classList.remove('open');
 		LoadMenu.addCharacter(this.cur_character);
@@ -624,114 +731,167 @@ const Manager = module.exports = {
 	/**
 	 * Save a file of the current character
 	 * Falls back to showing the data for copy/pasting
+	 * @param {Object} e event object from form submit
 	 */
-	downloadBackup: function () {
-		const data = this.characterJSON();
-		if (typeof window.Blob !== 'function') {
-			// fallback to displaying the data for copy/pasting
-			const content = [];
-			const p = document.createElement('p');
-			p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
-			const text = document.createElement('textarea');
-			text.classList.add('large');
-			text.value = data;
-			content.push(p);
-			content.push(text);
-			Alert.setContent(content);
-			text.focus();
-			text.select();
-			return;
-		}
-		// for env that support it, create a file for download
-		const a = document.createElement('a');
-		const file = new Blob([data], { type: 'application/json' });
-		const url = URL.createObjectURL(file);
-		a.href = url;
-		a.download = `character_${this.cur_character.charname}`;
-		document.body.appendChild(a);
-		a.click();
-		setTimeout(function () {
-			document.body.removeChild(a);
-			window.URL.revokeObjectURL(url);
-		}, 0);
-	},
-	/**
-	 * Open an email with the character data and instructions
-	 */
-	emailBackup: function () {
-		const data = this.characterJSON();
+	downloadBackup: function (e) {
+		e.preventDefault();
+		const data = [];
+		const names = [];
+		const form = e.target;
+		const checks = Array.from(form.querySelectorAll('input[type=checkbox]:checked'));
+		checks.forEach((ch) => {
+			const char_obj = JSON.parse(Storage.get(ch.value));
+			data.push(char_obj);
+			names.push(char_obj.charname);
+		});
+		
+		const format = form.querySelector('input[name=format]:checked').value;
 		const date = new Date();
-		const body = `Below is the backup data for your character ${this.cur_character.charname}.
+		
+		if (format === 'email') {
+			const body = `Below is the backup data for your character(s) ${names.join(', ')}.
 		
 To use this data, go to: ${window.location.href} and click the "Restore Backup" button. Then paste the text below into the box.
 		
 ---
 		
-${data}`;
+${JSON.stringify(data)}`;
 		
-		const url = `mailto:?subject=${encodeURIComponent(`Character backup ${this.cur_character.charname} (${date.toLocaleString()})`)}&body=${encodeURIComponent(body)}`;
+			const url = `mailto:?subject=${encodeURIComponent(`Character backup: ${names.join(', ')} (${date.toLocaleString()})`)}&body=${encodeURIComponent(body)}`;
 		
-		// Sadly this simple solution doesn't work in iOS
-		// document.location.href = url;
-		const content = [];
-		const a = document.createElement('a');
-		a.href = url;
-		a.innerHTML = 'Open new message in default email client';
-		a.addEventListener('click', (e) => {
-			Alert.clear();
-		});
-		const p = document.createElement('p');
-		p.appendChild(a);
-		content.push(p);
-		Alert.setContent(content);
+			// Sadly this simple solution doesn't work in iOS
+			// document.location.href = url;
+			const a = document.createElement('a');
+			a.href = url;
+			a.innerHTML = 'Open new message in default email client';
+			a.addEventListener('click', (e) => {
+				BackupDialog.close();
+			});
+			BackupDialog.emailDownload(a);
+		} else {
+			if (typeof window.Blob !== 'function') {
+				// fallback to displaying the data for copy/pasting
+				BackupDialog.altDownload(JSON.stringify(data));
+				return;
+			}
+			// for env that support it, create a file for download
+			const a = document.createElement('a');
+			const file = new Blob([JSON.stringify(data)], { type: 'application/json' });
+			const url = URL.createObjectURL(file);
+			a.href = url;
+			a.download = `character5e_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
+			document.body.appendChild(a);
+			a.click();
+			setTimeout(function () {
+				document.body.removeChild(a);
+				window.URL.revokeObjectURL(url);
+			}, 0);
+		}
 	},
 	/**
-	 * Take json backup data and load the character
-	 * @param {String} data JSON data (we hope)
+	 * Restore Backup form handler
+	 * @param {Object} e Form submit event
 	 */
-	restoreCharacter: function (data) {
+	restoreFormSubmit: function (e) {
+		e.preventDefault();
+		const input_file = e.target.querySelector('input[type=file]');
+		const input = e.target.querySelector('textarea');
+		if (input_file.files && input_file.files.length > 0) {
+			Array.from(input_file.files).forEach((f) => {
+				const reader = new FileReader();
+				// Closure to capture the file information.
+				reader.onload = ((theFile) => {
+					return function (e) {
+						this.restoreCharacters(e.target.result);
+					};
+				})(f);
+				reader.readAsText(f);
+			});
+		} else if (input.value !== '') {
+			this.restoreCharacters(input.value);
+		}
+		BackupDialog.close();
+	},
+	/**
+	 * Take json backup data and load the character(s)
+	 * @param {String} data JSON string we hope
+	 */
+	restoreCharacters: function (data) {
 		try {
-			// strip out everything before the first "{" and after the last "}"
-			data = data.substring(data.indexOf('{'));
-			data = data.substring(0, data.lastIndexOf('}') + 1);
-			data = data.trim(); // just in case
-			// convert linebreaks to html br else JSON.parse breaks
-			data = data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
-			const char_obj = JSON.parse(data);
-			if (!char_obj.key || char_obj.app !== 'character-sheet-5e') {
-				throw new Error('Data appears to be invalid.');
+			// look for the start of the JSON string Array of Objects
+			let start = data.indexOf('[{');
+			let end = data.lastIndexOf('}]');
+			// make sure it's not :[{, an array of objects inside one of the objects
+			const check = data.indexOf(':[{');
+			if (check !== -1 && check < start) {
+				// if so start over
+				start = -1;
 			}
-			const ex_char = Storage.get(char_obj.key);
-			if (ex_char !== '' && ex_char.charname !== '' && ex_char.charname !== char_obj.charname) {
-				// existing key but different name
-				if (!char_obj.key_prev) {
-					char_obj.key_prev = char_obj.key;
-					char_obj.key = this.generateKey();
-				} else {
-					const temp_key = char_obj.key_prev;
-					char_obj.key_prev = char_obj.key;
-					char_obj.key = temp_key;
-				}
-			}
-			
-			Storage.set(char_obj.key, JSON.stringify(char_obj));
-			LoadMenu.addCharacter(char_obj);
-			// if its the current character we should reload them
-			if (char_obj.key === this.cur_character.key) {
-				this.loadCharacter(char_obj.key);
+			if (start === -1) {
+				start = data.indexOf('{');
+				end = data.lastIndexOf('}');
+				data = data.substring(start);
+				data = data.substring(0, end + 1);
 			} else {
-				// prompt to load them
-				const p = document.createElement('p');
-				p.textContent = `${char_obj.charname} has been added. `;
+				data = data.substring(start);
+				data = data.substring(0, end + 2);
+			}
+			data = data.trim(); // just in case
+			
+			// convert linebreaks to html br else JSON.parse breaks
+			// first make sure it's not a break between objects...
+			data = data.replace(/\},[\r\n]+\{/g, '},{');
+			data = data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+			let backups = JSON.parse(data);
+			// make it an array
+			if (!Array.isArray(backups)) {
+				backups = [backups];
+			}
+			const imported_chars = [];
+			backups.forEach((char_obj) => {
+				// is it a char object for this app
+				if (typeof char_obj !== 'object' || !char_obj.key || char_obj.app !== this.appname) {
+					throw new Error(`Data appears to be invalid. Try removing any text that isn't part of the backup (i.e. email introduction).`);
+				}
+				// do we have this char key already
+				let ex_char = Storage.get(char_obj.key);
+				if (ex_char !== '') {
+					ex_char = JSON.parse(ex_char);
+				}
+				if (ex_char !== '' && ex_char.charname !== '' && ex_char.charname !== char_obj.charname) {
+					// existing key but different name
+					if (!char_obj.key_prev) {
+						char_obj.key_prev = char_obj.key;
+						char_obj.key = this.generateKey();
+					} else {
+						const temp_key = char_obj.key_prev;
+						char_obj.key_prev = char_obj.key;
+						char_obj.key = temp_key;
+					}
+				}
+				Storage.set(char_obj.key, JSON.stringify(char_obj));
+				LoadMenu.addCharacter(char_obj);
+				// if its the current character we should reload them
+				if (char_obj.key === this.cur_character.key) {
+					this.loadCharacter(char_obj.key);
+				}
+				const li = document.createElement('li');
+				li.textContent = `${char_obj.charname} has been added. `;
 				const a = document.createElement('a');
 				a.setAttribute('href', `#${char_obj.key}`);
 				a.textContent = 'View character now.';
 				a.addEventListener('click', (e) => {
 					Alert.clear();
 				});
-				p.appendChild(a);
-				Alert.setContent(p);
-			}
+				li.appendChild(a);
+				imported_chars.push(li);
+			});
+			
+			const ul = document.createElement('ul');
+			imported_chars.forEach((li) => {
+				ul.appendChild(li);
+			});
+			Alert.setContent(ul);
 		} catch (e) {
 			const p = document.createElement('p');
 			p.innerHTML = `Error processing backup data: ${e.message}`;
@@ -846,14 +1006,16 @@ ${data}`;
 	 * @param {Object} settings things we need to set external to this script
 	 * @param {Object} settings.rules export object from the rules specific module
 	 * @param {String} settings.prefix prefix for localStorage keys
+	 * @param {String} settings.appname used to identify the app property in a character model
 	 */
 	initialize: function (settings) {
-		if (!settings.rules || !settings.prefix) {
+		if (!settings.rules || !settings.prefix || !settings.appname) {
 			document.body.innerHTML = '<p>App is missing required settings.</p>';
 			return;
 		}
 		this.character_model = settings.rules.model;
 		this.rules_ui = settings.rules.ui;
+		this.appname = settings.appname;
 		// set up storage
 		Storage.setPrefix(settings.prefix);
 		// set up default Alert
@@ -868,6 +1030,7 @@ ${data}`;
 		ActionMenu.initialize();
 		// Load the saved characters into the dropdown
 		LoadMenu.initialize(this);
+		BackupDialog.initialize();
 		
 		Storage.getAllKeys().forEach((key) => {
 			const char_obj = Storage.get(key);

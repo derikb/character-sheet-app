@@ -22,17 +22,7 @@
 	<body>
 		<div class="alert-unsaved dialog">Unsaved changes...</div>
 		<div class="alert-main dialog"></div>
-		<div class="dialog-backup dialog">
-			<form id="form_backup_restore">
-				<label for="files">Restore from file</label>
-				<input type="file" id="files" name="files" />
-				<p>or</p>
-				<label for="backup_data">Paste the character backup data</label>
-				<textarea id="backup_data" name="backup_data"></textarea>
-				<button type="submit">Restore</button>
-				<button type="button">Cancel</button>
-			</form>
-		</div>
+		<div id="dialog-backup" class="dialog"></div>
 		
 		<div class="container">
 			<div class="app-actions">
@@ -44,8 +34,7 @@
 					</div>
  				</div>
 				<button type="button" class="btn-new-character">New Character</button>
-				<button type="button" class="btn-file-backup">File Backup</button>
-				<button type="button" class="btn-email-backup">Email Backup</button>
+				<button type="button" class="btn-backup">Backup</button>
 				<button type="button" class="btn-restore-backup">Restore Backup</button>
 			</div>
 			<header class="page-header">
