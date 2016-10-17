@@ -774,7 +774,7 @@ ${JSON.stringify(data)}`;
 			const file = new Blob([JSON.stringify(data)], { type: 'application/json' });
 			const url = URL.createObjectURL(file);
 			a.href = url;
-			a.download = `character5e_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
+			a.download = `${this.appname}_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
 			document.body.appendChild(a);
 			a.click();
 			setTimeout(function () {
@@ -970,23 +970,7 @@ ${JSON.stringify(data)}`;
 	 * If no characters are saved we show an app intro dialog
 	 */
 	showIntroDialog: function () {
-		const content = [];
-		const h = document.createElement('h2');
-		h.innerHTML = 'Character Sheet. 5e.';
-		content.push(h);
-		const p1 = document.createElement('p');
-		p1.innerHTML = `An online character sheet for 5th edition D&D, usable offline (in some browsers).`;
-		content.push(p1);
-		const p4 = document.createElement('p');
-		p4.innerHTML = `Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.`;
-		content.push(p4);
-		const p2 = document.createElement('p');
-		p2.innerHTML = `<strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!`;
-		content.push(p2);
-		const p3 = document.createElement('p');
-		p3.innerHTML = `This message will only appear until you save your first character.`;
-		content.push(p3);
-		Alert.setContent(content);
+		Alert.setContent(this.intro());
 	},
 	/**
 	 * Start up the app with some events and such
@@ -1003,6 +987,7 @@ ${JSON.stringify(data)}`;
 		this.character_model = settings.rules.model;
 		this.rules_ui = settings.rules.ui;
 		this.appname = settings.appname;
+		this.intro = settings.rules.intro;
 		// set up storage
 		Storage.setPrefix(settings.prefix);
 		// set up default Alert
