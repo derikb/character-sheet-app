@@ -5,13 +5,13 @@ const Manager = require('./Manager.js');
  * Register service worker if it's supported
  */
 if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.register('service_worker.js', {
-		scope: '/'
-	});
+    navigator.serviceWorker.register('service_worker.js', {
+        scope: '/'
+    });
 }
 
 Manager.initialize({
-	rules: rules,
-	prefix: 'charsheet-5e-',
-	appname: 'character-sheet-5e'
+    rules: rules,
+    prefix: 'charsheet-5e-',
+    appname: 'character-sheet-5e'
 });
