@@ -21,6 +21,10 @@ const character_model = {
 	hp_max: '',
 	hd_cur: '',
 	hd_max: '',
+	deathSave: {
+		success: 0,
+		fail: 0
+	},
 	str: 10,
 	dex: 10,
 	con: 10,
@@ -163,7 +167,7 @@ const ui = {
 		const skill_checked = el.checked;
 		const attribute = el.getAttribute('data-attr');
 		const mod_field = el.parentNode.nextElementSibling;
-		
+
 		let prof = 0;
 		if (skill_checked) {
 			prof = document.querySelector('[data-name="proficiency"]').innerHTML;
@@ -222,11 +226,11 @@ const ui = {
 			if (trimmed_cur_val !== cur_val) {
 				e.target.innerHTML = trimmed_cur_val;
 			}
-			
+
 			if (before !== e.target.innerHTML) {
 				e.target.removeAttribute('data-before');
 				this.dialog_unsaved.classList.add('open');
-				
+
 				// if level then update proficiency
 				if (e.target.getAttribute('data-name') === 'level') {
 					this.calcProfMod();
@@ -255,7 +259,7 @@ const ui = {
 	attributeChange: function (e) {
 		const field = e.target.parentNode;
 		const mod_field = field.querySelector('.pc-attribute-mod');
-			
+
 		mod_field.innerText = this.calcAttrMod(e.currentTarget.value);
 		const attr = e.target.getAttribute('data-name');
 		this.calcSaveMod(attr);

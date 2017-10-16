@@ -4,11 +4,11 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
-		
+
 		<title>Character Sheet. 5e.</title>
 		<meta name="application-name" content="Character Sheet. 5e.">
 		<meta name="description" content="Online character sheet for 5e D&amp;D.">
-				
+
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
 		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
@@ -17,13 +17,13 @@
 		<meta name="apple-mobile-web-app-title" content="CharSheet5e">
 		<meta name="theme-color" content="#ffffff">
 
-		<link rel="stylesheet" href="styles.css">		
+		<link rel="stylesheet" href="styles.css">
 	</head>
 	<body>
 		<div class="alert-unsaved dialog">Unsaved changes...</div>
 		<div class="alert-main dialog"></div>
 		<div id="dialog-backup" class="dialog"></div>
-		
+
 		<div class="container">
 			<div class="app-actions">
 				<button type="button" class="btn-save">Save</button>
@@ -43,9 +43,9 @@
 					<button type="button" class="btn-open-actions">Menu</button>
 				</div>
 			</header>
-			
+
 			<main>
-				
+
 				<dl class="field">
 					<div>
 						<dt>Class</dt><dd contenteditable="true" data-name="charclass"></dd>
@@ -77,7 +77,7 @@
 					<div>
 						<dt>Hit Dice</dt>
 						<dd>
-							<span contenteditable="true" class="small" data-name="hd_cur" placeholder="1"></span> <strong>/</strong> 
+							<span contenteditable="true" class="small" data-name="hd_cur" placeholder="1"></span> <strong>/</strong>
 							<span contenteditable="true" class="small" data-name="hd_max" placeholder="1"></span>
 						</dd>
 					</div>
@@ -87,11 +87,18 @@
 					<div class="with_icon">
 						<dt>Hit Points</dt>
 						<dd>
-							<span contenteditable="true" class="small" data-name="hp_cur" placeholder="0"></span> <strong>/</strong> 
+							<span contenteditable="true" class="small" data-name="hp_cur" placeholder="0"></span> <strong>/</strong>
 							<span contenteditable="true" class="small" data-name="hp_max" placeholder="0"></span>
 						</dd>
 					</div>
-									
+					<div>
+						<dt>Death Save Success/Fail</dt>
+						<dd>
+							<input type="number" class="small" name="death_success" data-name="deathSave" data-subfield="success" value="0" min="0" max="3" />
+                            <strong>/</strong>
+						    <input type="number" class="small" name="death_fail" data-name="deathSave" data-subfield="fail" value="0" min="0" max="3" />
+						</dd>
+					</div>
 				</dl>
 
 				<div class="field-row">
@@ -152,21 +159,21 @@
 								<label for="cha">Cha</label>
 								<input type="number" id="cha" class="pc-cha pc-attribute" data-name="cha" value=10 min=3 max=25 />
 								<span class="pc-attribute-mod" id="pc-cha-mod">0</span>
-								<label>	
+								<label>
 									<input type="checkbox" name="pc-cha-save" data-name="saves" data-subfield="cha" value=1 />
 									Save
 								</label>
 								<span class="pc-save-mod small" contenteditable="true">0</span>
 							</li>
 						</ul>
-						
+
 						<h2>Weapons & Attacks</h2>
 						<div contenteditable="true" class="largearea" data-name="weapons"></div>
-						
+
 						<h2>Other Proficiencies</h2>
 						<div contenteditable="true" class="largearea" data-name="proficiencies_other"></div>
 					</div>
-									
+
 					<div class="field-column-33">
 						<h2 id="page-skills">Skills</h2>
 						<ul class="pc-skills">
@@ -298,7 +305,7 @@
 							</li>
 						</ul>
 					</div>
-					
+
 					<div class="field-column-33">
 						<h2>Personality</h2>
 						<h3>Traits</h3>
@@ -314,11 +321,11 @@
 						<h2>Languages</h2>
 						<div contenteditable="true" class="smallarea" data-name="languages"></div>
 					</div>
-					
+
 					<div class="field-column-33">
 						<h2>Equipment</h2>
 						<div contenteditable="true" class="largearea" data-name="equipment"></div>
-						
+
 						<dl class="field">
 							<div>
 								<dt>CP</dt><dd contenteditable="true" class="small" data-name="cp" placeholder="0"></dd>
@@ -330,22 +337,22 @@
 							</div>
 						</dl>
 					</div>
-					
+
 					<div class="field-column-33">
 						<h2>Features & Traits</h2>
 						<div contenteditable="true" class="largearea" data-name="features"></div>
-						
+
 					</div>
-					
+
 					<div class="field-column-33">
 						<h2 id="page-notes">Character Notes</h2>
 						<div contenteditable="true" class="largearea" data-name="notes"></div>
-						
+
 					</div>
 				</div>
-				
+
 				<h2 id="page-spells">Spells</h2>
-				
+
 				<dl class="field">
 					<div>
 						<dt>Spell Ability</dt><dd contenteditable="true" data-name="spell_ability"></dd>
@@ -357,9 +364,9 @@
 						<dt>Spell Attack Bonus</dt><dd contenteditable="true" data-name="spell_attack"></dd>
 					</div>
 				</dl>
-				
+
 				<h3>Spell Slots</h3>
-				
+
 				<dl class="field">
 					<div>
 						<dt>1st</dt><dd contenteditable="true" data-name="spell_slots" data-subfield="1"></dd>
@@ -381,8 +388,8 @@
 						<dt>9th</dt><dd contenteditable="true" data-name="spell_slots" data-subfield="9"></dd>
 					</div>
 				</dl>
-				
-				
+
+
 				<div class="field-row wrap">
 					<div class="field-column-33">
 						<h3>Cantrips</h3>
@@ -392,7 +399,7 @@
 						<h3>1st</h3>
 						<ul data-name="spells" data-subfield="1"></ul>
 					</div>
-					<div class="field-column-33 hidden">	
+					<div class="field-column-33 hidden">
 						<h3>2nd</h3>
 						<ul data-name="spells" data-subfield="2"></ul>
 					</div>
@@ -425,7 +432,7 @@
 						<ul data-name="spells" data-subfield="9"></ul>
 					</div>
 				</div>
-				
+
 				<div class="field-row">
 					<div class="field-column-33">
 						<h2 id="page-notes_adv">Adventure Notes</h2>
@@ -436,7 +443,7 @@
 						<div contenteditable="true" class="largearea" data-name="notes_cam"></div>
 					</div>
 				</div>
-				
+
 			</main>
 			<footer>
 				<h4>Character Sheet. 5e.</h4>
@@ -456,10 +463,10 @@
 				</ol>
 			</nav>
 		</div>
-		
+
 		<div id="dialog_help" class="dialog">
 			<h1 tabindex="-1">Help</h1>
-			
+
 			<h2>Most importantly</h2>
 			<ul>
 				<li>This app only saves data to your browsers' local storage. If your browser's data is deleted, your saved characters will be deleted. Use the backup options to save character data when you make changes.</li>
@@ -468,7 +475,7 @@
 			</ul>
 
 			<h2>Actions</h2>
-			
+
 			<ul>
 				<li><strong>Save</strong> This will save the current character to local storage. If the character already exists it will update.</li>
 				<li><strong>Load</strong> This will show you a list of saved characters (if you have any). Clicking on a character's name will load that character. Note: You will lose any unsaved data if you load a character without saving the one currently displayed.</li>
@@ -482,9 +489,9 @@
 				<li><strong>Email Backup</strong> This will open your default email client and start a new message containing the currently viewed character's backup data as well as instructions on how to use that data.</li>
 				<li><strong>Restore Backup</strong> This opens a form for uploading a file or pasting in character backup data to save that character in the current browser. If the character already exists they will be updated to match the restored data (so be careful).</li>
 			</ul>
-			
+
 			<h2>Character Sheet</h2>
-			
+
 			<ul>
 				<li>Click on data or empty areas to edit. Data is NOT automatically saved; you must hit the <strong>Save</strong> button.</li>
 				<li>Ability, saving throw, and skill modifiers are all automatically calculated when the proficiency, ability, save, or skill fields are changed.</li>
@@ -492,10 +499,10 @@
 				<li>Spell lists only appear if the corresponding spell slot is greater than 0.</li>
 				<li>Press <em>enter</em> while editing a spell field to add another empty field to the list.</li>
 			</ul>
-			
+
 			<button type="button" class="close">Close</button>
 		</div>
-		
+
 		<script src="main.min.js"></script>
 	</body>
 </html>

@@ -121,7 +121,7 @@ const ActionMenu = {
 				this.el.style.overflow = 'visible';
 			}
 		});
-		
+
 		// event handlers for all the menu buttons
 		const action_btn_backup = this.el.querySelector('.btn-backup');
 		action_btn_backup.addEventListener('click', (e) => {
@@ -406,7 +406,7 @@ const BackupDialog = {
 	addDownloadForm: function () {
 		const form = document.createElement('form');
 		form.id = 'form_backup_download';
-		
+
 		const checkboxes = [];
 		Storage.getAllKeys().forEach((key) => {
 			const char_obj = Storage.get(key);
@@ -414,7 +414,7 @@ const BackupDialog = {
 			const li = `<li><label><input type="checkbox" name="${char_obj.key}" value="${char_obj.key}" /> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</label></li>`;
 			checkboxes.push(li);
 		});
-		
+
 		const fields = `<fieldset>
 			<legend tabindex="-1">Pick characters to download.</legend>
 			<ul>
@@ -739,21 +739,21 @@ const Manager = module.exports = {
 			data.push(char_obj);
 			names.push(char_obj.charname);
 		});
-		
+
 		const format = form.querySelector('input[name=format]:checked').value;
 		const date = new Date();
-		
+
 		if (format === 'email') {
 			const body = `Below is the backup data for your character(s) ${names.join(', ')}.
-		
+
 To use this data, go to: ${window.location.href} and click the "Restore Backup" button. Then paste the text below into the box.
-		
+
 ---
-		
+
 ${JSON.stringify(data)}`;
-		
+
 			const url = `mailto:?subject=${encodeURIComponent(`Character backup: ${names.join(', ')} (${date.toLocaleString()})`)}&body=${encodeURIComponent(body)}`;
-		
+
 			// Sadly this simple solution doesn't work in iOS
 			// document.location.href = url;
 			const a = document.createElement('a');
@@ -796,7 +796,7 @@ ${JSON.stringify(data)}`;
 				const reader = new FileReader();
 				// Closure to capture the file information.
 				reader.onload = ((theFile) => {
-					return function (e) {
+					return (e) => {
 						this.restoreCharacters(e.target.result);
 					};
 				})(f);
@@ -832,7 +832,7 @@ ${JSON.stringify(data)}`;
 				data = data.substring(0, end + 2);
 			}
 			data = data.trim(); // just in case
-			
+
 			// convert linebreaks to html br else JSON.parse breaks
 			// first make sure it's not a break between objects...
 			data = data.replace(/\},[\r\n]+\{/g, '},{');
@@ -878,7 +878,7 @@ ${JSON.stringify(data)}`;
 				li.appendChild(a);
 				imported_chars.push(li);
 			});
-			
+
 			const ul = document.createElement('ul');
 			imported_chars.forEach((li) => {
 				ul.appendChild(li);
@@ -1003,18 +1003,18 @@ ${JSON.stringify(data)}`;
 		// Load the saved characters into the dropdown
 		LoadMenu.initialize(this);
 		BackupDialog.initialize();
-		
+
 		Storage.getAllKeys().forEach((key) => {
 			const char_obj = Storage.get(key);
 			LoadMenu.addCharacter(char_obj);
 		});
-		
+
 		if (LoadMenu.isEmpty()) {
 			this.showIntroDialog();
 		}
 		// set up all the rule specific ui events (attribute modifiers and the like)
 		this.rules_ui.initialize();
-		
+
 		document.querySelector('nav').addEventListener('click', (e) => {
 			if (e.target.tagName === 'A') {
 				e.preventDefault();
@@ -1022,10 +1022,10 @@ ${JSON.stringify(data)}`;
 				document.getElementById(target_id).scrollIntoView();
 			}
 		});
-		
+
 		// Event: Listen for hashchange and change the current character
 		window.addEventListener('hashchange', (e) => { this.changeCharacter(); }, false);
-		
+
 		// Check the hash to see if we need to load a specific character
 		const urlhash = window.location.hash.substr(1);
 		if (urlhash !== '') {
