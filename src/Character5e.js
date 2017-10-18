@@ -90,6 +90,17 @@ const character_model = {
         8: 0,
         9: 0
     },
+    spell_slots_cur: {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0
+    },
     spells: {
         0: [],
         1: '',
@@ -125,6 +136,10 @@ const ui = {
      * Unsaved data alert
      */
     dialog_unsaved: document.querySelector('.alert-unsaved'),
+    /**
+     * Spell Slots
+     */
+    spell_slots: Array.from(document.querySelectorAll('input[data-name=spell_slots]')),
     /**
      * Spell Lists
      */
@@ -236,18 +251,6 @@ const ui = {
                     this.calcProfMod();
                     return;
                 }
-                // if spell slot changes then show/hide spell level list
-                if (e.target.getAttribute('data-name') === 'spell_slots') {
-                    const slevel = e.target.getAttribute('data-subfield');
-                    const slots = parseInt(e.target.innerHTML, 10);
-                    const spelllist = document.querySelector(`[data-name="spells"][data-subfield="${slevel}"]`);
-                    if (!slots) {
-                        // this covers 0 and NaN
-                        spelllist.parentNode.classList.add('hidden');
-                    } else {
-                        spelllist.parentNode.classList.remove('hidden');
-                    }
-                }
                 // Do something here... Save?
             }
         }
@@ -284,6 +287,22 @@ const ui = {
      */
     skillChange: function (e) {
         this.calcSkillMod(e.currentTarget);
+        this.dialog_unsaved.classList.add('open');
+    },
+    /**
+     * When a spell slot changes
+     *  * @param {Object} e Change event object
+     */
+    spellSlotChange: function (e) {
+        const spellLevel = e.target.getAttribute('data-subfield');
+        const slots = parseInt(e.target.value, 10);
+        const spellList = document.querySelector(`[data-name="spells"][data-subfield="${spellLevel}"]`);
+        if (!slots) {
+            // this covers 0 and NaN
+            spellList.parentNode.classList.add('hidden');
+        } else {
+            spellList.parentNode.classList.remove('hidden');
+        }
         this.dialog_unsaved.classList.add('open');
     },
     /**
@@ -340,6 +359,12 @@ const ui = {
          */
         this.skill_checks.forEach((el) => {
             el.addEventListener('change', this.skillChange.bind(this));
+        });
+        /**
+         * Event: If spell slot changes, show show/hide spell list.
+         */
+        this.spell_slots.forEach((el) => {
+            el.addEventListener('change', this.spellSlotChange.bind(this));
         });
         /**
          * Event: Add new li to spell lists when adding to the last item in the list
