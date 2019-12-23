@@ -480,7 +480,7 @@ const BackupDialog = {
     }
 };
 
-const Manager = module.exports = {
+const Manager = {
     /**
      * App/rules/game specific character model and UI handling
      */
@@ -951,26 +951,11 @@ ${JSON.stringify(data)}`;
         return;
     },
     /**
-     * Check for AppCache updates
-     */
-    checkCache: function () {
-        if ('applicationCache' in window) {
-            const updateAppCache = function (event) {
-                const p = document.createElement('p');
-                p.textContent = `Character Sheet has been updated with new features or bug fixes. Please reload the page to get the newest code. If you have this site open in multiple tabs/windows please close them all.`;
-                Alert.setContent(p);
-            };
-            window.applicationCache.addEventListener('updateready', updateAppCache, false);
-            if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
-                updateAppCache();
-            }
-        }
-    },
-    /**
      * If no characters are saved we show an app intro dialog
      */
     showIntroDialog: function () {
-        Alert.setContent(this.intro());
+        var template = document.getElementById('introAlert');
+        Alert.setContent(document.importNode(template.content, true));
     },
     /**
      * Start up the app with some events and such
@@ -987,15 +972,12 @@ ${JSON.stringify(data)}`;
         this.character_model = settings.rules.model;
         this.rules_ui = settings.rules.ui;
         this.appname = settings.appname;
-        this.intro = settings.rules.intro;
         // set up storage
         Storage.setPrefix(settings.prefix);
         // set up default Alert
         Alert.initialize();
         // check for localStorage support
         this.checkFeatures();
-        // check for AppCache updates
-        this.checkCache();
         // set up the help dialog
         HelpDialog.initialize();
         // set up the menu
@@ -1035,3 +1017,5 @@ ${JSON.stringify(data)}`;
         }
     }
 };
+
+export default Manager;

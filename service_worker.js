@@ -12,11 +12,12 @@ var config = {
     cacheName: 'static-v1.7.0',
     staticCacheItems: [
         '/index.html',
-        '/main.min.js',
         '/styles.css',
         '/images/shield.svg',
         '/images/heart.svg',
         '/images/heart_broken.svg',
+        '/src/Character5e.js',
+        '/src/Manager.js',
         '/'
     ]
 };

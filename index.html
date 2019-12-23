@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="site.manifest">
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -547,7 +547,32 @@
 
             <button type="button" class="close">Close</button>
         </div>
+        <script type="module">
+            import { default as rules } from './src/Character5e.js';
+            import { default as Manager } from './src/Manager.js';
 
-        <script src="main.min.js"></script>
+            /**
+            * Register service worker if it's supported
+            */
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service_worker.js', {
+                    scope: '/'
+                });
+            }
+
+            Manager.initialize({
+                rules: rules,
+                prefix: 'charsheet-5e-',
+                appname: 'character-sheet-5e'
+            });
+
+        </script>
+        <script nomodule>
+            alert('Sorry, you must use a modern browser for this to code to work.');
+        </script>
+
+        <template id="introAlert">
+            <h2>Character Sheet. 5e.</h2><p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p><p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p><p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p><p>This message will only appear until you save your first character.</p>
+        </template>
     </body>
 </html>

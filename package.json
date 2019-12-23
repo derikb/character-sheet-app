@@ -16,10 +16,8 @@
     "eslint": "./node_modules/.bin/eslint ",
     "eslint:js": "./node_modules/.bin/eslint src/main.js",
     "concat:css": "cat ./node_modules/normalize.css/normalize.css src/styles.css | cleancss -o styles.css",
-    "browserify": "./node_modules/.bin/browserify src/main.js --s charsheet -o main.js -t [ babelify --presets [ es2015 ] ]",
-    "browserify:min": "./node_modules/.bin/browserify src/main.js --s charsheet -o main.min.js -t [ babelify --presets [ es2015 ] ] -d -p [minifyify --map main.js.map --output main.js.map]",
     "versioncache": "node build/version_bump.js",
-    "build": "npm run browserify:min && npm run concat:css && npm run versioncache"
+    "build": "npm run concat:css && npm run versioncache"
   },
   "keywords": [
     "d&d",
@@ -28,16 +26,13 @@
   "author": "Derik A Badman",
   "license": "GPL-3.0",
   "devDependencies": {
-    "babel-preset-es2015": "^6.14.0",
-    "babelify": "^7.3.0",
-    "browserify": "^13.1.0",
-    "clean-css": "^3.4.20",
-    "eslint": "^3.4.0",
-    "eslint-config-standard": "^6.0.0",
-    "eslint-plugin-promise": "^2.0.1",
-    "eslint-plugin-standard": "^2.0.0",
-    "minifyify": "^7.3.3",
-    "normalize.css": "^4.2.0",
-    "replace-in-file": "^2.0.1"
+    "clean-css": "^4.2.1",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "minifyify": "^7.3.5",
+    "normalize.css": "^8.0.1",
+    "replace-in-file": "^5.0.2"
   }
 }

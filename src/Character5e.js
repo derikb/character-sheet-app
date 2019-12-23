@@ -375,32 +375,7 @@ const ui = {
     }
 };
 
-/**
- * Dialog for when there are no saved characters
- * @return {Array} DOMelements
- */
-const intro = function () {
-    const content = [];
-    const h = document.createElement('h2');
-    h.innerHTML = 'Character Sheet. 5e.';
-    content.push(h);
-    const p1 = document.createElement('p');
-    p1.innerHTML = `An online character sheet for 5th edition D&D, usable offline (in some browsers).`;
-    content.push(p1);
-    const p4 = document.createElement('p');
-    p4.innerHTML = `Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.`;
-    content.push(p4);
-    const p2 = document.createElement('p');
-    p2.innerHTML = `<strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!`;
-    content.push(p2);
-    const p3 = document.createElement('p');
-    p3.innerHTML = `This message will only appear until you save your first character.`;
-    content.push(p3);
-    return content;
-};
-
-module.exports = {
+export default {
     model: character_model,
-    ui: ui,
-    intro: intro
+    ui: ui
 };
