@@ -20,9 +20,9 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <div class="alert-unsaved dialog">Unsaved changes...</div>
-        <div class="alert-main dialog"></div>
-        <div id="dialog-backup" class="dialog"></div>
+        <div class="alert-unsaved dialog" hidden>Unsaved changes...</div>
+        <div class="alert-main dialog" hidden></div>
+        <div id="dialog-backup" class="dialog" hidden></div>
 
         <div class="container">
             <div class="app-actions">
@@ -509,7 +509,7 @@
             </nav>
         </div>
 
-        <div id="dialog_help" class="dialog">
+        <div id="dialog_help" class="dialog" hidden>
             <h1 tabindex="-1">Help</h1>
 
             <h2>Most importantly</h2>
@@ -548,8 +548,13 @@
             <button type="button" class="close">Close</button>
         </div>
         <script type="module">
-            import { default as rules } from './src/Character5e.js';
+            import { default as EventEmitter } from './src/EventEmitter.js';
+            import { default as model } from './src/Character5e.js';
+            import { default as ui } from './src/UI5e.js';
             import { default as Manager } from './src/Manager.js';
+            import { default as ActionMenu } from './src/ActionMenu.js';
+            import { default as HelpDialog } from './src/HelpDialog.js';
+            import { default as BackupDialog } from './src/BackupDialog.js';
 
             /**
             * Register service worker if it's supported
@@ -560,8 +565,16 @@
                 });
             }
 
+            const emitter = new EventEmitter();
+
+            ActionMenu.initialize(emitter);
+            HelpDialog.initialize();
+            BackupDialog.initialize(emitter);
+
             Manager.initialize({
-                rules: rules,
+                emitter: emitter,
+                model: model,
+                ui: ui,
                 prefix: 'charsheet-5e-',
                 appname: 'character-sheet-5e'
             });

@@ -304,16 +304,12 @@ h1 {
     border-radius: 4px;
     background-color: #fefefe;
     box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
-    display: none;
     width: auto;
     z-index: 100;
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
     min-width: 80%;
-}
-.dialog.open {
-    display: block;
 }
 /* Close button */
 .dialog button.close {
@@ -411,6 +407,9 @@ h1 {
 }
 .hidden {
     display: none;
+}
+*[hidden] {
+    display: none !important;
 }
 
 dl.field {

@@ -2,495 +2,24 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-
-/**
- * LocalStorage interface
- */
-const Storage = {
-    /**
-     * A prefix to attack to the random keys to differentiate them from any other storage for the current location/domain
-     */
-    prefix: '',
-    /**
-     * Set the prefix
-     * @param {String} prefix string to prefix the randomly generated key
-     */
-    setPrefix: function (prefix) {
-        this.prefix = prefix;
-    },
-    /**
-     * Returns blank or the value for the key
-     * @param {String} key
-     * @return {Object|String} object or the empty string
-     */
-    get: function (key) {
-        let txt = localStorage.getItem(`${this.prefix}${key}`);
-        // backward compatibile cleanup later @todo
-        if (txt === null) {
-            txt = localStorage.getItem(key);
-            if (txt !== null) {
-                this.set(key, txt);
-            }
-        }
-        return (txt !== null) ? JSON.parse(txt) : '';
-    },
-    /**
-     * Store a value for the key
-     * Warning: browsers vary for the amount of data you can store (usually ~5mb)
-     * @param {String} key
-     * @param {String} txt
-     * @return {Boolean} returns false on error
-     */
-    set: function (key, txt) {
-        try {
-            localStorage.setItem(`${this.prefix}${key}`, JSON.stringify(txt));
-            // backwards compatible cleanup for non prefixed saved characters @todo remove
-            if (localStorage.getItem(key) !== null) {
-                localStorage.removeItem(key);
-            }
-        } catch (e) {
-            // Should only happen when over quota
-            return false;
-        }
-        return true;
-    },
-    /**
-     * Remove a key
-     * @param {String} key
-     * @return void
-     */
-    remove: function (key) {
-        localStorage.removeItem(`${this.prefix}${key}`);
-    },
-    /**
-     * Get an array of all keys with the key prefix
-     * @return {Array}
-     */
-    getAllKeys: function () {
-        const keys = [];
-        if (localStorage.length > 0) {
-            const key_regex = new RegExp(`^(${this.prefix})+`, 'i');
-            for (let i = 0; i < localStorage.length; i++) {
-                let key = localStorage.key(i);
-                // check for prefix
-                if (key.indexOf(this.prefix) !== 0) {
-                    // backwards compatibility for a little while @todo remove
-                    if (!key.match(/^[a-z0-9]{7}$/)) {
-                        continue;
-                    }
-                }
-                key = key.replace(key_regex, '');
-                keys.push(key);
-            }
-        }
-        return keys;
-    }
-};
-
-/**
- * Menu and associated action events
- */
-const ActionMenu = {
-    /**
-     * Menu element
-     */
-    el: null,
-    /**
-     * Menu open button
-     */
-    opener: null,
-    /**
-     * Add event handlers, etc.
-     * @param {Object} Manager the object
-     */
-    initialize: function () {
-        this.el = document.querySelector('.app-actions');
-        this.opener = document.querySelector('.btn-open-actions');
-        // opener click handler
-        this.opener.addEventListener('click', (e) => {
-            if (this.el.classList.contains('open')) {
-                // set menu to hide overflow BEFORE it closes
-                this.el.style.overflow = 'hidden';
-            }
-            this.el.classList.toggle('open');
-        });
-        // When the menu transitions to open we want to set overflow to visible so the Load dropdown can be visible
-        this.el.addEventListener('transitionend', (e) => {
-            const style = window.getComputedStyle(this.el);
-            if (style.getPropertyValue('max-height') !== '0px') {
-                this.el.style.overflow = 'visible';
-            }
-        });
-
-        // event handlers for all the menu buttons
-        const action_btn_backup = this.el.querySelector('.btn-backup');
-        action_btn_backup.addEventListener('click', (e) => {
-            BackupDialog.open('download');
-        });
-        const action_btn_save = this.el.querySelector('.btn-save');
-        action_btn_save.addEventListener('click', (e) => {
-            Manager.saveCharacter();
-        });
-        const action_btn_new = this.el.querySelector('.btn-new-character');
-        action_btn_new.addEventListener('click', (e) => {
-            // change hash to trigger new character?
-            window.location.hash = `#${Manager.generateKey()}`;
-        });
-        const action_btn_restore = this.el.querySelector('.btn-restore-backup');
-        action_btn_restore.addEventListener('click', (e) => {
-            BackupDialog.open('restore');
-        });
-        const action_btn_load = this.el.querySelector('.btn-load');
-        action_btn_load.addEventListener('click', (e) => {
-            LoadMenu.toggle();
-        });
-    }
-};
-
-/**
- * Load Menu
- */
-const LoadMenu = {
-    /**
-     * DOMELement
-     */
-    el: document.querySelector('#character_list'),
-    /**
-     * Open menu
-     */
-    open: function () {
-        this.el.classList.add('open');
-    },
-    /**
-     * Toggle menu
-     */
-    toggle: function () {
-        this.el.classList.toggle('open');
-    },
-    /**
-     * Close menu
-     */
-    close: function () {
-        this.el.classList.remove('open');
-    },
-    /**
-     * Add character to list
-     * @param {Object} char_obj Character object or JSON string
-     */
-    addCharacter: function (char_obj) {
-        if (typeof char_obj === 'undefined' || char_obj === '') {
-            return;
-        }
-        try {
-            if (char_obj.key && char_obj.key !== '') {
-                // check if it's already there
-                const existing = this.el.querySelector(`a[href="#${char_obj.key}"]`);
-                if (existing !== null) {
-                    // update the text as appropriate
-                    existing.textContent = `${char_obj.charname} (${char_obj.charclass} ${char_obj.level})`;
-                    return;
-                }
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.textContent = `${char_obj.charname} (${char_obj.charclass} ${char_obj.level})`;
-                a.setAttribute('href', `#${char_obj.key}`);
-                li.appendChild(a);
-                const del = document.createElement('a');
-                del.classList.add('delete');
-                del.innerHTML = '❌';
-                del.setAttribute('href', '#');
-                del.setAttribute('data-key', char_obj.key);
-                li.appendChild(del);
-                this.el.querySelector('#saved_characters').appendChild(li);
-            }
-        } catch (e) {
-            console.log(e.message);
-        }
-    },
-    /**
-     * Remove character from list
-     * @param {String} key
-     */
-    removeCharacter: function (key) {
-        const loadlink = this.el.querySelector(`a[href="#${key}"]`);
-        const li = loadlink.parentNode;
-        li.parentNode.removeChild(li);
-    },
-    /**
-     * Do we have any saved characters here?
-     * @return {Boolean}
-     */
-    isEmpty: function () {
-        return this.el.querySelector('li') === null;
-    },
-    /**
-     * Set up event handlers
-     */
-    initialize: function () {
-        document.body.addEventListener('click', (e) => {
-            const close = e.target.closest(`#${this.el.id}`);
-            if (close === null) {
-                // Ignore the load button (it's already handled elsewhere)
-                if (e.target.classList.contains('btn-load')) { return; }
-                // Hide the menus.
-                this.close();
-            } else {
-                // delete link in load menu
-                if (e.target.classList.contains('delete')) {
-                    e.preventDefault();
-                    Manager.deletePrompt(e.target.getAttribute('data-key'));
-                    this.close();
-                }
-            }
-        });
-    }
-};
-
-/**
- * Alert:
- * Main method for showing warnings and other interactions that need prominent placement/attention
- */
-const Alert = {
-    /**
-     * The DOMElement for the alert
-     */
-    el: document.querySelector('.alert-main'),
-    /**
-     * Add content to alert
-     * @param {Array|DOMElement} content single DOMElement or Array of DOMElements
-     */
-    setContent: function (content) {
-        if (!Array.isArray(content)) {
-            content = [content];
-        }
-        this.clear(); // make sure we start with an empty alert
-        const f = document.createDocumentFragment();
-        content.forEach((el) => {
-            f.appendChild(el);
-        });
-        const btn = document.createElement('button');
-        btn.setAttribute('type', 'button');
-        btn.classList.add('close');
-        btn.textContent = 'Close';
-        f.appendChild(btn);
-        this.el.appendChild(f);
-        this.el.classList.add('open');
-    },
-    /**
-     * Clear the alert (which makes it disappear)
-     */
-    clear: function () {
-        this.el.classList.remove('open');
-        while (this.el.firstChild) {
-            this.el.removeChild(this.el.firstChild);
-        }
-    },
-    /**
-     * Setup some events, etc.
-     * @param {Object} Manager instance of manager object
-     */
-    initialize: function () {
-        this.el.addEventListener('click', (e) => {
-            if (e.target.classList.contains('close')) {
-                // close button click
-                e.preventDefault();
-                this.clear();
-            } else if (e.target.classList.contains('delete-conf')) {
-                // delete confirmation
-                const key = e.target.getAttribute('data-key');
-                this.clear();
-                Manager.deleteCharacter(key);
-            }
-        });
-    }
-};
-
-const HelpDialog = {
-    /**
-     * Dialog element
-     */
-    el: document.getElementById('dialog_help'),
-    /**
-     * Help button
-     */
-    opener: document.querySelector('.btn-help'),
-    /**
-     * Close button
-     */
-    closer: document.querySelector('#dialog_help .close'),
-    /**
-     * Add events
-     */
-    initialize: function () {
-        // Event: click opener
-        this.opener.addEventListener('click', (e) => {
-            this.el.classList.add('open');
-            this.el.querySelector('h1').focus();
-        });
-        // Event: click closer
-        this.closer.addEventListener('click', (e) => {
-            this.el.classList.remove('open');
-        });
-        // Event: click outside help dialog to close it
-        document.body.addEventListener('click', (e) => {
-            const close = e.target.closest('#dialog_help');
-            if (close === null) {
-                if (e.target.classList.contains('btn-help')) { return; }
-                // Hide the help.
-                this.el.classList.remove('open');
-            }
-        });
-    }
-};
-
-const BackupDialog = {
-    /**
-     * Dialog element
-     */
-    el: document.getElementById('dialog-backup'),
-    /**
-     * Open Dialog
-     * @param {String} type which form to open in the dialog
-     */
-    open: function (type) {
-        if (type === 'restore') {
-            this.addRestoreForm();
-        } else if (type === 'download') {
-            this.addDownloadForm();
-        }
-        this.el.classList.add('open');
-        this.el.querySelector('legend').focus();
-    },
-    /**
-     * Close Dialog (and clear form)
-     */
-    close: function () {
-        this.el.classList.remove('open');
-        while (this.el.firstChild) {
-            this.el.removeChild(this.el.firstChild);
-        }
-    },
-    /**
-     * Return a close button to use
-     * @return {DOMElement} button.close
-     */
-    getCloseButton: function () {
-        const button = document.createElement('button');
-        button.setAttribute('type', 'button');
-        button.classList.add('close');
-        button.textContent = 'Close';
-        return button;
-    },
-    /**
-     * Add the restore form
-     */
-    addRestoreForm: function () {
-        const form = document.createElement('form');
-        form.id = 'form_backup_restore';
-        const fields = `<label for="files">Restore from file</label>
-            <input type="file" id="files" name="files" />
-            <p>or</p>
-            <label for="backup_data">Paste the character backup data</label>
-            <textarea id="backup_data" name="backup_data"></textarea>
-            <button type="submit">Restore</button>
-            <button type="button">Cancel</button>`;
-        form.innerHTML = fields;
-        form.addEventListener('submit', (e) => {
-            Manager.restoreFormSubmit(e);
-        });
-        this.el.appendChild(form);
-    },
-    /**
-     * Add the download options
-     */
-    addDownloadForm: function () {
-        const form = document.createElement('form');
-        form.id = 'form_backup_download';
-
-        const checkboxes = [];
-        Storage.getAllKeys().forEach((key) => {
-            const char_obj = Storage.get(key);
-            if (!char_obj.key) { return; }
-            const li = `<li><label><input type="checkbox" name="${char_obj.key}" value="${char_obj.key}" /> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</label></li>`;
-            checkboxes.push(li);
-        });
-
-        const fields = `<fieldset>
-            <legend tabindex="-1">Pick characters to download.</legend>
-            <ul>
-                ${checkboxes.join('')}
-            </ul>
-        </fieldset>
-        <fieldset>
-            <legend>Pick a format</legend>
-            <ul>
-            <li><label><input type="radio" name="format" value="file" checked> File download</label></li>
-            <li><label><input type="radio" name="format" value="email"> Email data</label></li>
-        </fieldset>
-        <button type="submit">Download</button>
-        <button type="button">Cancel</button>`;
-        form.innerHTML = fields;
-        form.addEventListener('submit', (e) => {
-            Manager.downloadBackup(e);
-        });
-        this.el.appendChild(form);
-    },
-    /**
-     * If file download is unavailable offer the data to copy/paste
-     * @param {String} data the backup data
-     */
-    altDownload: function (data) {
-        const p = document.createElement('p');
-        p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
-        const text = document.createElement('textarea');
-        text.classList.add('large');
-        text.value = data;
-        while (this.el.firstChild) {
-            this.el.removeChild(this.el.firstChild);
-        }
-        this.el.appendChild(p);
-        this.el.appendChild(text);
-        this.el.appendChild(this.getCloseButton());
-        text.focus();
-        text.select();
-    },
-    /**
-     * Email download link
-     * @param {DOMElement} link the email link
-     */
-    emailDownload: function (link) {
-        const p = document.createElement('p');
-        p.appendChild(link);
-        while (this.el.firstChild) {
-            this.el.removeChild(this.el.firstChild);
-        }
-        this.el.appendChild(p);
-        this.el.appendChild(this.getCloseButton());
-    },
-    /**
-     * Add events
-     */
-    initialize: function () {
-        // Event: click closer
-        this.el.addEventListener('click', (e) => {
-            if (e.target.tagName === 'BUTTON' && e.target.getAttribute('type') === 'button') {
-                this.close();
-            }
-        });
-    }
-};
+import { default as Storage } from './Storage.js';
+import { default as Alert } from './Alert.js';
 
 const Manager = {
+    /** @prop {EventEmitter} */
+    emitter: null,
     /**
      * App/rules/game specific character model and UI handling
+     * @prop {Character5e}
      */
-    character_model: null,
+    Character: null,
     /**
      * App/rules/game specific UI handling
      */
     rules_ui: null,
     /**
      * Currently loaded character data is here
+     * @prop {Character5e}
      */
     cur_character: null,
     /**
@@ -501,18 +30,6 @@ const Manager = {
      * Unsaved dialog
      */
     dialog_unsaved: document.querySelector('.alert-unsaved'),
-    /**
-     * Get a json string as a character backup of the current character
-     * In this way we make sure any new properties are included in the backup when saving
-     * @return {String}
-     */
-    characterJSON: function () {
-        const obj = {};
-        for (const prop in this.cur_character) {
-            obj[prop] = this.cur_character[prop];
-        }
-        return JSON.stringify(obj);
-    },
     /**
      * Return UTC datetime string for right now
      * @return {String}
@@ -534,16 +51,10 @@ const Manager = {
         return key;
     },
     /**
-     * Set data on character object
+     * Start a new character by changing the hash.
      */
-    setCurCharacterData: function (data) {
-        if (typeof data !== 'object') { return; }
-        const props = Object.keys(data);
-        props.forEach((prop) => {
-            if (typeof this.cur_character[prop] !== 'undefined') {
-                this.cur_character[prop] = data[prop];
-            }
-        });
+    newCharacter: function () {
+        window.location.hash = `#${this.generateKey()}`;
     },
     /**
      * Change the character based on a hash change
@@ -553,25 +64,22 @@ const Manager = {
     changeCharacter: function () {
         const urlhash = window.location.hash.substr(1);
         this.loadCharacter(urlhash);
-        LoadMenu.close();
     },
     /**
      * Load character data based on a key
      * @param {String} key character identifier...????
      */
     loadCharacter: function (key) {
-        this.dialog_unsaved.classList.remove('open');
+        this.dialog_unsaved.hidden = true;
         const data = Storage.get(key);
         if (data === '') {
-            // prompt to load backup?
-            this.cur_character = Object.create(this.character_model);
-            this.cur_character.key = key;
+            this.cur_character = new this.Character({key});
             this.renderCharacter();
             return;
         }
-        this.cur_character = Object.create(this.character_model);
-        this.setCurCharacterData(data);
+        this.cur_character = new this.Character(data);
         this.renderCharacter();
+        this.emitter.trigger('character:load');
     },
     /**
      * Take character data and fill it into the page
@@ -646,7 +154,7 @@ const Manager = {
      */
     saveCharacter: function () {
         if (this.cur_character === null) {
-            this.cur_character = Object.create(this.character_model);
+            this.cur_character = new this.Character({});
         }
         const fields = Array.from(document.querySelectorAll('*[data-name]'));
         fields.forEach((el) => {
@@ -658,11 +166,6 @@ const Manager = {
             if (subf !== null) {
                 if (typeof this.cur_character[f][subf] === 'undefined') {
                     return;
-                }
-                // for some reason trying to set the property of an object that is a property on the prototype
-                // does not get the object to exist as an own property...
-                if (!this.cur_character.hasOwnProperty(f)) {
-                    this.cur_character[f] = this.character_model[f];
                 }
             }
             switch (el.tagName) {
@@ -720,19 +223,16 @@ const Manager = {
         // make sure app name is set
         this.cur_character.app = this.appname;
         Storage.set(this.cur_character.key, this.cur_character);
-        this.dialog_unsaved.classList.remove('open');
-        LoadMenu.addCharacter(this.cur_character);
+        this.dialog_unsaved.hidden = true;
+        this.emitter.trigger('loadmenu:add', this.cur_character);
     },
     /**
      * Save a file of the current character
      * Falls back to showing the data for copy/pasting
-     * @param {Object} e event object from form submit
      */
-    downloadBackup: function (e) {
-        e.preventDefault();
+    downloadBackup: function (form) {
         const data = [];
         const names = [];
-        const form = e.target;
         const checks = Array.from(form.querySelectorAll('input[type=checkbox]:checked'));
         checks.forEach((ch) => {
             const char_obj = Storage.get(ch.value);
@@ -760,13 +260,13 @@ ${JSON.stringify(data)}`;
             a.href = url;
             a.innerHTML = 'Open new message in default email client';
             a.addEventListener('click', (e) => {
-                BackupDialog.close();
+                this.emitter.trigger('backup:close');
             });
-            BackupDialog.emailDownload(a);
+            this.emitter.trigger('backup:email', a);
         } else {
             if (typeof window.Blob !== 'function') {
                 // fallback to displaying the data for copy/pasting
-                BackupDialog.altDownload(JSON.stringify(data));
+                this.emitter.trigger('backup:textpaste', JSON.stringify(data));
                 return;
             }
             // for env that support it, create a file for download
@@ -785,12 +285,11 @@ ${JSON.stringify(data)}`;
     },
     /**
      * Restore Backup form handler
-     * @param {Object} e Form submit event
+     * @param {HTMLElements} form
      */
-    restoreFormSubmit: function (e) {
-        e.preventDefault();
-        const input_file = e.target.querySelector('input[type=file]');
-        const input = e.target.querySelector('textarea');
+    restoreFormSubmit: function (form) {
+        const input_file = form.querySelector('input[type=file]');
+        const input = form.querySelector('textarea');
         if (input_file.files && input_file.files.length > 0) {
             Array.from(input_file.files).forEach((f) => {
                 const reader = new FileReader();
@@ -805,7 +304,7 @@ ${JSON.stringify(data)}`;
         } else if (input.value !== '') {
             this.restoreCharacters(input.value);
         }
-        BackupDialog.close();
+        this.emitter.trigger('backup:close');
     },
     /**
      * Take json backup data and load the character(s)
@@ -862,7 +361,7 @@ ${JSON.stringify(data)}`;
                     }
                 }
                 Storage.set(char_obj.key, char_obj);
-                LoadMenu.addCharacter(char_obj);
+                this.emitter.trigger('loadmenu:add', char_obj);
                 // if its the current character we should reload them
                 if (char_obj.key === this.cur_character.key) {
                     this.loadCharacter(char_obj.key);
@@ -899,16 +398,10 @@ ${JSON.stringify(data)}`;
         if (data === '') {
             return;
         }
-        const content = [];
-        const p = document.createElement('p');
-        p.innerHTML = `Are you sure you want to delete the character: ${(data.charname) ? data.charname : '[Unnamed]'}`;
-        content.push(p);
-        const btn = document.createElement('button');
-        btn.innerHTML = 'Yes, Delete.';
-        btn.setAttribute('data-key', data.key);
-        btn.classList.add('delete-conf');
-        content.push(btn);
-        Alert.setContent(content);
+        if (!confirm(`Are you sure you want to delete the character: ${(data.charname) ? data.charname : '[Unnamed]'}`)) {
+            return;
+        }
+        this.deleteCharacter(key);
     },
     /**
      * Delete a character from local storage
@@ -925,30 +418,13 @@ ${JSON.stringify(data)}`;
         } else {
             // success
             // remove from load list
-            LoadMenu.removeCharacter(key);
+            this.emitter.trigger('loadmenu:remove', key);
+
             // if its the current character we should trigger "new character" action
             if (this.cur_character !== null && this.cur_character.key === key) {
                 window.location.hash = `#${Manager.generateKey()}`;
             }
         }
-    },
-    /**
-     * Check for features we need
-     * @return {Boolean}
-     */
-    checkFeatures: function () {
-        let fail = false;
-        if ('localStorage' in window && window['localStorage'] !== null) {
-            // Okay
-        } else {
-            fail = true;
-        }
-        if (fail) {
-            const p = document.createElement('p');
-            p.textContent = `Sorry, your browser does not supported the required features for this app to work. Try using the latest Chrome or Firefox for best results.`;
-            Alert.setContent(p);
-        }
-        return;
     },
     /**
      * If no characters are saved we show an app intro dialog
@@ -960,38 +436,34 @@ ${JSON.stringify(data)}`;
     /**
      * Start up the app with some events and such
      * @param {Object} settings things we need to set external to this script
-     * @param {Object} settings.rules export object from the rules specific module
+     * @param {EventEmitter} settings.emitter
+     * @param {Object} settings.model 5e character model.
+     * @param {Object} settings.ui UI events.
      * @param {String} settings.prefix prefix for localStorage keys
      * @param {String} settings.appname used to identify the app property in a character model
      */
     initialize: function (settings) {
-        if (!settings.rules || !settings.prefix || !settings.appname) {
+        if (!settings.emitter || !settings.model || !settings.ui || !settings.prefix || !settings.appname) {
             document.body.innerHTML = '<p>App is missing required settings.</p>';
             return;
         }
-        this.character_model = settings.rules.model;
-        this.rules_ui = settings.rules.ui;
+        this.emitter = settings.emitter;
+        this.Character = settings.model;
+        this.rules_ui = settings.ui;
         this.appname = settings.appname;
         // set up storage
         Storage.setPrefix(settings.prefix);
         // set up default Alert
         Alert.initialize();
-        // check for localStorage support
-        this.checkFeatures();
-        // set up the help dialog
-        HelpDialog.initialize();
-        // set up the menu
-        ActionMenu.initialize();
-        // Load the saved characters into the dropdown
-        LoadMenu.initialize(this);
-        BackupDialog.initialize();
 
+        let charCount = 0;
         Storage.getAllKeys().forEach((key) => {
             const char_obj = Storage.get(key);
-            LoadMenu.addCharacter(char_obj);
+            this.emitter.trigger('loadmenu:add', char_obj);
+            charCount++;
         });
 
-        if (LoadMenu.isEmpty()) {
+        if (charCount === 0) {
             this.showIntroDialog();
         }
         // set up all the rule specific ui events (attribute modifiers and the like)
@@ -1013,8 +485,15 @@ ${JSON.stringify(data)}`;
         if (urlhash !== '') {
             this.loadCharacter(urlhash);
         } else {
-            window.location.hash = `#${this.generateKey()}`;
+            this.newCharacter();
         }
+
+        // Listen for events, mostly from the menus.
+        this.emitter.on('character:new', this.newCharacter, this);
+        this.emitter.on('character:save', this.saveCharacter, this);
+        this.emitter.on('character:delete:confirm', this.deletePrompt, this);
+        this.emitter.on('backup:download', this.downloadBackup, this);
+        this.emitter.on('backup:restore', this.restoreFormSubmit, this);
     }
 };
 
