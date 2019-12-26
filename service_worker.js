@@ -16,8 +16,14 @@ var config = {
         '/images/shield.svg',
         '/images/heart.svg',
         '/images/heart_broken.svg',
+        '/src/ActionMenu.js',
+        '/src/BackupDialog.js',
         '/src/Character5e.js',
+        '/src/EventEmitter.js',
+        '/src/HelpDialog.js',
         '/src/Manager.js',
+        '/src/Storage.js',
+        '/src/UI5e.js',
         '/'
     ]
 };
