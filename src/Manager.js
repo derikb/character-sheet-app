@@ -285,7 +285,7 @@ ${JSON.stringify(data)}`;
     },
     /**
      * Restore Backup form handler
-     * @param {HTMLElements} form
+     * @param {HTMLElement} form
      */
     restoreFormSubmit: function (form) {
         const input_file = form.querySelector('input[type=file]');

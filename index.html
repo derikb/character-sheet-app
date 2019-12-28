@@ -45,450 +45,458 @@
             </header>
 
             <main>
+                <ul id="toptabs" role="tablist">
+                    <li role="presentation"><a role="tab" id="tab-stats" href="#pane-stats" aria-selected="true">Statistics, Abilities, Equipment, etc.</a></li>
+                    <li role="presentation"><a role="tab" id="tab-notes" href="#pane-notes" aria-selected="false">Notes, Personality, NPCs, etc.</a></li>
+                </ul>
 
-                <dl class="field">
-                    <div>
-                        <dt>Class</dt><dd contenteditable="true" data-name="charclass"></dd>
-                    </div>
-                    <div>
-                        <dt>Race</dt><dd contenteditable="true" data-name="race"></dd>
-                    </div>
-                    <div>
-                        <dt>Background</dt><dd contenteditable="true" data-name="background"></dd>
-                    </div>
-                    <div>
-                        <dt>Alignment</dt><dd contenteditable="true" class="large" data-name="alignment"></dd>
-                    </div>
-                    <div>
-                        <dt>Level</dt><dd contenteditable="true" class="small" data-name="level"></dd>
-                    </div>
-                    <div>
-                        <dt>Experience</dt><dd contenteditable="true" class="small" data-name="experience"></dd>
-                    </div>
-                    <div>
-                        <dt>Proficiency Bonus</dt><dd class="small" data-name="proficiency"></dd>
-                    </div>
-                    <div>
-                        <dt>Inspiration</dt><dd contenteditable="true" class="small" data-name="inspiration"></dd>
-                    </div>
-                    <div>
-                        <dt>Speed</dt><dd contenteditable="true" class="small" data-name="speed"></dd>
-                    </div>
-                    <div>
-                        <dt>Hit Dice</dt>
-                        <dd>
-                            <span contenteditable="true" class="small" data-name="hd_cur" placeholder="1"></span> <strong>/</strong>
-                            <span contenteditable="true" class="small" data-name="hd_max" placeholder="1"></span>
-                        </dd>
-                    </div>
-                    <div class="with_icon">
-                        <dt>Armor Class</dt><dd contenteditable="true" class="small" data-name="armor_class" placeholder="10"></dd>
-                    </div>
-                    <div class="with_icon">
-                        <dt>Hit Points</dt>
-                        <dd>
-                            <span contenteditable="true" class="small" data-name="hp_cur" placeholder="0"></span> <strong>/</strong>
-                            <span contenteditable="true" class="small" data-name="hp_max" placeholder="0"></span>
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>Death Save Success/Fail</dt>
-                        <dd>
-                            <input type="number" class="small" name="death_success" data-name="deathSave" data-subfield="success" value="0" min="0" max="3" />
-                            <strong>/</strong>
-                            <input type="number" class="small" name="death_fail" data-name="deathSave" data-subfield="fail" value="0" min="0" max="3" />
-                        </dd>
-                    </div>
-                </dl>
+                <section id="pane-stats" role="tabpanel" aria-labelledby="tab-stats">
+                    <dl class="field">
+                        <div>
+                            <dt>Class</dt><dd contenteditable="true" data-name="charclass"></dd>
+                        </div>
+                        <div>
+                            <dt>Race</dt><dd contenteditable="true" data-name="race"></dd>
+                        </div>
+                        <div>
+                            <dt>Background</dt><dd contenteditable="true" data-name="background"></dd>
+                        </div>
+                        <div>
+                            <dt>Alignment</dt><dd contenteditable="true" class="large" data-name="alignment"></dd>
+                        </div>
+                        <div>
+                            <dt>Level</dt><dd contenteditable="true" class="small" data-name="level"></dd>
+                        </div>
+                        <div>
+                            <dt>Experience</dt><dd contenteditable="true" class="small" data-name="experience"></dd>
+                        </div>
+                        <div>
+                            <dt>Proficiency Bonus</dt><dd class="small" data-name="proficiency"></dd>
+                        </div>
+                        <div>
+                            <dt>Inspiration</dt><dd contenteditable="true" class="small" data-name="inspiration"></dd>
+                        </div>
+                        <div>
+                            <dt>Speed</dt><dd contenteditable="true" class="small" data-name="speed"></dd>
+                        </div>
+                        <div>
+                            <dt>Hit Dice</dt>
+                            <dd>
+                                <span contenteditable="true" class="small" data-name="hd_cur" placeholder="1"></span> <strong>/</strong>
+                                <span contenteditable="true" class="small" data-name="hd_max" placeholder="1"></span>
+                            </dd>
+                        </div>
+                        <div class="with_icon">
+                            <dt>Armor Class</dt><dd contenteditable="true" class="small" data-name="armor_class" placeholder="10"></dd>
+                        </div>
+                        <div class="with_icon">
+                            <dt>Hit Points</dt>
+                            <dd>
+                                <span contenteditable="true" class="small" data-name="hp_cur" placeholder="0"></span> <strong>/</strong>
+                                <span contenteditable="true" class="small" data-name="hp_max" placeholder="0"></span>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Death Save Success/Fail</dt>
+                            <dd>
+                                <input type="number" class="small" name="death_success" data-name="deathSave" data-subfield="success" value="0" min="0" max="3" />
+                                <strong>/</strong>
+                                <input type="number" class="small" name="death_fail" data-name="deathSave" data-subfield="fail" value="0" min="0" max="3" />
+                            </dd>
+                        </div>
+                    </dl>
 
-                <div class="field-row">
-                    <div class="field-column-33">
-                        <h2 id="page-attributes">Attributes</h2>
-                        <ul class="pc-attributes">
-                            <li>
-                                <label for="str">Str</label>
-                                <input type="number" id="str" class="pc-str pc-attribute" data-name="str" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-str-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-str-save" data-name="saves" data-subfield="str" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="dex">Dex</label>
-                                <input type="number" id="dex" class="pc-dex pc-attribute" data-name="dex" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-dex-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-dex-save" data-name="saves" data-subfield="dex" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="con">Con</label>
-                                <input type="number" id="con" class="pc-con pc-attribute" data-name="con" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-con-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-con-save" data-name="saves" data-subfield="con" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="intel">Int</label>
-                                <input type="number" id="intel" class="pc-int pc-attribute" data-name="intel" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-intel-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-intel-save" data-name="saves" data-subfield="intel" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="wis">Wis</label>
-                                <input type="number" id="wis" class="pc-wis pc-attribute" data-name="wis" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-wis-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-wis-save" data-name="saves" data-subfield="wis" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="cha">Cha</label>
-                                <input type="number" id="cha" class="pc-cha pc-attribute" data-name="cha" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-cha-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-cha-save" data-name="saves" data-subfield="cha" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                        </ul>
-
-                        <h2>Weapons & Attacks</h2>
-                        <div contenteditable="true" class="largearea" data-name="weapons"></div>
-
-                        <h2>Other Proficiencies</h2>
-                        <div contenteditable="true" class="largearea" data-name="proficiencies_other"></div>
-                    </div>
-
-                    <div class="field-column-33">
-                        <h2 id="page-skills">Skills</h2>
-                        <ul class="pc-skills">
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="acrobatics" data-attr="dex" />
-                                    Acrobatics (Dex)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="animal_handling" data-attr="wis" />
-                                    Animal Handling (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="arcana" data-attr="intel" />
-                                    Arcana (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
+                    <div class="field-row">
+                        <div class="field-column-33">
+                            <h2 id="page-attributes">Attributes</h2>
+                            <ul class="pc-attributes">
+                                <li>
+                                    <label for="str">Str</label>
+                                    <input type="number" id="str" class="pc-str pc-attribute" data-name="str" value=10 min=3 max=25 />
+                                    <span class="pc-attribute-mod" id="pc-str-mod">0</span>
+                                    <label>
+                                        <input type="checkbox" name="pc-str-save" data-name="saves" data-subfield="str" value=1 />
+                                        Save
+                                    </label>
+                                    <span class="pc-save-mod small" contenteditable="true">0</span>
                                 </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="athletics" data-attr="str"  />
-                                    Athletics (Str)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="deception" data-attr="cha" />
-                                    Deception (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="history" data-attr="intel" />
-                                    History (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="insight" data-attr="wis" />
-                                    Insight (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="intimidation" data-attr="cha" />
-                                    Intimidation (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="investigation" data-attr="intel" />
-                                    Investigation (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="medicine" data-attr="wis" />
-                                    Medicine (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="nature" data-attr="intel" />
-                                    Nature (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="perception" data-attr="wis" />
-                                    Perception (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="performance" data-attr="cha" />
-                                    Performance (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="persuasion" data-attr="cha" />
-                                    Persuasion (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="religion" data-attr="intel" />
-                                    Religion (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="sleight_of_hand" data-attr="dex" />
-                                    Sleight of Hand (Dex)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="stealth" data-attr="dex" />
-                                    Stealth (Dex)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="survival" data-attr="wis" />
-                                    Survival (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                        </ul>
+                                <li>
+                                    <label for="dex">Dex</label>
+                                    <input type="number" id="dex" class="pc-dex pc-attribute" data-name="dex" value=10 min=3 max=25 />
+                                    <span class="pc-attribute-mod" id="pc-dex-mod">0</span>
+                                    <label>
+                                        <input type="checkbox" name="pc-dex-save" data-name="saves" data-subfield="dex" value=1 />
+                                        Save
+                                    </label>
+                                    <span class="pc-save-mod small" contenteditable="true">0</span>
+                                </li>
+                                <li>
+                                    <label for="con">Con</label>
+                                    <input type="number" id="con" class="pc-con pc-attribute" data-name="con" value=10 min=3 max=25 />
+                                    <span class="pc-attribute-mod" id="pc-con-mod">0</span>
+                                    <label>
+                                        <input type="checkbox" name="pc-con-save" data-name="saves" data-subfield="con" value=1 />
+                                        Save
+                                    </label>
+                                    <span class="pc-save-mod small" contenteditable="true">0</span>
+                                </li>
+                                <li>
+                                    <label for="intel">Int</label>
+                                    <input type="number" id="intel" class="pc-int pc-attribute" data-name="intel" value=10 min=3 max=25 />
+                                    <span class="pc-attribute-mod" id="pc-intel-mod">0</span>
+                                    <label>
+                                        <input type="checkbox" name="pc-intel-save" data-name="saves" data-subfield="intel" value=1 />
+                                        Save
+                                    </label>
+                                    <span class="pc-save-mod small" contenteditable="true">0</span>
+                                </li>
+                                <li>
+                                    <label for="wis">Wis</label>
+                                    <input type="number" id="wis" class="pc-wis pc-attribute" data-name="wis" value=10 min=3 max=25 />
+                                    <span class="pc-attribute-mod" id="pc-wis-mod">0</span>
+                                    <label>
+                                        <input type="checkbox" name="pc-wis-save" data-name="saves" data-subfield="wis" value=1 />
+                                        Save
+                                    </label>
+                                    <span class="pc-save-mod small" contenteditable="true">0</span>
+                                </li>
+                                <li>
+                                    <label for="cha">Cha</label>
+                                    <input type="number" id="cha" class="pc-cha pc-attribute" data-name="cha" value=10 min=3 max=25 />
+                                    <span class="pc-attribute-mod" id="pc-cha-mod">0</span>
+                                    <label>
+                                        <input type="checkbox" name="pc-cha-save" data-name="saves" data-subfield="cha" value=1 />
+                                        Save
+                                    </label>
+                                    <span class="pc-save-mod small" contenteditable="true">0</span>
+                                </li>
+                            </ul>
+
+                            <h2>Weapons & Attacks</h2>
+                            <div contenteditable="true" class="largearea" data-name="weapons"></div>
+
+                            <h2>Other Proficiencies</h2>
+                            <div contenteditable="true" class="largearea" data-name="proficiencies_other"></div>
+                        </div>
+
+                        <div class="field-column-33">
+                            <h2 id="page-skills">Skills</h2>
+                            <ul class="pc-skills">
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="acrobatics" data-attr="dex" />
+                                        Acrobatics (Dex)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="animal_handling" data-attr="wis" />
+                                        Animal Handling (Wis)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="arcana" data-attr="intel" />
+                                        Arcana (Int)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                    </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="athletics" data-attr="str"  />
+                                        Athletics (Str)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="deception" data-attr="cha" />
+                                        Deception (Cha)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="history" data-attr="intel" />
+                                        History (Int)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="insight" data-attr="wis" />
+                                        Insight (Wis)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="intimidation" data-attr="cha" />
+                                        Intimidation (Cha)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="investigation" data-attr="intel" />
+                                        Investigation (Int)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="medicine" data-attr="wis" />
+                                        Medicine (Wis)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="nature" data-attr="intel" />
+                                        Nature (Int)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="perception" data-attr="wis" />
+                                        Perception (Wis)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="performance" data-attr="cha" />
+                                        Performance (Cha)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="persuasion" data-attr="cha" />
+                                        Persuasion (Cha)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="religion" data-attr="intel" />
+                                        Religion (Int)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="sleight_of_hand" data-attr="dex" />
+                                        Sleight of Hand (Dex)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="stealth" data-attr="dex" />
+                                        Stealth (Dex)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                                <li>
+                                    <label>
+                                        <input type="checkbox" value=1 data-name="skills" data-subfield="survival" data-attr="wis" />
+                                        Survival (Wis)
+                                    </label>
+                                    <span class="pc-skill-mod">0</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="field-column-33">
+                            <h2>Equipment</h2>
+                            <div contenteditable="true" class="largearea" data-name="equipment"></div>
+
+                            <dl class="field">
+                                <div>
+                                    <dt>CP</dt><dd contenteditable="true" class="small" data-name="cp" placeholder="0"></dd>
+                                    <dt>SP</dt><dd contenteditable="true" class="small" data-name="sp" placeholder="0"></dd>
+                                </div>
+                                <div>
+                                    <dt>GP</dt><dd contenteditable="true" class="small" data-name="gp" placeholder="0"></dd>
+                                    <dt>PP</dt><dd contenteditable="true" class="small" data-name="pp" placeholder="0"></dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="field-column-33">
+                            <h2>Features & Traits</h2>
+                            <div contenteditable="true" class="largearea" data-name="features"></div>
+                        </div>
                     </div>
 
-                    <div class="field-column-33">
-                        <h2>Personality</h2>
-                        <h3>Traits</h3>
-                        <div contenteditable="true" class="smallarea" data-name="traits"></div>
-                        <h3>Ideals</h3>
-                        <div contenteditable="true" class="smallarea" data-name="ideals"></div>
-                        <h3>Bonds</h3>
-                        <div contenteditable="true" class="smallarea" data-name="bonds"></div>
-                        <h3>Flaws</h3>
-                        <div contenteditable="true" class="smallarea" data-name="flaws"></div>
-                        <h3>Appearance</h3>
-                        <div contenteditable="true" class="smallarea" data-name="appearance"></div>
-                        <h2>Languages</h2>
-                        <div contenteditable="true" class="smallarea" data-name="languages"></div>
-                    </div>
+                    <h2 id="page-spells">Spells</h2>
 
-                    <div class="field-column-33">
-                        <h2>Equipment</h2>
-                        <div contenteditable="true" class="largearea" data-name="equipment"></div>
+                    <dl class="field">
+                        <div>
+                            <dt>Spell Ability</dt><dd contenteditable="true" data-name="spell_ability"></dd>
+                        </div>
+                        <div>
+                            <dt>Spell Save DC</dt><dd contenteditable="true" data-name="spell_save"></dd>
+                        </div>
+                        <div>
+                            <dt>Spell Attack Bonus</dt><dd contenteditable="true" data-name="spell_attack"></dd>
+                        </div>
+                    </dl>
 
-                        <dl class="field">
-                            <div>
-                                <dt>CP</dt><dd contenteditable="true" class="small" data-name="cp" placeholder="0"></dd>
-                                <dt>SP</dt><dd contenteditable="true" class="small" data-name="sp" placeholder="0"></dd>
-                            </div>
-                            <div>
-                                <dt>GP</dt><dd contenteditable="true" class="small" data-name="gp" placeholder="0"></dd>
-                                <dt>PP</dt><dd contenteditable="true" class="small" data-name="pp" placeholder="0"></dd>
-                            </div>
-                        </dl>
-                    </div>
+                    <h3>Spell Slots</h3>
 
-                    <div class="field-column-33">
-                        <h2>Features & Traits</h2>
-                        <div contenteditable="true" class="largearea" data-name="features"></div>
-
-                    </div>
-
-                    <div class="field-column-33">
-                        <h2 id="page-notes">Character Notes</h2>
-                        <div contenteditable="true" class="largearea" data-name="notes"></div>
-
-                    </div>
-                </div>
-
-                <h2 id="page-spells">Spells</h2>
-
-                <dl class="field">
-                    <div>
-                        <dt>Spell Ability</dt><dd contenteditable="true" data-name="spell_ability"></dd>
-                    </div>
-                    <div>
-                        <dt>Spell Save DC</dt><dd contenteditable="true" data-name="spell_save"></dd>
-                    </div>
-                    <div>
-                        <dt>Spell Attack Bonus</dt><dd contenteditable="true" data-name="spell_attack"></dd>
-                    </div>
-                </dl>
-
-                <h3>Spell Slots</h3>
-
-                <dl class="field">
-                    <div>
-                        <dt>1st</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="1" aria-label="Current spell slots: Level 1" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="1" aria-label="Max spell slots: Level 1" min="0" value="0" />
-                        </dd>
-                        <dt>2nd</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="2" aria-label="Current spell slots: Level 2" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="2" aria-label="Max spell slots: Level 2" min="0" value="0" />
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>3rd</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="3" aria-label="Current spell slots: Level 3" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="3" aria-label="Max spell slots: Level 3" min="0" value="0" />
-                        </dd>
-                        <dt>4th</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="4" aria-label="Current spell slots: Level 4" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="4" aria-label="Max spell slots: Level 4" min="0" value="0" />
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>5th</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="5" aria-label="Current spell slots: Level 5" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="5" aria-label="Max spell slots: Level 5" min="0" value="0" />
-                        </dd>
-                        <dt>6th</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="6" aria-label="Current spell slots: Level 6" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="6" aria-label="Max spell slots: Level 6" min="0" value="0" />
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>7th</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="7" aria-label="Current spell slots: Level 7" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="7" aria-label="Max spell slots: Level 7" min="0" value="0" />
-                        </dd>
-                        <dt>8th</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="8" aria-label="Current spell slots: Level 8" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="8" aria-label="Max spell slots: Level 8" min="0" value="0" />
-                        </dd>
-                    </div>
-                    <div>
-                        <dt>9th</dt>
-                        <dd>
-                            <input type="number" class="small" data-name="spell_slots_cur" data-subfield="9" aria-label="Current spell slots: Level 9" min="0" />
-                            <strong>/</strong>
-                            <input type="number" class="small" data-name="spell_slots" data-subfield="9" aria-label="Max spell slots: Level 9" min="0" value="0" />
-                        </dd>
-                    </div>
-                </dl>
+                    <dl class="field">
+                        <div>
+                            <dt>1st</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="1" aria-label="Current spell slots: Level 1" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="1" aria-label="Max spell slots: Level 1" min="0" value="0" />
+                            </dd>
+                            <dt>2nd</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="2" aria-label="Current spell slots: Level 2" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="2" aria-label="Max spell slots: Level 2" min="0" value="0" />
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>3rd</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="3" aria-label="Current spell slots: Level 3" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="3" aria-label="Max spell slots: Level 3" min="0" value="0" />
+                            </dd>
+                            <dt>4th</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="4" aria-label="Current spell slots: Level 4" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="4" aria-label="Max spell slots: Level 4" min="0" value="0" />
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>5th</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="5" aria-label="Current spell slots: Level 5" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="5" aria-label="Max spell slots: Level 5" min="0" value="0" />
+                            </dd>
+                            <dt>6th</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="6" aria-label="Current spell slots: Level 6" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="6" aria-label="Max spell slots: Level 6" min="0" value="0" />
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>7th</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="7" aria-label="Current spell slots: Level 7" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="7" aria-label="Max spell slots: Level 7" min="0" value="0" />
+                            </dd>
+                            <dt>8th</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="8" aria-label="Current spell slots: Level 8" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="8" aria-label="Max spell slots: Level 8" min="0" value="0" />
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>9th</dt>
+                            <dd>
+                                <input type="number" class="small" data-name="spell_slots_cur" data-subfield="9" aria-label="Current spell slots: Level 9" min="0" />
+                                <strong>/</strong>
+                                <input type="number" class="small" data-name="spell_slots" data-subfield="9" aria-label="Max spell slots: Level 9" min="0" value="0" />
+                            </dd>
+                        </div>
+                    </dl>
 
 
-                <div class="field-row wrap">
-                    <div class="field-column-33">
-                        <h3>Cantrips</h3>
-                        <ul data-name="spells" data-subfield="0"></ul>
+                    <div class="field-row wrap">
+                        <div class="field-column-33">
+                            <h3>Cantrips</h3>
+                            <ul data-name="spells" data-subfield="0"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>1st</h3>
+                            <ul data-name="spells" data-subfield="1"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>2nd</h3>
+                            <ul data-name="spells" data-subfield="2"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>3rd</h3>
+                            <ul data-name="spells" data-subfield="3"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>4th</h3>
+                            <ul data-name="spells" data-subfield="4"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>5th</h3>
+                            <ul data-name="spells" data-subfield="5"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>6th</h3>
+                            <ul data-name="spells" data-subfield="6"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>7th</h3>
+                            <ul data-name="spells" data-subfield="7"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>8th</h3>
+                            <ul data-name="spells" data-subfield="8"></ul>
+                        </div>
+                        <div class="field-column-33 hidden">
+                            <h3>9th</h3>
+                            <ul data-name="spells" data-subfield="9"></ul>
+                        </div>
                     </div>
-                    <div class="field-column-33 hidden">
-                        <h3>1st</h3>
-                        <ul data-name="spells" data-subfield="1"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>2nd</h3>
-                        <ul data-name="spells" data-subfield="2"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>3rd</h3>
-                        <ul data-name="spells" data-subfield="3"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>4th</h3>
-                        <ul data-name="spells" data-subfield="4"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>5th</h3>
-                        <ul data-name="spells" data-subfield="5"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>6th</h3>
-                        <ul data-name="spells" data-subfield="6"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>7th</h3>
-                        <ul data-name="spells" data-subfield="7"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>8th</h3>
-                        <ul data-name="spells" data-subfield="8"></ul>
-                    </div>
-                    <div class="field-column-33 hidden">
-                        <h3>9th</h3>
-                        <ul data-name="spells" data-subfield="9"></ul>
-                    </div>
-                </div>
+                </section>
 
-                <div class="field-row">
-                    <div class="field-column-33">
-                        <h2 id="page-notes_adv">Adventure Notes</h2>
-                        <div contenteditable="true" class="largearea" data-name="notes_adv"></div>
-                    </div>
-                    <div class="field-column-33">
-                        <h2>Campaign Notes</h2>
-                        <div contenteditable="true" class="largearea" data-name="notes_cam"></div>
-                    </div>
-                </div>
+                <section id="pane-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
+                    <div class="field-row">
+                        <div class="field-column-33">
+                            <h2 id="page-notes">Character Notes</h2>
+                            <div contenteditable="true" class="largearea" data-name="notes"></div>
+                        </div>
 
+                        <div class="field-column-33">
+                            <h2>Personality</h2>
+                            <h3>Traits</h3>
+                            <div contenteditable="true" class="smallarea" data-name="traits"></div>
+                            <h3>Ideals</h3>
+                            <div contenteditable="true" class="smallarea" data-name="ideals"></div>
+                            <h3>Bonds</h3>
+                            <div contenteditable="true" class="smallarea" data-name="bonds"></div>
+                            <h3>Flaws</h3>
+                            <div contenteditable="true" class="smallarea" data-name="flaws"></div>
+                            <h3>Appearance</h3>
+                            <div contenteditable="true" class="smallarea" data-name="appearance"></div>
+                            <h2>Languages</h2>
+                            <div contenteditable="true" class="smallarea" data-name="languages"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field-column-33">
+                            <h2 id="page-notes_adv">Adventure Notes</h2>
+                            <div contenteditable="true" class="largearea" data-name="notes_adv"></div>
+                        </div>
+                        <div class="field-column-33">
+                            <h2>Campaign Notes</h2>
+                            <div contenteditable="true" class="largearea" data-name="notes_cam"></div>
+                        </div>
+                    </div>
+                </section>
             </main>
             <footer>
                 <h4>Character Sheet. 5e.</h4>
@@ -555,6 +563,7 @@
             import { default as ActionMenu } from './src/ActionMenu.js';
             import { default as HelpDialog } from './src/HelpDialog.js';
             import { default as BackupDialog } from './src/BackupDialog.js';
+            import { default as Tabs} from './src/Tabs.js';
 
             /**
             * Register service worker if it's supported
@@ -578,6 +587,8 @@
                 prefix: 'charsheet-5e-',
                 appname: 'character-sheet-5e'
             });
+
+            const mainTabs = new Tabs(document.querySelector('main > ul[role=tablist]'));
 
         </script>
         <script nomodule>

@@ -460,7 +460,7 @@ span[data-name=hd_max] {
 }
 
 dd[data-name=armor_class] {
-    background-image: url(images/shield.svg);
+    background-image: url(/images/shield.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 2rem;
@@ -469,7 +469,7 @@ dd[data-name=armor_class] {
     line-height: 2.5rem;
 }
 span[data-name=hp_max] {
-    background-image: url(images/heart.svg);
+    background-image: url(/images/heart.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 4rem;
@@ -479,7 +479,7 @@ span[data-name=hp_max] {
     line-height: 2.5rem;
 }
 span[data-name=hp_cur] {
-    background-image: url(images/heart_broken.svg);
+    background-image: url(/images/heart_broken.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 4rem;
@@ -651,6 +651,30 @@ nav ol li:last-of-type a {
         line-height: 1.75rem;
     }
 
+}
+
+/**
+ * Main tabs
+ */
+ul[role=tablist] {
+    border-bottom: 1px solid rgb(207,0,15);
+    margin-bottom: 1rem;
+}
+ul[role=tablist] > li {
+    display: inline-block;
+    margin: 0 2rem 0 0;
+}
+ul[role=tablist] a {
+    display: inline-block;
+    border-radius: .4rem .4rem 0 0;
+    border: 1px solid rgb(207,0,15);
+    border-width: 1px 1px 0 1px;
+    padding: .5rem .8rem;
+    font-size: .9rem;
+}
+ul[role=tablist] a[aria-selected=true] {
+    background-color: rgb(207,0,15);
+    color: white;
 }
 
 
