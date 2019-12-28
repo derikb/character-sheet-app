@@ -509,10 +509,10 @@
             <nav>
                 <ol>
                     <li><a href="#page-top">Top</a></li>
-                    <li><a href="#page-attributes">Attributes</a></li>
-                    <li><a href="#page-skills">Skills</a></li>
-                    <li><a href="#page-spells">Spells</a></li>
-                    <li><a href="#page-notes_adv">Notes</a></li>
+                    <li><a data-tab="pane-stats" href="#page-attributes">Attributes</a></li>
+                    <li><a data-tab="pane-stats" href="#page-skills">Skills</a></li>
+                    <li><a data-tab="pane-stats" href="#page-spells">Spells</a></li>
+                    <li><a data-tab="pane-notes" href="#page-notes_adv">Notes</a></li>
                 </ol>
             </nav>
         </div>
@@ -563,7 +563,6 @@
             import { default as ActionMenu } from './src/ActionMenu.js';
             import { default as HelpDialog } from './src/HelpDialog.js';
             import { default as BackupDialog } from './src/BackupDialog.js';
-            import { default as Tabs} from './src/Tabs.js';
 
             /**
             * Register service worker if it's supported
@@ -587,9 +586,6 @@
                 prefix: 'charsheet-5e-',
                 appname: 'character-sheet-5e'
             });
-
-            const mainTabs = new Tabs(document.querySelector('main > ul[role=tablist]'));
-
         </script>
         <script nomodule>
             alert('Sorry, you must use a modern browser for this to code to work.');

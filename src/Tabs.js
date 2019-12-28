@@ -11,7 +11,23 @@ class Tabs {
             tab.addEventListener('click', this.changeTab.bind(this));
         });
     }
-
+    /**
+     * Switch to a specific pane.
+     * @param {String} paneId Html id of pane to switch to.
+     */
+    switchToPane(paneId) {
+        var newIndex = Array.prototype.findIndex.call(this.panes, (el) => {
+            return el.id === paneId;
+        });
+        if (newIndex === -1) {
+            return;
+        }
+        this.tabs[newIndex].click();
+    }
+    /**
+     * Handler: Change tabs on tab click.
+     * @param {Event} ev Click event.
+     */
     changeTab(ev) {
         ev.preventDefault();
         var oldTab = this.tablist.querySelector('[aria-selected=true]');

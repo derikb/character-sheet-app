@@ -4,6 +4,7 @@
  */
 import { default as Storage } from './Storage.js';
 import { default as Alert } from './Alert.js';
+import { default as Tabs} from './Tabs.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -469,10 +470,17 @@ ${JSON.stringify(data)}`;
         // set up all the rule specific ui events (attribute modifiers and the like)
         this.rules_ui.initialize();
 
+        const mainTabs = new Tabs(document.querySelector('main > ul[role=tablist]'));
+
         document.querySelector('nav').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
                 e.preventDefault();
-                const target_id = e.target.getAttribute('href').substring(1);
+                const link = e.target;
+                const targetPane = link.dataset.tab;
+                if (targetPane) {
+                    mainTabs.switchToPane(targetPane);
+                }
+                const target_id = link.getAttribute('href').substring(1);
                 document.getElementById(target_id).scrollIntoView();
             }
         });
