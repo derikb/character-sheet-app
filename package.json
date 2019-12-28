@@ -17,7 +17,8 @@
     "eslint:js": "./node_modules/.bin/eslint src/main.js",
     "concat:css": "cat ./node_modules/normalize.css/normalize.css src/styles.css | cleancss -o styles.css",
     "versioncache": "node build/version_bump.js",
-    "build": "npm run concat:css && npm run versioncache"
+    "build": "npm run concat:css && npm run versioncache",
+    "serve": "http-server ./ -a localhost --cors"
   },
   "keywords": [
     "d&d",
