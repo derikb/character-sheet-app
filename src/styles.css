@@ -334,7 +334,9 @@ h1 {
 /* unsaved changes alert */
 .alert-unsaved {
     transform: none;
+    position: fixed;
     bottom: 0;
+    top: unset;
     right: 0;
     left: initial;
     z-index: 125;
