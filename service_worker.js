@@ -21,7 +21,6 @@ var config = {
         '/src/BackupDialog.js',
         '/src/Character5e.js',
         '/src/EventEmitter.js',
-        '/src/HelpDialog.js',
         '/src/Manager.js',
         '/src/ShortCutKeys.js',
         '/src/Storage.js',

@@ -315,10 +315,11 @@ h1 {
     box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
     width: auto;
     z-index: 100;
-    position: fixed;
+    position: absolute;
     left: 50%;
     transform: translateX(-50%);
     min-width: 80%;
+    top: 2rem;
 }
 /* Close button */
 .dialog button.close {
@@ -329,12 +330,7 @@ h1 {
 .alert-main {
     top: 2rem;
 }
-/* Help info */
-#dialog_help {
-    position: absolute;
-    top: 2rem;
-    z-index: 75;
-}
+
 /* unsaved changes alert */
 .alert-unsaved {
     transform: none;

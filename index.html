@@ -503,7 +503,7 @@
             <footer>
                 <h4>Character Sheet. 5e.</h4>
                 <ul>
-                    <li><button type="button" class="btn-plain btn-help">Help</button></li>
+                    <li><button type="button" class="btn-plain btn-help btn-dialog">Help</button></li>
                     <li>Created by <a href="http://madinkbeard.com">Derik A Badman</a></li>
                     <li><a href="https://github.com/derikb/character-sheet-5e">Github</a></li>
                 </ul>
@@ -519,7 +519,50 @@
             </nav>
         </div>
 
-        <div id="dialog_help" class="dialog" hidden>
+        <script type="module">
+            import { default as EventEmitter } from './src/EventEmitter.js';
+            import { default as model } from './src/Character5e.js';
+            import { default as ui } from './src/UI5e.js';
+            import { default as Manager } from './src/Manager.js';
+            import { default as ActionMenu } from './src/ActionMenu.js';
+            import { default as BackupDialog } from './src/BackupDialog.js';
+
+            /**
+            * Register service worker if it's supported
+            */
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service_worker.js', {
+                    scope: '/'
+                });
+            }
+
+            const emitter = new EventEmitter();
+
+            ActionMenu.initialize(emitter);
+            BackupDialog.initialize(emitter);
+
+            Manager.initialize({
+                emitter: emitter,
+                model: model,
+                ui: ui,
+                prefix: 'charsheet-5e-',
+                appname: 'character-sheet-5e'
+            });
+        </script>
+        <script nomodule>
+            alert('Sorry, you must use a modern browser for this to code to work.');
+        </script>
+
+        <template id="introAlert">
+            <h2>Character Sheet. 5e.</h2><p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p><p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p><p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p><p>This message will only appear until you save your first character.</p>
+        </template>
+        <template id="defListItem">
+            <div class="defListPair">
+                <dt contenteditable="true"></dt>
+                <dd contenteditable="true"></dd>
+            </div>
+        </template>
+        <template id="helpDialog">
             <h1 tabindex="-1">Help</h1>
 
             <h2>Most importantly</h2>
@@ -563,53 +606,6 @@
                     <tr><td><em>Ctrl+Shift+T</em></td><td>Switch Tabs</td></tr>
                 </tbody>
             </table>
-
-            <button type="button" class="close">Close</button>
-        </div>
-        <script type="module">
-            import { default as EventEmitter } from './src/EventEmitter.js';
-            import { default as model } from './src/Character5e.js';
-            import { default as ui } from './src/UI5e.js';
-            import { default as Manager } from './src/Manager.js';
-            import { default as ActionMenu } from './src/ActionMenu.js';
-            import { default as HelpDialog } from './src/HelpDialog.js';
-            import { default as BackupDialog } from './src/BackupDialog.js';
-
-            /**
-            * Register service worker if it's supported
-            */
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service_worker.js', {
-                    scope: '/'
-                });
-            }
-
-            const emitter = new EventEmitter();
-
-            ActionMenu.initialize(emitter);
-            HelpDialog.initialize();
-            BackupDialog.initialize(emitter);
-
-            Manager.initialize({
-                emitter: emitter,
-                model: model,
-                ui: ui,
-                prefix: 'charsheet-5e-',
-                appname: 'character-sheet-5e'
-            });
-        </script>
-        <script nomodule>
-            alert('Sorry, you must use a modern browser for this to code to work.');
-        </script>
-
-        <template id="introAlert">
-            <h2>Character Sheet. 5e.</h2><p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p><p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p><p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p><p>This message will only appear until you save your first character.</p>
-        </template>
-        <template id="defListItem">
-            <div class="defListPair">
-                <dt contenteditable="true"></dt>
-                <dd contenteditable="true"></dd>
-            </div>
         </template>
     </body>
 </html>

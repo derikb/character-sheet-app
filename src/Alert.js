@@ -9,6 +9,15 @@ const Alert = {
      */
     el: null,
     /**
+     * Find first focusable element in alert and focus on it.
+     */
+    focusFirst: function() {
+        const focusable = this.el.querySelector('a, button, input, textarea, *[tabindex="-1"], *[contenteditable=true]');
+        if (focusable) {
+            focusable.focus();
+        }
+    },
+    /**
      * Add content to alert
      * @param {Array|HTMLElement} content single element or Array of elements
      */
@@ -28,6 +37,11 @@ const Alert = {
         f.appendChild(btn);
         this.el.appendChild(f);
         this.el.hidden = false;
+        this.focusFirst();
+
+        // We need to do this to be able to remove the listener later.
+        this.boundOutsideClickClose = this.outsideClickClose.bind(this);
+        document.addEventListener('click', this.boundOutsideClickClose, true);
     },
     /**
      * Clear the alert (which makes it disappear)
@@ -36,6 +50,21 @@ const Alert = {
         this.el.hidden = true;
         while (this.el.firstChild) {
             this.el.removeChild(this.el.firstChild);
+        }
+        document.removeEventListener('click', this.boundOutsideClickClose, true);
+    },
+    /**
+     * Handler: Clicks outside modal close the modal.
+     * @param {Event} ev Click event.
+     */
+    outsideClickClose: function(ev) {
+        console.log('outsideClickClose');
+        const close = ev.target.closest('.dialog');
+        console.log(close);
+        if (close === null) {
+            if (ev.target.classList.contains('btn-dialog')) { return; }
+            // Hide the help.
+            this.clear();
         }
     },
     /**

@@ -525,6 +525,7 @@ ${JSON.stringify(data)}`;
         const shortCuts = new ShortCutKeys(this.emitter);
         shortCuts.addShortCut('Ctrl+Shift+S', 'character:save');
         shortCuts.addShortCut('Ctrl+Shift+T', 'tab:switch');
+        shortCuts.addShortCut('Escape', 'alert:close');
 
         document.querySelector('nav').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
@@ -537,6 +538,13 @@ ${JSON.stringify(data)}`;
                 const target_id = link.getAttribute('href').substring(1);
                 document.getElementById(target_id).scrollIntoView();
             }
+        });
+
+        document.querySelector('.btn-help').addEventListener('click', (ev) => {
+            ev.preventDefault();
+            const template = document.getElementById('helpDialog');
+            const div = document.importNode(template.content, true);
+            Alert.setContent(div);
         });
 
         // Event: Listen for hashchange and change the current character
@@ -557,6 +565,7 @@ ${JSON.stringify(data)}`;
         this.emitter.on('backup:download', this.downloadBackup, this);
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
         this.emitter.on('tab:switch', mainTabs.switchToPane, mainTabs);
+        this.emitter.on('alert:close', Alert.clear, Alert);
     }
 };
 
