@@ -178,17 +178,65 @@ const ui = {
         this.dialog_unsaved.hidden = false;
     },
     /**
-     * Check for enter in spell list to add a new LI
-     * @param {Object} e event object
+     * Check for enter in a list to add a new LI
+     * @param {Object} ev event object
      */
-    spellKeyPress: function (e) {
-        if (e.target.tagName === 'LI' || e.target.closest(`li`)) {
-            if (e.which === 13) {
-                e.preventDefault();
-                const li = document.createElement('li');
-                li.setAttribute('contenteditable', 'true');
-                e.currentTarget.appendChild(li);
-                li.focus();
+    listKeyPress: function (ev) {
+        if (ev.which !== 13 || ev.shiftKey) {
+            return;
+        }
+        const currentItem = ev.target.tagName === 'LI' ? ev.target : ev.target.closest(`li`);
+        if (!currentItem) {
+            return;
+        }
+        ev.preventDefault();
+        if (ev.currentTarget.lastElementChild === currentItem) {
+            // If it's the list item we add another item.
+            const newItem = document.createElement('li');
+            newItem.setAttribute('contenteditable', 'true');
+            ev.currentTarget.appendChild(newItem);
+            newItem.focus();
+        } else {
+            // Focus on next element.
+            const nextItem = currentItem.nextElementSibling;
+            if (nextItem) {
+                nextItem.focus();
+            }
+        }
+    },
+    /**
+     * Check for enter in a def list to add a new div with dt/dd elements.
+     * @param {Event} ev Keypress event
+     */
+    defListKeyPress: function(ev) {
+        if (ev.which !== 13 || ev.shiftKey) {
+            return;
+        }
+        if (ev.target.tagName === 'DD' || ev.target.closest(`dd`)) {
+            ev.preventDefault();
+            const dd = ev.target.tagName === 'DD' ? ev.target : ev.target.closest(`dd`);
+            const parent = dd.parentElement;
+            if (parent === ev.currentTarget.lastElementChild) {
+                const template = document.getElementById('defListItem');
+                const div = document.importNode(template.content, true);
+                // we have to get this element BEFORE we put it in the DOM for some reason.
+                var dt = div.querySelector('dt');
+                ev.currentTarget.appendChild(div);
+                dt.focus();
+            } else {
+                const div = parent.nextElementSibling
+                if (div) {
+                    div.querySelector('dt').focus();
+                }
+            }
+            return;
+        }
+        if (ev.target.tagName === 'DT' || ev.target.closest(`dt`)) {
+            ev.preventDefault();
+            // focus on the sibling DD
+            const parent = ev.target.closest('div.defListPair');
+            if (parent) {
+                parent.querySelector('dd').focus();
             }
         }
     },
@@ -242,7 +290,11 @@ const ui = {
          * Event: Add new li to spell lists when adding to the last item in the list
          */
         this.spell_lists.forEach((el) => {
-            el.addEventListener('keypress', this.spellKeyPress.bind(this));
+            el.addEventListener('keypress', this.listKeyPress.bind(this));
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('dl.list-vertical'), (el) => {
+            el.addEventListener('keypress', this.defListKeyPress.bind(this));
         });
     }
 };

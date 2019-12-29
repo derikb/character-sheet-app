@@ -420,43 +420,43 @@
                     <div class="field-row wrap">
                         <div class="field-column-33">
                             <h3>Cantrips</h3>
-                            <ul data-name="spells" data-subfield="0"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="0"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>1st</h3>
-                            <ul data-name="spells" data-subfield="1"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="1"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>2nd</h3>
-                            <ul data-name="spells" data-subfield="2"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="2"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>3rd</h3>
-                            <ul data-name="spells" data-subfield="3"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="3"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>4th</h3>
-                            <ul data-name="spells" data-subfield="4"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="4"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>5th</h3>
-                            <ul data-name="spells" data-subfield="5"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="5"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>6th</h3>
-                            <ul data-name="spells" data-subfield="6"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="6"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>7th</h3>
-                            <ul data-name="spells" data-subfield="7"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="7"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>8th</h3>
-                            <ul data-name="spells" data-subfield="8"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="8"></ul>
                         </div>
                         <div class="field-column-33 hidden">
                             <h3>9th</h3>
-                            <ul data-name="spells" data-subfield="9"></ul>
+                            <ul class="list-vertical" data-name="spells" data-subfield="9"></ul>
                         </div>
                     </div>
                 </section>
@@ -464,10 +464,20 @@
                 <section id="pane-notes" role="tabpanel" aria-labelledby="tab-notes" hidden>
                     <div class="field-row">
                         <div class="field-column-33">
+                            <h2>NPCs</h2>
+                            <dl class="list-vertical" data-name="npcs"></dl>
+                        </div>
+                        <div class="field-column-33">
+                            <h2>Factions</h2>
+                            <dl class="list-vertical" data-name="factions"></dl>
+                        </div>
+                        <div class="field-column-33">
                             <h2 id="page-notes">Character Notes</h2>
                             <div contenteditable="true" class="largearea" data-name="notes"></div>
                         </div>
+                    </div>
 
+                    <div class="field-row">
                         <div class="field-column-33">
                             <h2>Personality</h2>
                             <h3>Traits</h3>
@@ -484,16 +494,13 @@
                             <div contenteditable="true" class="smallarea" data-name="languages"></div>
                         </div>
 
-                    </div>
-
-                    <div class="field-row">
                         <div class="field-column-33">
                             <h2 id="page-notes_adv">Adventure Notes</h2>
-                            <div contenteditable="true" class="largearea" data-name="notes_adv"></div>
+                            <dl class="list-vertical" data-name="notes_adv"></dl>
                         </div>
                         <div class="field-column-33">
                             <h2>Campaign Notes</h2>
-                            <div contenteditable="true" class="largearea" data-name="notes_cam"></div>
+                            <dl class="list-vertical" data-name="notes_cam"></dl>
                         </div>
                     </div>
                 </section>
@@ -593,6 +600,12 @@
 
         <template id="introAlert">
             <h2>Character Sheet. 5e.</h2><p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p><p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p><p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p><p>This message will only appear until you save your first character.</p>
+        </template>
+        <template id="defListItem">
+            <div class="defListPair">
+                <dt contenteditable="true"></dt>
+                <dd contenteditable="true"></dd>
+            </div>
         </template>
     </body>
 </html>

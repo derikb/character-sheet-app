@@ -17,12 +17,14 @@ var config = {
         '/images/heart.svg',
         '/images/heart_broken.svg',
         '/src/ActionMenu.js',
+        '/src/Alert.js',
         '/src/BackupDialog.js',
         '/src/Character5e.js',
         '/src/EventEmitter.js',
         '/src/HelpDialog.js',
         '/src/Manager.js',
         '/src/Storage.js',
+        '/src/Tabs.js',
         '/src/UI5e.js',
         '/'
     ]

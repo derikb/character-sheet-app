@@ -578,8 +578,20 @@ input[type='number'].small {
     text-align: right;
 }
 
-ul[data-name=spells] li {
+ul.list-vertical li {
     display: block;
+}
+
+dl.list-vertical dt, dl.list-vertical dd {
+    display: block;
+}
+dl.list-vertical dt {
+    font-weight: bold;
+}
+dl.list-vertical div.defListPair {
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid rgb(207,0,15);
 }
 
 /*

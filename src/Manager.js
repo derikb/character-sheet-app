@@ -139,6 +139,35 @@ const Manager = {
                         li.setAttribute('contenteditable', 'true');
                         el.appendChild(li);
                         break;
+                    case 'DL':
+                        // clear list
+                        while (el.firstChild) {
+                            el.removeChild(el.firstChild);
+                        }
+                        let defItems = this.cur_character[f];
+                        const template = document.getElementById('defListItem');
+                        // Add in the saved items.
+                        if (defItems.length > 0) {
+                            defItems.forEach((i) => {
+                                if (i.length === 0) {
+                                    return;
+                                }
+                                const header = Array.isArray(i) ? i[0] : i;
+                                const text = Array.isArray(i) ? i[1] : '';
+                                const div = document.importNode(template.content, true);
+                                if (header) {
+                                    div.querySelector('dt').innerHTML = header;
+                                }
+                                if (text) {
+                                    div.querySelector('dd').innerHTML = text;
+                                }
+                                el.insertBefore(div, null);
+                            });
+                        }
+                        // add a blank one at the end
+                        const div = document.importNode(template.content, true);
+                        el.appendChild(div);
+                        break;
                     default:
                         el.innerHTML = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
                         const event2 = new Event('blur');
@@ -203,6 +232,27 @@ const Manager = {
                     } else {
                         this.cur_character[f] = items;
                     }
+                    break;
+                case 'DL':
+                    const objects = [];
+                    const pairs = Array.from(el.querySelectorAll('.defListPair'));
+                    if (pairs.length === 0) {
+                        break;
+                    }
+                    pairs.forEach((el) => {
+                        const dt = el.querySelector('dt');
+                        const dd = el.querySelector('dd');
+                        if (!dt && !dd) {
+                            return;
+                        }
+                        const header = dt ? dt.innerHTML : '';
+                        const text = dd ? dd.innerHTML : '';
+                        if (header === '' && text === '') {
+                            return;
+                        }
+                        objects.push([header, text]);
+                    });
+                    this.cur_character[f] = objects;
                     break;
                 default:
                     if (subf) {
