@@ -23,6 +23,7 @@ var config = {
         '/src/EventEmitter.js',
         '/src/HelpDialog.js',
         '/src/Manager.js',
+        '/src/ShortCutKeys.js',
         '/src/Storage.js',
         '/src/Tabs.js',
         '/src/UI5e.js',

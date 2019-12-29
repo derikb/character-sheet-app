@@ -5,6 +5,7 @@
 import { default as Storage } from './Storage.js';
 import { default as Alert } from './Alert.js';
 import { default as Tabs} from './Tabs.js';
+import { default as ShortCutKeys } from './ShortCutKeys.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -521,6 +522,9 @@ ${JSON.stringify(data)}`;
         this.rules_ui.initialize();
 
         const mainTabs = new Tabs(document.querySelector('main > ul[role=tablist]'));
+        const shortCuts = new ShortCutKeys(this.emitter);
+        shortCuts.addShortCut('Ctrl+Shift+S', 'character:save');
+        shortCuts.addShortCut('Ctrl+Shift+T', 'tab:switch');
 
         document.querySelector('nav').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
@@ -552,6 +556,7 @@ ${JSON.stringify(data)}`;
         this.emitter.on('character:delete:confirm', this.deletePrompt, this);
         this.emitter.on('backup:download', this.downloadBackup, this);
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
+        this.emitter.on('tab:switch', mainTabs.switchToPane, mainTabs);
     }
 };
 

@@ -16,13 +16,23 @@ class Tabs {
      * @param {String} paneId Html id of pane to switch to.
      */
     switchToPane(paneId) {
-        var newIndex = Array.prototype.findIndex.call(this.panes, (el) => {
-            return el.id === paneId;
-        });
-        if (newIndex === -1) {
-            return;
+        let newIndex = -1;
+        if (paneId) {
+            newIndex = Array.prototype.findIndex.call(this.panes, (el) => {
+                return el.id === paneId;
+            });
+        } else {
+            // next one.
+            const oldTab = this.tablist.querySelector('[aria-selected=true]');
+            const oldIndex = Array.prototype.indexOf.call(this.tabs, oldTab);
+            newIndex = oldIndex + 1;
+            if (newIndex >= this.tabs.length) {
+                newIndex = 0;
+            }
         }
-        this.tabs[newIndex].click();
+        if (newIndex !== -1) {
+            this.tabs[newIndex].click();
+        }
     }
     /**
      * Handler: Change tabs on tab click.

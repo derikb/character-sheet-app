@@ -182,7 +182,7 @@ const ui = {
      * @param {Object} ev event object
      */
     listKeyPress: function (ev) {
-        if (ev.which !== 13 || ev.shiftKey) {
+        if (ev.key !== 'Enter' || ev.shiftKey) {
             return;
         }
         const currentItem = ev.target.tagName === 'LI' ? ev.target : ev.target.closest(`li`);
@@ -209,7 +209,7 @@ const ui = {
      * @param {Event} ev Keypress event
      */
     defListKeyPress: function(ev) {
-        if (ev.which !== 13 || ev.shiftKey) {
+        if (ev.key !== 'Enter' || ev.shiftKey) {
             return;
         }
         if (ev.target.tagName === 'DD' || ev.target.closest(`dd`)) {
