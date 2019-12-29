@@ -504,29 +504,14 @@ input[type='number'].small {
         margin-right: 2rem;
     }
 
-    .field-row {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        flex-wrap: wrap;
+    .grid {
+        display: grid;
+        grid-gap: 2rem;
+        /* grid-template-columns: repeat(auto-fill, minmax(30%,1fr)); */
+        grid-template-columns: 1fr 1fr 1fr;
     }
-    .field-row.wrap {
-        flex-wrap: wrap;
-    }
-    .field-column {
-        flex: 1 1 auto;
-        margin-right: 2rem;
-    }
-    .field-row.wrap .field-column {
-        min-width: 20%;
-    }
-    .field-column-33 {
-        flex: 1 0 33%;
-        padding-right: 2rem;
-    }
-    .field-column-50 {
-        flex: 1 0 50%;
-        padding-right: 2rem;
+    .grid .fullwidth {
+        grid-column: span 3;
     }
 }
 

@@ -171,9 +171,9 @@ const ui = {
         const spellList = document.querySelector(`[data-name="spells"][data-subfield="${spellLevel}"]`);
         if (!slots) {
             // this covers 0 and NaN
-            spellList.parentNode.classList.add('hidden');
+            spellList.parentNode.hidden = true;
         } else {
-            spellList.parentNode.classList.remove('hidden');
+            spellList.parentNode.hidden = false;
         }
         this.dialog_unsaved.hidden = false;
     },
