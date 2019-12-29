@@ -24,19 +24,14 @@ Just open up index.html in a browser.
 
 If you want to take advantage of the offline mode, it's a little more complicated:
 * you'll need to use a HTTPS connection (Let's Encrypt is really easy to set-up to get a free SSL cert)
-* In most cases you'll need to set the site.manifest file to be delivered with the text/cache-manifest mime type. In nginx you can add: ```text/cache-manifest    manifest;``` to the nginx mime.types file (mine was in ```/etc/nginx/mime.types```).
-* Make sure files are set to not cache and that the /src and other files are not accessible. In nginx I added the following to my server block:
+* Make sure files are set to not cache and that some files are not accessible. In nginx I added the following to my server block:
 ```
-    index   index.html;    
+    index   index.html;
     gzip on;
     gzip_types text/css application/javascript image/svg+xml;
 
     location / {
         expires -1;
-    }
-    location /src/ {
-        deny all;
-        return 404;
     }
     location /build/ {
         deny all;
