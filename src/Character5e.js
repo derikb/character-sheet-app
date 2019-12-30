@@ -121,6 +121,38 @@ export default class Character5e {
             8: [],
             9: []
         },
+        cpn_name = '',
+        cpn_species = '',
+        cpn_level = 1,
+        cpn_experience = 0,
+        cpn_armor_class = '',
+        cpn_speed = 30,
+        cpn_hp_cur = '',
+        cpn_hp_max = '',
+        cpn_hd_cur = '',
+        cpn_hd_max = '',
+        cpn_deathSave = {
+            success: 0,
+            fail: 0
+        },
+        cpn_str = 10,
+        cpn_dex = 10,
+        cpn_con = 10,
+        cpn_intel = 10,
+        cpn_wis = 10,
+        cpn_cha = 10,
+        cpn_saves = {
+            'str': 0,
+            'dex': 0,
+            'con': 0,
+            'intel': 0,
+            'wis': 0,
+            'cha': 0
+        },
+        cpn_skills = '',
+        cpn_weapons = '',
+        cpn_equipment = '',
+        cpn_features = '',
         updated = ''
     }) {
         this.app = 'character-sheet-5e';
@@ -163,6 +195,28 @@ export default class Character5e {
         this.gp = gp;
         this.pp = pp;
         this.features = features;
+        this.cpn_name = cpn_name;
+        this.cpn_species = cpn_species;
+        this.cpn_level = cpn_level;
+        this.cpn_experience = cpn_experience;
+        this.cpn_armor_class = cpn_armor_class;
+        this.cpn_speed = cpn_speed;
+        this.cpn_hp_cur = cpn_hp_cur;
+        this.cpn_hp_max = cpn_hp_max;
+        this.cpn_hd_cur = cpn_hd_cur;
+        this.cpn_hd_max = cpn_hd_max;
+        this.cpn_deathSave = cpn_deathSave;
+        this.cpn_str = cpn_str;
+        this.cpn_dex = cpn_dex;
+        this.cpn_con = cpn_con;
+        this.cpn_intel = cpn_intel;
+        this.cpn_wis = cpn_wis;
+        this.cpn_cha = cpn_cha;
+        this.cpn_saves = cpn_saves;
+        this.cpn_skills = cpn_skills;
+        this.cpn_weapons = cpn_weapons;
+        this.cpn_equipment = cpn_equipment;
+        this.cpn_features = cpn_features;
         this.notes = notes;
         // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
         if (!Array.isArray(notes_adv)) {

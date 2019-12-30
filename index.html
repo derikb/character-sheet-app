@@ -48,6 +48,7 @@
                 <ul id="toptabs" role="tablist">
                     <li role="presentation"><a role="tab" id="tab-stats" href="#pane-stats" aria-selected="true">Statistics, Abilities, Equipment, etc.</a></li>
                     <li role="presentation"><a role="tab" id="tab-notes" href="#pane-notes" aria-selected="false">Notes, Personality, NPCs, etc.</a></li>
+                    <li role="presentation"><a role="tab" id="tab-companion" href="#pane-companion" aria-selected="false">Companion</a></li>
                 </ul>
 
                 <section id="pane-stats" class="grid" role="tabpanel" aria-labelledby="tab-stats">
@@ -498,6 +499,137 @@
                         <h2>Campaign Notes</h2>
                         <dl class="list-vertical" data-name="notes_cam"></dl>
                     </section>
+                </section>
+
+                <section id="pane-companion" class="grid" role="tabpanel" aria-labelledby="tab-companion">
+                    <section class="fullwidth">
+                        <dl class="field">
+                            <div>
+                                <dt>Name</dt><dd contenteditable="true" data-name="cpn_name"></dd>
+                            </div>
+                            <div>
+                                <dt>Species</dt><dd contenteditable="true" data-name="cpn_species"></dd>
+                            </div>
+                            <div>
+                                <dt>Level</dt><dd contenteditable="true" class="small" data-name="cpn_level"></dd>
+                            </div>
+                            <div>
+                                <dt>Experience</dt><dd contenteditable="true" class="small" data-name="cpn_experience"></dd>
+                            </div>
+                            <div>
+                                <dt>Speed</dt><dd contenteditable="true" class="small" data-name="cpn_speed"></dd>
+                            </div>
+                            <div>
+                                <dt>Hit Dice</dt>
+                                <dd>
+                                    <span contenteditable="true" class="small" data-name="cpn_hd_cur" placeholder="1"></span> <strong>/</strong>
+                                    <span contenteditable="true" class="small" data-name="cpn_hd_max" placeholder="1"></span>
+                                </dd>
+                            </div>
+                            <div class="with_icon">
+                                <dt>Armor Class</dt><dd contenteditable="true" class="small" data-name="cpn_armor_class" placeholder="10"></dd>
+                            </div>
+                            <div class="with_icon">
+                                <dt>Hit Points</dt>
+                                <dd>
+                                    <span contenteditable="true" class="small" data-name="cpn_hp_cur" placeholder="0"></span> <strong>/</strong>
+                                    <span contenteditable="true" class="small" data-name="cpn_hp_max" placeholder="0"></span>
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Death Save Success/Fail</dt>
+                                <dd>
+                                    <input type="number" class="small" name="death_success" data-name="cpn_deathSave" data-subfield="success" value="0" min="0" max="3" />
+                                    <strong>/</strong>
+                                    <input type="number" class="small" name="death_fail" data-name="cpn_deathSave" data-subfield="fail" value="0" min="0" max="3" />
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
+
+                    <section>
+                        <h2 id="page-attributes">Attributes</h2>
+                        <ul class="pc-attributes">
+                            <li>
+                                <label for="str">Str</label>
+                                <input type="number" id="cpn-str" class="pc-str pc-attribute" data-name="cpn_str" value=10 min=3 max=25 />
+                                <span class="pc-attribute-mod" id="cpn-str-mod">0</span>
+                                <label>
+                                    <input type="checkbox" name="pc-str-save" data-name="cpn_saves" data-subfield="str" value=1 />
+                                    Save
+                                </label>
+                                <span class="pc-save-mod small" contenteditable="true">0</span>
+                            </li>
+                            <li>
+                                <label for="dex">Dex</label>
+                                <input type="number" id="cpn-dex" class="pc-dex pc-attribute" data-name="cpn_dex" value=10 min=3 max=25 />
+                                <span class="pc-attribute-mod" id="cpn-dex-mod">0</span>
+                                <label>
+                                    <input type="checkbox" name="pc-dex-save" data-name="cpn_saves" data-subfield="dex" value=1 />
+                                    Save
+                                </label>
+                                <span class="pc-save-mod small" contenteditable="true">0</span>
+                            </li>
+                            <li>
+                                <label for="con">Con</label>
+                                <input type="number" id="cpn-con" class="pc-con pc-attribute" data-name="cpn_con" value=10 min=3 max=25 />
+                                <span class="pc-attribute-mod" id="cpn-con-mod">0</span>
+                                <label>
+                                    <input type="checkbox" name="pc-con-save" data-name="cpn_saves" data-subfield="con" value=1 />
+                                    Save
+                                </label>
+                                <span class="pc-save-mod small" contenteditable="true">0</span>
+                            </li>
+                            <li>
+                                <label for="intel">Int</label>
+                                <input type="number" id="cpn-intel" class="pc-int pc-attribute" data-name="cpn_intel" value=10 min=3 max=25 />
+                                <span class="pc-attribute-mod" id="cpn-intel-mod">0</span>
+                                <label>
+                                    <input type="checkbox" name="pc-intel-save" data-name="cpn_saves" data-subfield="intel" value=1 />
+                                    Save
+                                </label>
+                                <span class="pc-save-mod small" contenteditable="true">0</span>
+                            </li>
+                            <li>
+                                <label for="wis">Wis</label>
+                                <input type="number" id="cpn-wis" class="pc-wis pc-attribute" data-name="cpn_wis" value=10 min=3 max=25 />
+                                <span class="pc-attribute-mod" id="cpn-wis-mod">0</span>
+                                <label>
+                                    <input type="checkbox" name="pc-wis-save" data-name="cpn_saves" data-subfield="wis" value=1 />
+                                    Save
+                                </label>
+                                <span class="pc-save-mod small" contenteditable="true">0</span>
+                            </li>
+                            <li>
+                                <label for="cha">Cha</label>
+                                <input type="number" id="cpn-cha" class="pc-cha pc-attribute" data-name="cpn_cha" value=10 min=3 max=25 />
+                                <span class="pc-attribute-mod" id="cpn-cha-mod">0</span>
+                                <label>
+                                    <input type="checkbox" name="pc-cha-save" data-name="cpn_saves" data-subfield="cha" value=1 />
+                                    Save
+                                </label>
+                                <span class="pc-save-mod small" contenteditable="true">0</span>
+                            </li>
+                        </ul>
+
+                    </section>
+
+                    <section>
+                        <h2>Skills & Proficiencies</h2>
+                        <div contenteditable="true" class="largearea" data-name="cpn_skills"></div>
+
+                        <h2>Weapons & Attacks</h2>
+                        <div contenteditable="true" class="largearea" data-name="cpn_weapons"></div>
+                    </section>
+
+                    <section>
+                        <h2>Equipment</h2>
+                        <div contenteditable="true" class="largearea" data-name="cpn_equipment"></div>
+
+                        <h2>Features & Traits</h2>
+                        <div contenteditable="true" class="largearea" data-name="cpn_features"></div>
+                    </section>
+
                 </section>
             </main>
             <footer>
