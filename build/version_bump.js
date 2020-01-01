@@ -18,8 +18,7 @@ module.exports.readVersion = function(contents) {
  */
 module.exports.writeVersion = function(contents, version) {
     const newVersion = `v${version}`;
-    contents.replace(writeRegex, newVersion);
-    return contents;
+    return contents.replace(writeRegex, newVersion);
 }
 
 
