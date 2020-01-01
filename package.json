@@ -38,15 +38,17 @@
     "minifyify": "^7.3.5",
     "normalize.css": "^8.0.1",
     "replace-in-file": "^5.0.2",
-    "standard-version": "^7.0.1"
+    "standard-version": "^7.1.0"
   },
   "standard-version": {
     "scripts": {
       "postbump": "npm run build"
     },
     "bumpFiles": [
+      "package.json",
+      "package-lock.json",
       {
-        "file": "service_worker.js",
+        "filename": "service_worker.js",
         "updater": "build/version_bump.js"
       }
     ]
