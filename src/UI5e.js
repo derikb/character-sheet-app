@@ -241,6 +241,47 @@ const ui = {
         }
     },
     /**
+     * Check for enter in a table cell to add a new row or move to next cell/row.
+     * @param {Event} ev Keypress event
+     */
+    tableKeyPress: function(ev) {
+        if (ev.key !== 'Enter' || ev.shiftKey) {
+            return;
+        }
+        if (ev.target.tagName !== 'TD' && !ev.target.closest(`td`)) {
+            return;
+        }
+        ev.preventDefault();
+        const td = ev.target.tagName === 'TD' ? ev.target : ev.target.closest(`td`);
+        const row = td.parentElement;
+        // if it's not the last cell, move to the next cell.
+        if (td !== row.lastElementChild) {
+            const nextCell = td.nextElementSibling;
+            if (nextCell) {
+                nextCell.focus();
+            }
+            return;
+        }
+        // it is the last cell.
+        // if there is a next row focus its first cell.
+        const nextRow = row.nextElementSibling;
+        if (nextRow) {
+            nextRow.querySelector('td').focus();
+            return;
+        }
+        let columnCount = row.querySelectorAll('td').length;
+        const newRow = document.createElement('tr');
+        const newCell = document.createElement('td');
+        newCell.setAttribute('contenteditable', true);
+        while (columnCount > 0) {
+            newRow.appendChild(newCell.cloneNode(false));
+            columnCount--;
+        }
+
+        row.parentElement.appendChild(newRow);
+        newRow.querySelector('td').focus();
+    },
+    /**
      * Run after the Manager renders a loaded/restored character
      */
     postRender: function () {
@@ -295,6 +336,10 @@ const ui = {
 
         Array.prototype.forEach.call(document.querySelectorAll('dl.list-vertical'), (el) => {
             el.addEventListener('keypress', this.defListKeyPress.bind(this));
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('table.table-editable'), (el) => {
+            el.addEventListener('keypress', this.tableKeyPress.bind(this));
         });
     }
 };

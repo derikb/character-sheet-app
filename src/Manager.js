@@ -169,6 +169,44 @@ const Manager = {
                         const div = document.importNode(template.content, true);
                         el.appendChild(div);
                         break;
+                    case 'TABLE':
+                        const columnCount = el.querySelectorAll('th').length;
+                        const tbody = el.querySelector('tbody');
+                        const row = document.createElement('tr');
+                        const td = document.createElement('td');
+                        td.setAttribute('contenteditable', 'true');
+
+                        // clear table body
+                        while (tbody.firstChild) {
+                            tbody.removeChild(tbody.firstChild);
+                        }
+                        const rowItems = this.cur_character[f];
+                        if (rowItems.length > 0) {
+                            rowItems.forEach((item) => {
+                                if (!Array.isArray(item)) {
+                                    return;
+                                }
+                                const curRow = row.cloneNode(false);
+                                item.forEach((cell) => {
+                                    const curCell = td.cloneNode(false);
+                                    curCell.innerHTML = cell;
+                                    curRow.appendChild(curCell);
+                                });
+                                let emptyCells = columnCount - item.length;
+                                while (emptyCells > 0) {
+                                    const curCell = td.cloneNode(false);
+                                    curRow.appendChild(curCell);
+                                    emptyCells--;
+                                }
+                                tbody.appendChild(curRow);
+                            });
+                        }
+
+                        for (let i = 1; i <= columnCount; i++) {
+                            row.appendChild(td.cloneNode(false));
+                        }
+                        tbody.appendChild(row);
+                        break;
                     default:
                         el.innerHTML = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
                         const event2 = new Event('blur');
@@ -254,6 +292,30 @@ const Manager = {
                         objects.push([header, text]);
                     });
                     this.cur_character[f] = objects;
+                    break;
+                case 'TABLE':
+                    const entries = [];
+                    const rows = Array.from(el.querySelectorAll('tbody tr'));
+                    if (rows.length === 0) {
+                        break;
+                    }
+                    rows.forEach((el) => {
+                        const cells = Array.from(el.querySelectorAll('td'));
+                        if (cells.length === 0) {
+                            return;
+                        }
+                        const rowData = [];
+                        cells.forEach((cell) => {
+                            const text = cell.innerHTML;
+                            rowData.push(text);
+                        });
+                        const filledCells = rowData.filter((el) => { return el !== ''; });
+                        if (filledCells.length === 0) {
+                            return;
+                        }
+                        entries.push(rowData);
+                    });
+                    this.cur_character[f] = entries;
                     break;
                 default:
                     if (subf) {

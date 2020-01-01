@@ -65,7 +65,7 @@ export default class Character5e {
             stealth: 0,
             survival: 0
         },
-        weapons = '',
+        weapons = [],
         proficiencies_other = '',
         languages = '',
         traits = '',
@@ -149,6 +149,11 @@ export default class Character5e {
         this.cha = cha;
         this.saves = saves;
         this.skills = skills;
+        // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
+        if (!Array.isArray(weapons)) {
+            const lines = weapons.split(new RegExp('<br/?>', 'i'));
+            weapons = lines.map((el) => { return [el]; });
+        }
         this.weapons = weapons;
         this.proficiencies_other = proficiencies_other;
         this.languages = languages;
