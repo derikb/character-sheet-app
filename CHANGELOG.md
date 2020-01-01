@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/derikb/character-sheet-5e/compare/v2.0.0...v2.0.1) (2020-01-01)
+
+
+### Bug Fixes
+
+* **Alert:** cleanup debug ([4ed3745](https://github.com/derikb/character-sheet-5e/commit/4ed37451033025693a1930024ee8ab9b90ffca9a)), closes [#58](https://github.com/derikb/character-sheet-5e/issues/58)
+
 ## [2.0.0](https://github.com/derikb/character-sheet-5e/compare/v1.7.0...v2.0.0) (2020-01-01)
 
 
