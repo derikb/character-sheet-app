@@ -2,22 +2,24 @@
  * Quick script to update version number in service worker and appcache manifest
  */
 
-const replace = require('replace-in-file');
+// const replace = require('replace-in-file');
 const package = require('../package.json');
-const version = package.version;
-console.log(version);
+// const version = package.version;
 
-const options = {
-    files: [
-        'service_worker.js'
-    ],
-    from: /v[0-9.]+/,
-    to: 'v'+version
+const readRegex = /v([0-9.]+)/;
+const writeRegex = /v[0-9.]+)/;
+
+module.exports.readVersion = function(contents) {
+    const matches = contents.match(readRegex);
+    return matches[1];
 };
 
-try {
-    let changedFiles = replace.sync(options);
-    console.log('Modified files:', changedFiles.join(', '));
-} catch (error) {
-    console.error('Error occurred:', error);
+module.exports.writeVersion = function(contents, version) {
+
+    const newVersion = `v${version}`;
+
+    contents.replace(writeRegex, newVersion);
+    return contents;
 }
+
+

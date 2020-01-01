@@ -17,7 +17,7 @@
     "eslint:js": "./node_modules/.bin/eslint src/main.js",
     "concat:css": "cat ./node_modules/normalize.css/normalize.css src/styles.css | cleancss -o styles.css",
     "versioncache": "node build/version_bump.js",
-    "build": "npm run concat:css && npm run versioncache",
+    "build": "npm run concat:css",
     "serve": "http-server ./ -a localhost --cors",
     "release": "standard-version -a"
   },
@@ -43,6 +43,12 @@
   "standard-version": {
     "scripts": {
       "postbump": "npm run build"
-    }
+    },
+    "bumpFiles": [
+      {
+        "file": "service_worker.js",
+        "updater": "build/version_bump.js"
+      }
+    ]
   }
 }
