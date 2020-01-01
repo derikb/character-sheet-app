@@ -225,7 +225,7 @@ table {
     border: none;
 }
 th, td {
-    padding: .5rem 1.5rem .5rem .5rem;
+    padding: .25rem;
 }
 table.table-editable {
     width: 100%;
@@ -577,7 +577,6 @@ td[contenteditable=true] {
     width: auto;
     margin-right: 0.5rem;
     display: inline-block;
-/*     margin-left: 1rem; */
 }
 .pc-attribute-mod, .pc-save-mode {
     display: inline-block;
@@ -589,6 +588,8 @@ td[contenteditable=true] {
 
 ul.list-vertical li {
     display: block;
+    margin-bottom: 0.125rem;
+    border-bottom: 1px solid rgb(207,0,15);
 }
 
 dl.list-vertical dt, dl.list-vertical dd {

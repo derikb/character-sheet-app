@@ -5,6 +5,9 @@
 export default class Character5e {
     /**
      * Property notes...
+     * @prop {Array[]} weapons Weapon data (name, att, dam, notes).
+     * @prop {String[]} features Special features and abilities.
+     * @prop {String[]} equipment Stuff the character carries.
      * @prop {Array[]} notes_adv Adventure notes [header, text]
      * @prop {Array[]} notes_cam Campaign notes [header, text]
      * @prop {Array[]} npcs NPC notes [header, text]
@@ -73,12 +76,12 @@ export default class Character5e {
         bonds = '',
         flaws = '',
         appearance = '',
-        equipment = '',
+        equipment = [],
         cp = '',
         sp = '',
         gp = '',
         pp = '',
-        features = '',
+        features = [],
         notes = '',
         notes_adv = [],
         notes_cam = [],
@@ -162,11 +165,19 @@ export default class Character5e {
         this.bonds = bonds;
         this.flaws = flaws;
         this.appearance = appearance;
+        // @version < 1.8.0 Backwards compatible convert string to array
+        if (!Array.isArray(equipment)) {
+            equipment = equipment.split(new RegExp('<br/?>', 'i'));
+        }
         this.equipment = equipment;
         this.cp = cp;
         this.sp = sp;
         this.gp = gp;
         this.pp = pp;
+        // @version < 1.8.0 Backwards compatible convert string to array
+        if (!Array.isArray(features)) {
+            features = features.split(new RegExp('<br/?>', 'i'));
+        }
         this.features = features;
         this.notes = notes;
         // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.

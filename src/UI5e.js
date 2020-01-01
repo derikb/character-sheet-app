@@ -23,10 +23,6 @@ const ui = {
      */
     spell_slots: Array.from(document.querySelectorAll('input[data-name=spell_slots]')),
     /**
-     * Spell Lists
-     */
-    spell_lists: Array.from(document.querySelectorAll('ul[data-name=spells]')),
-    /**
      * Calculate the attribute modifier based on the score
      * @return {String} 0, a negative number, or a positive number preceded by a +
      */
@@ -327,17 +323,16 @@ const ui = {
         this.spell_slots.forEach((el) => {
             el.addEventListener('change', this.spellSlotChange.bind(this));
         });
+
         /**
-         * Event: Add new li to spell lists when adding to the last item in the list
+         * Event: Handle keypress in various fields to move between lines/cells or add lines/cells to the end.
          */
-        this.spell_lists.forEach((el) => {
+        Array.prototype.forEach.call(document.querySelectorAll('ul.list-vertical'), (el) => {
             el.addEventListener('keypress', this.listKeyPress.bind(this));
         });
-
         Array.prototype.forEach.call(document.querySelectorAll('dl.list-vertical'), (el) => {
             el.addEventListener('keypress', this.defListKeyPress.bind(this));
         });
-
         Array.prototype.forEach.call(document.querySelectorAll('table.table-editable'), (el) => {
             el.addEventListener('keypress', this.tableKeyPress.bind(this));
         });
