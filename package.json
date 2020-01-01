@@ -18,7 +18,8 @@
     "concat:css": "cat ./node_modules/normalize.css/normalize.css src/styles.css | cleancss -o styles.css",
     "versioncache": "node build/version_bump.js",
     "build": "npm run concat:css && npm run versioncache",
-    "serve": "http-server ./ -a localhost --cors"
+    "serve": "http-server ./ -a localhost --cors",
+    "release": "standard-version -a"
   },
   "keywords": [
     "d&d",
@@ -29,12 +30,19 @@
   "devDependencies": {
     "clean-css": "^4.2.1",
     "clean-css-cli": "^4.3.0",
+    "cz-conventional-changelog": "^3.0.2",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "minifyify": "^7.3.5",
     "normalize.css": "^8.0.1",
-    "replace-in-file": "^5.0.2"
+    "replace-in-file": "^5.0.2",
+    "standard-version": "^7.0.1"
+  },
+  "standard-version": {
+    "scripts": {
+      "postbump": "npm run build"
+    }
   }
 }

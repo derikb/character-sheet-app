@@ -62,7 +62,9 @@ No tests yet, as I am not sure how to best go about that.
 
 ## Contributors
 
-I'd be happy to accept feature requests, bug reports, and pull requests via the github repository. There is an eslint config file for javascript style, which can be run on the code via ```npm run eslint:js``` Run ```npm run build``` to concat/uglify the source files.
+I'd be happy to accept feature requests, bug reports, and pull requests via the github repository. There is an eslint config file for javascript style, which can be run on the code via ```npm run eslint:js``` (or just in your IDE). Run ```npm run build``` to concat/uglify the source files (Note: make sure you run ```npm i``` so you have the appropriate packages installed if you are editing css).
+
+Conventional Changelog is installed for commit messages. Standard Version is used for releases, changelogs, etc.
 
 ## License
 
