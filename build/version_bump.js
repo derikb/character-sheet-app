@@ -9,11 +9,10 @@ console.log(version);
 
 const options = {
     files: [
-        'service_worker.js',
-        'site.manifest'
+        'service_worker.js'
     ],
-    replace: /v[0-9.]+/,
-    with: 'v'+version
+    from: /v[0-9.]+/,
+    to: 'v'+version
 };
 
 try {
