@@ -58,9 +58,7 @@ const Alert = {
      * @param {Event} ev Click event.
      */
     outsideClickClose: function(ev) {
-        console.log('outsideClickClose');
         const close = ev.target.closest('.dialog');
-        console.log(close);
         if (close === null) {
             if (ev.target.classList.contains('btn-dialog')) { return; }
             // Hide the help.
