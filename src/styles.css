@@ -586,6 +586,9 @@ td[contenteditable=true] {
     text-align: right;
 }
 
+ul.list-vertical {
+    margin-bottom: 1rem;
+}
 ul.list-vertical li {
     display: block;
     margin-bottom: 0.125rem;
