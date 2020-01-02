@@ -620,6 +620,8 @@ ${JSON.stringify(data)}`;
             this.newCharacter();
         }
 
+        this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => { this.emitter.trigger('character:save'); });
+
         // Listen for events, mostly from the menus.
         this.emitter.on('character:new', this.newCharacter, this);
         this.emitter.on('character:save', this.saveCharacter, this);
