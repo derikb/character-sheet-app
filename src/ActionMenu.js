@@ -13,6 +13,11 @@ const LoadMenu = {
      */
     toggle: function () {
         this.el.classList.toggle('open');
+        if (this.el.classList.contains('open')) {
+            this.el.focus();
+        } else {
+            this.el.parentNode.querySelector('*[tabindex="-1"], a, button').focus();
+        }
     },
     /**
      * Close menu
@@ -172,7 +177,8 @@ const ActionMenu = {
 
         this.emitter.on('loadmenu:add', this.addCharacter, this);
         this.emitter.on('loadmenu:remove', this.removeCharacter, this);
-        this.emitter.on('character:load', this.close, this)
+        this.emitter.on('character:load', this.close, this);
+        this.emitter.on('loadmenu:toggle', LoadMenu.toggle, LoadMenu);
 ;    }
 };
 

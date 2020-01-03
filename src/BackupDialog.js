@@ -10,7 +10,7 @@ const BackupDialog = {
      */
     open: function () {
         this.el.hidden = false;
-        this.el.querySelector('legend').focus();
+        this.el.querySelector('legend, input, a, button').focus();
     },
     /**
      * Close Dialog (and clear form)

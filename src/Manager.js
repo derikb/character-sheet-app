@@ -587,6 +587,7 @@ ${JSON.stringify(data)}`;
         const shortCuts = new ShortCutKeys(this.emitter);
         shortCuts.addShortCut('Ctrl+Shift+S', 'character:save');
         shortCuts.addShortCut('Ctrl+Shift+T', 'tab:switch');
+        shortCuts.addShortCut('Ctrl+Shift+L', 'loadmenu:toggle');
         shortCuts.addShortCut('Escape', 'alert:close');
 
         document.querySelector('nav').addEventListener('click', (e) => {
