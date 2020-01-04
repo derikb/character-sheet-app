@@ -340,9 +340,10 @@ h1 {
     float: right;
     margin: 1rem 0 0 1rem;
 }
-/* Alert for various things */
-.alert-main {
-    top: 2rem;
+/* Close button in form so it sits next to submit button. */
+.dialog form button.close {
+    float: none;
+    margin: 0 0 0 2rem;
 }
 
 /* unsaved changes alert */
@@ -375,6 +376,9 @@ h1 {
         margin: 2rem auto;
         padding: 1.5rem 3rem;
         min-width: 40%;
+        max-width: 70rem;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .alert-unsaved {
         font-size: 1rem;
@@ -382,11 +386,8 @@ h1 {
         padding: 0.75rem 1.5rem;
         right: 2rem;
         min-width: initial;
-    }
-    .alert-main, #dialog_help {
-        max-width: 70rem;
-        left: 50%;
-        transform: translateX(-50%);
+        left: auto;
+        transform: none;
     }
 }
 

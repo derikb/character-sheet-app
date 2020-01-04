@@ -2,10 +2,10 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { default as Storage } from './Storage.js';
-import { default as Alert } from './Alert.js';
-import { default as Tabs} from './Tabs.js';
+import { default as Modal } from './Modal.js';
 import { default as ShortCutKeys } from './ShortCutKeys.js';
+import { default as Storage } from './Storage.js';
+import { default as Tabs} from './Tabs.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -329,7 +329,7 @@ const Manager = {
         if (this.cur_character.charname === '') {
             const p = document.createElement('p');
             p.innerHTML = 'Your character must have name to save!';
-            Alert.setContent(p);
+            this.alert.setContent(p);
             return;
         }
         // update saved timestamp
@@ -370,13 +370,7 @@ ${JSON.stringify(data)}`;
 
             // Sadly this simple solution doesn't work in iOS
             // document.location.href = url;
-            const a = document.createElement('a');
-            a.href = url;
-            a.innerHTML = 'Open new message in default email client';
-            a.addEventListener('click', (e) => {
-                this.emitter.trigger('backup:close');
-            });
-            this.emitter.trigger('backup:email', a);
+            this.emitter.trigger('backup:email', url);
         } else {
             if (typeof window.Blob !== 'function') {
                 // fallback to displaying the data for copy/pasting
@@ -418,7 +412,6 @@ ${JSON.stringify(data)}`;
         } else if (input.value !== '') {
             this.restoreCharacters(input.value);
         }
-        this.emitter.trigger('backup:close');
     },
     /**
      * Take json backup data and load the character(s)
@@ -486,7 +479,7 @@ ${JSON.stringify(data)}`;
                 a.setAttribute('href', `#${char_obj.key}`);
                 a.textContent = 'View character now.';
                 a.addEventListener('click', (e) => {
-                    Alert.clear();
+                    this.alert.closeClear();
                 });
                 li.appendChild(a);
                 imported_chars.push(li);
@@ -496,11 +489,11 @@ ${JSON.stringify(data)}`;
             imported_chars.forEach((li) => {
                 ul.appendChild(li);
             });
-            Alert.setContent(ul);
+            this.alert.setContent(ul);
         } catch (e) {
             const p = document.createElement('p');
             p.innerHTML = `Error processing backup data: ${e.message}`;
-            Alert.setContent(p);
+            this.alert.setContent(p);
         }
     },
     /**
@@ -528,7 +521,7 @@ ${JSON.stringify(data)}`;
             // error
             const p = document.createElement('p');
             p.innerHTML = `Error deleting the character...`;
-            Alert.setContent(p);
+            this.alert.setContent(p);
         } else {
             // success
             // remove from load list
@@ -545,7 +538,7 @@ ${JSON.stringify(data)}`;
      */
     showIntroDialog: function () {
         var template = document.getElementById('introAlert');
-        Alert.setContent(document.importNode(template.content, true));
+        this.alert.setContent(document.importNode(template.content, true));
     },
     /**
      * Start up the app with some events and such
@@ -567,8 +560,8 @@ ${JSON.stringify(data)}`;
         this.appname = settings.appname;
         // set up storage
         Storage.setPrefix(settings.prefix);
-        // set up default Alert
-        Alert.initialize();
+        // set up default alert
+        this.alert = new Modal(document.getElementById('alert-main'));
 
         let charCount = 0;
         Storage.getAllKeys().forEach((key) => {
@@ -588,7 +581,6 @@ ${JSON.stringify(data)}`;
         shortCuts.addShortCut('Ctrl+Shift+S', 'character:save');
         shortCuts.addShortCut('Ctrl+Shift+T', 'tab:switch');
         shortCuts.addShortCut('Ctrl+Shift+L', 'loadmenu:toggle');
-        shortCuts.addShortCut('Escape', 'alert:close');
 
         document.querySelector('nav').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
@@ -607,7 +599,7 @@ ${JSON.stringify(data)}`;
             ev.preventDefault();
             const template = document.getElementById('helpDialog');
             const div = document.importNode(template.content, true);
-            Alert.setContent(div);
+            this.alert.setContent(div);
         });
 
         // Event: Listen for hashchange and change the current character
@@ -630,7 +622,6 @@ ${JSON.stringify(data)}`;
         this.emitter.on('backup:download', this.downloadBackup, this);
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
         this.emitter.on('tab:switch', mainTabs.switchToPane, mainTabs);
-        this.emitter.on('alert:close', Alert.clear, Alert);
     }
 };
 

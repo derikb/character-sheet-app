@@ -1,11 +1,13 @@
 /** Menus */
+import { default as Modal } from './Modal.js';
+import { default as Storage } from './Storage.js';
 
 /**
  * Load Menu
  */
 const LoadMenu = {
     /**
-     * DOMELement
+     * @prop {HTMLELement}
      */
     el: document.querySelector('#character_list'),
     /**
@@ -83,14 +85,21 @@ const LoadMenu = {
  */
 const ActionMenu = {
     /**
-     * Menu element
+     * @prop {HTMLELement} Menu element
      */
     el: null,
     /**
-     * Menu open button
+     * @prop {HTMLELement} Menu open button
      */
     opener: null,
-
+    /**
+     * @prop {Modal} Modal for Backup save.
+     */
+    downloadDialog: null,
+    /**
+     * @prop {Modal} Modal for Backup restore.
+     */
+    restoreDialog: null,
     /**
      * Add character to load menu.
      * @param {Character5e} character
@@ -116,6 +125,88 @@ const ActionMenu = {
      */
     close: function () {
         LoadMenu.close();
+    },
+    /**
+     * Show the dialog for backing up characters.
+     * Else close it if its open.
+     */
+    openDownloadForm: function() {
+        this.downloadDialog = this.downloadDialog || new Modal(document.getElementById('dialog-backup'));
+        this.downloadDialog.clear();
+        if (this.downloadDialog.isOpen) {
+            this.downloadDialog.close();
+            return;
+        }
+        const template = document.getElementById('backupModal');
+        const form = document.importNode(template.content, true);
+
+        const checkboxes = [];
+        Storage.getAllKeys().forEach((key) => {
+            const char_obj = Storage.get(key);
+            if (!char_obj.key) { return; }
+            const li = `<li><label><input type="checkbox" name="${char_obj.key}" value="${char_obj.key}" /> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</label></li>`;
+            checkboxes.push(li);
+        });
+        form.querySelector('.character_downloads').innerHTML = checkboxes.join('');
+        this.downloadDialog.el.appendChild(form);
+        this.downloadDialog.el.querySelector('form').addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            this.emitter.trigger('backup:download', ev.target);
+        });
+        this.downloadDialog.open();
+    },
+    /**
+     * Show the back up restore form.
+     * Else close it if its open.
+     */
+    openRestoreForm: function() {
+        this.restoreDialog = this.restoreDialog || new Modal(document.getElementById('dialog-restore'));
+        this.restoreDialog.clear();
+        if (this.restoreDialog.isOpen) {
+            this.restoreDialog.close();
+            return;
+        }
+        const template = document.getElementById('restoreModal');
+        const form = document.importNode(template.content, true);
+        this.restoreDialog.setContent([form], false);
+        this.restoreDialog.el.querySelector('form').addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            this.emitter.trigger('backup:restore', ev.target);
+            this.restoreDialog.closeClear();
+        });
+    },
+    /**
+     * If file download is unavailable show the data to copy/paste
+     * @param {String} data the backup data
+     */
+    altDownload: function (data) {
+        const p = document.createElement('p');
+        p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
+        const text = document.createElement('textarea');
+        text.classList.add('large');
+        text.value = data;
+        this.downloadDialog.clear();
+        this.downloadDialog.setContent([p, text, this.downloadDialog.getCloseButton()], false);
+        text.focus();
+        text.select();
+    },
+    /**
+     * Show email download link.
+     * @param {String} url The email url
+     */
+    emailDownload: function (url) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.setAttribute('target', '_blank');
+        a.innerHTML = 'Open new message in default email client';
+        a.addEventListener('click', () => {
+            this.closeClear();
+        });
+        const p = document.createElement('p');
+        p.appendChild(a);
+        this.downloadDialog.clear();
+        this.downloadDialog.setContent([p, this.downloadDialog.getCloseButton()], false);
+        this.downloadDialog.focusFirst();
     },
     /**
      * Add event handlers, etc.
@@ -144,7 +235,7 @@ const ActionMenu = {
         // event handlers for all the menu buttons
         const action_btn_backup = this.el.querySelector('.btn-backup');
         action_btn_backup.addEventListener('click', (e) => {
-            this.emitter.trigger('backup:open:download');
+            this.openDownloadForm();
         });
         const action_btn_save = this.el.querySelector('.btn-save');
         action_btn_save.addEventListener('click', (e) => {
@@ -156,7 +247,7 @@ const ActionMenu = {
         });
         const action_btn_restore = this.el.querySelector('.btn-restore-backup');
         action_btn_restore.addEventListener('click', (e) => {
-            this.emitter.trigger('backup:open:restore');
+            this.openRestoreForm();
         });
         const action_btn_load = this.el.querySelector('.btn-load');
         action_btn_load.addEventListener('click', (e) => {
@@ -179,6 +270,8 @@ const ActionMenu = {
         this.emitter.on('loadmenu:remove', this.removeCharacter, this);
         this.emitter.on('character:load', this.close, this);
         this.emitter.on('loadmenu:toggle', LoadMenu.toggle, LoadMenu);
+        this.emitter.on('backup:email',  this.emailDownload, this);
+        this.emitter.on('backup:textpaste',  this.altDownload, this);
 ;    }
 };
 
