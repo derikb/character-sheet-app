@@ -148,12 +148,11 @@ const ActionMenu = {
             checkboxes.push(li);
         });
         form.querySelector('.character_downloads').innerHTML = checkboxes.join('');
-        this.downloadDialog.el.appendChild(form);
+        this.downloadDialog.setContent([form], false);
         this.downloadDialog.el.querySelector('form').addEventListener('submit', (ev) => {
             ev.preventDefault();
             this.emitter.trigger('backup:download', ev.target);
         });
-        this.downloadDialog.open();
     },
     /**
      * Show the back up restore form.
@@ -180,13 +179,16 @@ const ActionMenu = {
      * @param {String} data the backup data
      */
     altDownload: function (data) {
+        const h2 = document.createElement('h2');
+        h2.id = 'dialog-label';
+        h2.textContent = 'Alernate Download Option';
         const p = document.createElement('p');
         p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
         const text = document.createElement('textarea');
         text.classList.add('large');
         text.value = data;
         this.downloadDialog.clear();
-        this.downloadDialog.setContent([p, text, this.downloadDialog.getCloseButton()], false);
+        this.downloadDialog.setContent([h2, p, text, this.downloadDialog.getCloseButton()], false);
         text.focus();
         text.select();
     },

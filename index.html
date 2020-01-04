@@ -21,9 +21,9 @@
     </head>
     <body>
         <div class="alert-unsaved dialog" hidden>Unsaved changes... <button type="button" class="btn-save btn-sm">Save</button></div>
-        <div id="alert-main" class="dialog" role="dialog" hidden></div>
-        <div id="dialog-backup" class="dialog" role="dialog" hidden></div>
-        <div id="dialog-restore" class="dialog" role="dialog" hidden></div>
+        <div id="alert-main" class="dialog" role="dialog" aria-labelledby="dialog-label" hidden></div>
+        <div id="dialog-backup" class="dialog" role="dialog"  aria-labelledby="dialog-label-backup" hidden></div>
+        <div id="dialog-restore" class="dialog" role="dialog"  aria-labelledby="dialog-label-restore" hidden></div>
 
         <div class="container">
             <div class="app-actions">
@@ -101,9 +101,9 @@
                             <div>
                                 <dt>Death Save Success/Fail</dt>
                                 <dd>
-                                    <input type="number" class="small" name="death_success" data-name="deathSave" data-subfield="success" value="0" min="0" max="3" />
+                                    <input type="number" class="small" name="death_success" data-name="deathSave" data-subfield="success" value="0" min="0" max="3" aria-label="Death Save Successes" />
                                     <strong>/</strong>
-                                    <input type="number" class="small" name="death_fail" data-name="deathSave" data-subfield="fail" value="0" min="0" max="3" />
+                                    <input type="number" class="small" name="death_fail" data-name="deathSave" data-subfield="fail" value="0" min="0" max="3" aria-label="Death Save Fails" />
                                 </dd>
                             </div>
                         </dl>
@@ -553,7 +553,11 @@
         </script>
 
         <template id="introAlert">
-            <h2>Character Sheet. 5e.</h2><p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p><p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p><p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p><p>This message will only appear until you save your first character.</p>
+            <h2 id="dialog-label" tabindex="-1">Character Sheet. 5e.</h2>
+            <p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p>
+            <p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p>
+            <p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p>
+            <p>This message will only appear until you save your first character.</p>
         </template>
         <template id="defListItem">
             <div class="defListPair">
@@ -562,7 +566,7 @@
             </div>
         </template>
         <template id="helpDialog">
-            <h1 tabindex="-1">Help</h1>
+            <h1 id="dialog-label" tabindex="-1">Help</h1>
 
             <h2>Most importantly</h2>
             <ul>
@@ -609,6 +613,7 @@
         </template>
 
         <template id="backupModal">
+            <h2 id="dialog-label-backup" tabindex="-1">Backup Characters</h2>
             <form id="form_backup_download" target="_self">
                 <fieldset>
                     <legend tabindex="-1">Pick characters to download.</legend>
@@ -626,6 +631,7 @@
         </template>
 
         <template id="restoreModal">
+            <h2 id="dialog-label-restore" tabindex="-1">Restore Characters</h2>
             <form id="form_backup_restore" target="_self">
                 <label for="files">Restore from file</label>
                 <input type="file" id="files" name="files" />

@@ -327,9 +327,7 @@ const Manager = {
             }
         });
         if (this.cur_character.charname === '') {
-            const p = document.createElement('p');
-            p.innerHTML = 'Your character must have name to save!';
-            this.alert.setContent(p);
+            alert('Your character must have name to save!');
             return;
         }
         // update saved timestamp
@@ -489,11 +487,13 @@ ${JSON.stringify(data)}`;
             imported_chars.forEach((li) => {
                 ul.appendChild(li);
             });
-            this.alert.setContent(ul);
+            const header = document.createElement('h2');
+            header.id = 'dialog-label';
+            header.setAttribute('tabindex', '-1');
+            header.textContent = 'Restored Characters';
+            this.alert.setContent([header, ul]);
         } catch (e) {
-            const p = document.createElement('p');
-            p.innerHTML = `Error processing backup data: ${e.message}`;
-            this.alert.setContent(p);
+            alert(`Error processing backup data: ${e.message}`);
         }
     },
     /**
@@ -519,9 +519,7 @@ ${JSON.stringify(data)}`;
         Storage.remove(key);
         if (Storage.get(key) !== '') {
             // error
-            const p = document.createElement('p');
-            p.innerHTML = `Error deleting the character...`;
-            this.alert.setContent(p);
+            alert('Error deleting the character...');
         } else {
             // success
             // remove from load list
@@ -531,6 +529,7 @@ ${JSON.stringify(data)}`;
             if (this.cur_character !== null && this.cur_character.key === key) {
                 window.location.hash = `#${Manager.generateKey()}`;
             }
+            // @todo Focus back on?
         }
     },
     /**
