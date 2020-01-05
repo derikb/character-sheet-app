@@ -204,4 +204,10 @@ export default class Character5e {
         this.spells = spells;
         this.updated = updated;
     }
+    /**
+     * A quick summary header for use in lists.
+     */
+    get summaryHeader() {
+        return `${this.charname} (${this.charclass} ${this.level})`;
+    }
 };

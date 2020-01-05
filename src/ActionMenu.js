@@ -1,97 +1,105 @@
-/** Menus */
+/**
+ * Action Toolbar
+ */
 import { default as Modal } from './Modal.js';
 import { default as Storage } from './Storage.js';
 
 /**
- * Load Menu
+ * Buttons in the toolbar.
+ * Mostly in re focus management and keyboard events.
  */
-const LoadMenu = {
+class ActionButton {
     /**
-     * @prop {HTMLELement}
+     * @param {HTMLElement} el Button element.
+     * @param {ActionMenu} menu
      */
-    el: document.querySelector('#character_list'),
+    constructor(el, menu) {
+        this.el = el;
+        this.menu = menu;
+        this.action = el.dataset.action || '';
+        this.el.addEventListener('keydown', this.handleKeyBoardEvent.bind(this));
+        this.el.addEventListener('click', this.menu.setTabFocusToButton.bind(this.menu, this));
+    }
     /**
-     * Toggle menu
+     * Handler: Keyboard actions.
+     * @param {KeyboardEvent} ev Keydown event.
      */
-    toggle: function () {
-        this.el.classList.toggle('open');
-        if (this.el.classList.contains('open')) {
-            this.el.focus();
-        } else {
-            this.el.parentNode.querySelector('*[tabindex="-1"], a, button').focus();
-        }
-    },
-    /**
-     * Close menu
-     */
-    close: function () {
-        this.el.classList.remove('open');
-    },
-    /**
-     * Add character to list
-     * @param {Object} char_obj Character object or JSON string
-     */
-    addCharacter: function (char_obj) {
-        if (typeof char_obj === 'undefined' || char_obj === '') {
+    handleKeyBoardEvent(ev) {
+        if (ev.key === 'ArrowRight') {
+            this.removeTabFocus();
+            this.menu.setFocusToNext(this);
             return;
         }
-        try {
-            if (char_obj.key && char_obj.key !== '') {
-                // check if it's already there
-                const existing = this.el.querySelector(`a[href="#${char_obj.key}"]`);
-                if (existing !== null) {
-                    // update the text as appropriate
-                    existing.textContent = `${char_obj.charname} (${char_obj.charclass} ${char_obj.level})`;
-                    return;
-                }
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.textContent = `${char_obj.charname} (${char_obj.charclass} ${char_obj.level})`;
-                a.setAttribute('href', `#${char_obj.key}`);
-                li.appendChild(a);
-                const del = document.createElement('a');
-                del.classList.add('delete');
-                del.innerHTML = '❌';
-                del.setAttribute('href', '#');
-                del.setAttribute('data-key', char_obj.key);
-                li.appendChild(del);
-                this.el.querySelector('#saved_characters').appendChild(li);
-            }
-        } catch (e) {
-            console.log(e.message);
+        if (ev.key === 'ArrowLeft') {
+            this.removeTabFocus();
+            this.menu.setFocusToPrevious(this);
+            return;
         }
-    },
-    /**
-     * Remove character from list
-     * @param {String} key
-     */
-    removeCharacter: function (key) {
-        const loadlink = this.el.querySelector(`a[href="#${key}"]`);
-        const li = loadlink.parentNode;
-        li.parentNode.removeChild(li);
-    },
-    /**
-     * Do we have any saved characters here?
-     * @return {Boolean}
-     */
-    isEmpty: function () {
-        return this.el.querySelector('li') === null;
+        if (ev.key === 'Home') {
+            this.removeTabFocus();
+            this.menu.setFocusToFirst();
+            return;
+        }
+        if (ev.key === 'End') {
+            this.removeTabFocus();
+            this.menu.setFocusToLast();
+            return;
+        }
     }
-};
-
+    /**
+     * Set button to not be tabbable.
+     */
+    removeTabFocus() {
+        this.el.setAttribute('tabindex', '-1');
+    }
+    /**
+     * Set button to be tabbable.
+     */
+    setTabFocus() {
+        this.el.setAttribute('tabindex', '0');
+    }
+    /**
+     * Focus on this button.
+     */
+    focus() {
+        this.el.focus();
+    }
+    /**
+     * Switch to this button. Set its tabindex and focus.
+     */
+    switchTo() {
+        this.setTabFocus();
+        this.focus();
+    }
+}
 
 /**
- * Menu and associated action events
+ * Toolbar and associated action events or dialogs.
  */
 const ActionMenu = {
+    /**
+     * @prop {Array} Matching action button classes to methods to calls.
+     */
+    actions: {
+        'save': 'saveCharacter',
+        'load': 'openLoadModal',
+        'new': 'newCharacter',
+        'backup': 'openDownloadForm',
+        'restore': 'openRestoreForm',
+        'delete': 'openDeleteModal'
+    },
     /**
      * @prop {HTMLELement} Menu element
      */
     el: null,
     /**
-     * @prop {HTMLELement} Menu open button
+     * @prop {HTMLELement} Menu toogle button when menu is collapsed on narrow screens.
      */
     opener: null,
+    /**
+     * @prop {Modal} Modal for load menu.
+     */
+    loadDialog: null,
     /**
      * @prop {Modal} Modal for Backup save.
      */
@@ -100,32 +108,6 @@ const ActionMenu = {
      * @prop {Modal} Modal for Backup restore.
      */
     restoreDialog: null,
-    /**
-     * Add character to load menu.
-     * @param {Character5e} character
-     */
-    addCharacter: function (character) {
-        LoadMenu.addCharacter(character);
-    },
-    /**
-     * Remove character from load menu.
-     * @param {String} key
-     */
-    removeCharacter: function (key) {
-        LoadMenu.removeCharacter(key);
-    },
-    /**
-     * Are there any existing characters saved.
-     */
-    hasCharacters: function () {
-        return !LoadMenu.isEmpty();
-    },
-    /**
-     * Close any associated menus/alerts/etc.
-     */
-    close: function () {
-        LoadMenu.close();
-    },
     /**
      * Show the dialog for backing up characters.
      * Else close it if its open.
@@ -202,7 +184,7 @@ const ActionMenu = {
         a.setAttribute('target', '_blank');
         a.innerHTML = 'Open new message in default email client';
         a.addEventListener('click', () => {
-            this.closeClear();
+            this.downloadDialog.closeClear();
         });
         const p = document.createElement('p');
         p.appendChild(a);
@@ -211,67 +193,166 @@ const ActionMenu = {
         this.downloadDialog.focusFirst();
     },
     /**
+     * Trigger a save character event.
+     */
+    saveCharacter: function() {
+        this.emitter.trigger('character:save');
+    },
+    /**
+     * Trigger a new character event.
+     */
+    newCharacter: function() {
+        this.emitter.trigger('character:new');
+    },
+    /**
+     * Open the dialog to load a character.
+     */
+    openLoadModal: function() {
+        this.loadDialog = this.loadDialog || new Modal(document.getElementById('dialog-load'));
+        this.loadDialog.clear();
+        if (this.loadDialog.isOpen) {
+            this.loadDialog.close();
+            return;
+        }
+        const template = document.getElementById('loadModal');
+        const content = document.importNode(template.content, true);
+        const list = content.querySelector('ul');
+        Storage.getAllKeys().forEach((key) => {
+            const char_obj = Storage.get(key);
+            if (!char_obj.key) { return; }
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.textContent = `${char_obj.charname} (${char_obj.charclass} ${char_obj.level})`;
+            a.setAttribute('href', `#${char_obj.key}`);
+            li.appendChild(a);
+            list.appendChild(li);
+        });
+        this.loadDialog.setContent([content]);
+    },
+    /**
+     * Close the load modal.
+     */
+    closeLoadModal: function() {
+        if (this.loadDialog !== null) {
+            this.loadDialog.closeClear();
+        }
+    },
+    /**
+     * Modal for deleting characters.
+     */
+    openDeleteModal: function() {
+        const modal = new Modal(document.getElementById('dialog-delete'));
+        if (modal.isOpen) {
+            modal.close();
+            return;
+        }
+        const template = document.getElementById('deleteModal');
+        const content = document.importNode(template.content, true);
+
+        const items = [];
+        Storage.getAllKeys().forEach((key) => {
+            const char_obj = Storage.get(key);
+            if (!char_obj.key) { return; }
+            const li = `<li><button type="button" data-key="${char_obj.key}" class="btn-plain btn-delete-char"> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</button></li>`;
+            items.push(li);
+        });
+        content.querySelector('ul').innerHTML = items.join('');
+
+        modal.setContent([content]);
+        modal.el.querySelector('ul').addEventListener('click', (ev) => {
+            if (ev.target.classList.contains('btn-delete-char')) {
+                ev.preventDefault();
+                this.emitter.trigger('character:delete:confirm', ev.target.getAttribute('data-key'));
+                modal.closeClear();
+            }
+        });
+    },
+    /**
+     * Set focus to next button (or wrap around).
+     * @param {ActionButton} currentBtn
+     */
+    setFocusToNext: function(currentBtn) {
+        const index = this.buttons.indexOf(currentBtn);
+        const newIndex = index + 1;
+        if (newIndex > this.buttons.length - 1) {
+            this.setFocusToFirst();
+            return;
+        }
+        this.buttons[newIndex].switchTo();
+
+    },
+    /**
+     * Set focus to previous button (or wrap around).
+     * @param {ActionButton} currentBtn
+     */
+    setFocusToPrevious: function(currentBtn) {
+        const index = this.buttons.indexOf(currentBtn);
+        const newIndex = index - 1;
+        if (newIndex < 0) {
+            this.setFocusToLast();
+            return;
+        }
+        this.buttons[newIndex].switchTo();
+    },
+    /**
+     * Set focus to first button.
+     */
+    setFocusToFirst: function() {
+        this.buttons[0].switchTo();
+    },
+    /**
+     * Set focus to last button.
+     */
+    setFocusToLast: function() {
+        this.buttons[this.buttons.length - 1].switchTo();
+    },
+
+    setTabFocusToButton: function(button) {
+        this.buttons.forEach((btn) => {
+            if (btn === button) {
+                btn.switchTo();
+            } else {
+                btn.removeTabFocus();
+            }
+        });
+    },
+    /**
      * Add event handlers, etc.
      * @param {EventEmitter} emitter
      */
     initialize: function (emitter) {
         this.emitter = emitter;
         this.el = document.querySelector('.app-actions');
+        this.buttons = [];
+        var buttons = this.el.querySelectorAll('button');
+        Array.prototype.forEach.call(buttons, (btn) => {
+            this.buttons.push(new ActionButton(btn, this));
+        });
+
         this.opener = document.querySelector('.btn-open-actions');
         // opener click handler
         this.opener.addEventListener('click', (e) => {
-            if (this.el.classList.contains('open')) {
-                // set menu to hide overflow BEFORE it closes
-                this.el.style.overflow = 'hidden';
-            }
             this.el.classList.toggle('open');
-        });
-        // When the menu transitions to open we want to set overflow to visible so the Load dropdown can be visible
-        this.el.addEventListener('transitionend', (e) => {
-            const style = window.getComputedStyle(this.el);
-            if (style.getPropertyValue('max-height') !== '0px') {
-                this.el.style.overflow = 'visible';
-            }
         });
 
         // event handlers for all the menu buttons
-        const action_btn_backup = this.el.querySelector('.btn-backup');
-        action_btn_backup.addEventListener('click', (e) => {
-            this.openDownloadForm();
-        });
-        const action_btn_save = this.el.querySelector('.btn-save');
-        action_btn_save.addEventListener('click', (e) => {
-            this.emitter.trigger('character:save');
-        });
-        const action_btn_new = this.el.querySelector('.btn-new-character');
-        action_btn_new.addEventListener('click', (e) => {
-            this.emitter.trigger('character:new');
-        });
-        const action_btn_restore = this.el.querySelector('.btn-restore-backup');
-        action_btn_restore.addEventListener('click', (e) => {
-            this.openRestoreForm();
-        });
-        const action_btn_load = this.el.querySelector('.btn-load');
-        action_btn_load.addEventListener('click', (e) => {
-            LoadMenu.toggle();
-        });
-
         this.el.addEventListener('click', (ev) => {
-            const link = ev.target.closest('a');
-            if (link === null) {
+            if (ev.target.tagName !== 'BUTTON') {
                 return;
             }
-            if (link.classList.contains('delete')) {
-                ev.preventDefault();
-                this.emitter.trigger('character:delete:confirm', ev.target.getAttribute('data-key'));
-                this.close();
+            const button = this.buttons.find((btn) => { return btn.el === ev.target; });
+            if (!button) {
+                return;
             }
+            const action = this.actions[button.action] || null;
+            if (!action) {
+                return;
+            }
+            this[action]();
         });
 
-        this.emitter.on('loadmenu:add', this.addCharacter, this);
-        this.emitter.on('loadmenu:remove', this.removeCharacter, this);
-        this.emitter.on('character:load', this.close, this);
-        this.emitter.on('loadmenu:toggle', LoadMenu.toggle, LoadMenu);
+        this.emitter.on('loaddialog:close', this.closeLoadModal, this);
+        this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
         this.emitter.on('backup:email',  this.emailDownload, this);
         this.emitter.on('backup:textpaste',  this.altDownload, this);
 ;    }

@@ -81,7 +81,7 @@ const Manager = {
         }
         this.cur_character = new this.Character(data);
         this.renderCharacter();
-        this.emitter.trigger('character:load');
+        this.emitter.trigger('loaddialog:close');
     },
     /**
      * Take character data and fill it into the page
@@ -336,7 +336,6 @@ const Manager = {
         this.cur_character.app = this.appname;
         Storage.set(this.cur_character.key, this.cur_character);
         this.dialog_unsaved.hidden = true;
-        this.emitter.trigger('loadmenu:add', this.cur_character);
     },
     /**
      * Save a file of the current character
@@ -466,7 +465,7 @@ ${JSON.stringify(data)}`;
                     }
                 }
                 Storage.set(char_obj.key, char_obj);
-                this.emitter.trigger('loadmenu:add', char_obj);
+
                 // if its the current character we should reload them
                 if (char_obj.key === this.cur_character.key) {
                     this.loadCharacter(char_obj.key);
@@ -522,9 +521,6 @@ ${JSON.stringify(data)}`;
             alert('Error deleting the character...');
         } else {
             // success
-            // remove from load list
-            this.emitter.trigger('loadmenu:remove', key);
-
             // if its the current character we should trigger "new character" action
             if (this.cur_character !== null && this.cur_character.key === key) {
                 window.location.hash = `#${Manager.generateKey()}`;
@@ -565,7 +561,6 @@ ${JSON.stringify(data)}`;
         let charCount = 0;
         Storage.getAllKeys().forEach((key) => {
             const char_obj = Storage.get(key);
-            this.emitter.trigger('loadmenu:add', char_obj);
             charCount++;
         });
 
@@ -579,7 +574,7 @@ ${JSON.stringify(data)}`;
         const shortCuts = new ShortCutKeys(this.emitter);
         shortCuts.addShortCut('Ctrl+Shift+S', 'character:save');
         shortCuts.addShortCut('Ctrl+Shift+T', 'tab:switch');
-        shortCuts.addShortCut('Ctrl+Shift+L', 'loadmenu:toggle');
+        shortCuts.addShortCut('Ctrl+Shift+L', 'loaddialog:toggle');
 
         document.querySelector('nav').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {

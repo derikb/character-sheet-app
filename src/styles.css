@@ -271,35 +271,6 @@ h1 {
 .app-actions.open {
     max-height: 150px;
 }
-.dropdown-container {
-    display: inline-block;
-}
-.dropdown {
-    display: none;
-    position: absolute;
-    background-color: #fff;
-    padding: 1.5rem;
-    border: 2px solid rgb(207,0,15);
-    border-radius: 4px;
-    z-index: 50;
-    max-width: 100%;
-    box-shadow: 18px 20px 70px 1px rgba(0, 0, 0, 0.5);
-}
-.dropdown.open {
-    display: block;
-}
-.dropdown ul {
-    list-style-type: none;
-}
-.dropdown ul:empty:before {
-    content: 'No characters saved.';
-}
-.dropdown ul li {
-    margin-bottom: 1.5rem;
-}
-.dropdown ul li:last-of-type {
-    margin-bottom: 0;
-}
 
 /* Larger than phone screen */
 @media (min-width: 50.0rem) {
@@ -310,9 +281,6 @@ h1 {
         display: block;
         max-height: none;
         overflow: visible;
-    }
-    .dropdown ul li {
-        margin-bottom: 0;
     }
 }
 

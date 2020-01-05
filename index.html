@@ -22,21 +22,19 @@
     <body>
         <div class="alert-unsaved dialog" hidden>Unsaved changes... <button type="button" class="btn-save btn-sm">Save</button></div>
         <div id="alert-main" class="dialog" role="dialog" aria-labelledby="dialog-label" hidden></div>
+        <div id="dialog-load" class="dialog" role="dialog"  aria-labelledby="dialog-label-load" hidden></div>
         <div id="dialog-backup" class="dialog" role="dialog"  aria-labelledby="dialog-label-backup" hidden></div>
         <div id="dialog-restore" class="dialog" role="dialog"  aria-labelledby="dialog-label-restore" hidden></div>
+        <div id="dialog-delete" class="dialog" role="dialog"  aria-labelledby="dialog-label-delete" hidden></div>
 
         <div class="container">
-            <div class="app-actions">
-                <button type="button" class="btn-save">Save</button>
-                 <div class="dropdown-container">
-                    <button type="button" class="btn-load">Load</button>
-                    <div class="dropdown" id="character_list" tabindex="-1">
-                        <ul id="saved_characters"></ul>
-                    </div>
-                 </div>
-                <button type="button" class="btn-new-character">New Character</button>
-                <button type="button" class="btn-backup btn-dialog">Backup</button>
-                <button type="button" class="btn-restore-backup btn-dialog">Restore Backup</button>
+            <div class="app-actions" roled="toolbar" aria-label="Character Actions">
+                <button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
+                <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>
+                <button type="button" class="btn-new-character" data-action="new" tabindex="-1">New</button>
+                <button type="button" class="btn-backup btn-dialog" data-action="backup" tabindex="-1">Backup</button>
+                <button type="button" class="btn-restore-backup btn-dialog" data-action="restore" tabindex="-1">Restore</button>
+                <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
             </div>
             <header id="page-top" class="page-header">
                 <h1 class="pc-charname" data-name="charname" placeholder="Character Name" contenteditable="true" aria-label="Character Name"></h1>
@@ -641,6 +639,18 @@
                 <button type="submit">Restore</button>
                 <button type="button" class="close">Cancel</button>
             </form>
+        </template>
+
+        <template id="deleteModal">
+            <h2 id="dialog-label-delete" tabindex="-1">Delete Characters</h2>
+            <ul id="delete_list">
+            </ul>
+        </template>
+
+        <template id="loadModal">
+            <h2 id="dialog-label-load" tabindex="-1">Load Character</h2>
+            <ul id="character_list">
+            </ul>
         </template>
     </body>
 </html>
