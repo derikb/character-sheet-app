@@ -5,6 +5,8 @@
 export default class Character5e {
     /**
      * Property notes...
+     * @prop {String} key Unique (in one instance of the app) id for the character. 7 Random letters/numbers.
+     * @prop {String} charname Name.
      * @prop {Array[]} weapons Weapon data (name, att, dam, notes).
      * @prop {String[]} features Special features and abilities.
      * @prop {String[]} equipment Stuff the character carries.
@@ -12,6 +14,7 @@ export default class Character5e {
      * @prop {Array[]} notes_cam Campaign notes [header, text]
      * @prop {Array[]} npcs NPC notes [header, text]
      * @prop {Array[]} factions NPC notes [header, text]
+     * @prop {String} key_prev If character was imported into app with identical key. This is that key and the character is given a new one on import.
      */
     constructor ({
         key = '',
@@ -124,7 +127,8 @@ export default class Character5e {
             8: [],
             9: []
         },
-        updated = ''
+        updated = '',
+        key_prev = ''
     }) {
         this.app = 'character-sheet-5e';
         this.key = key;
@@ -203,6 +207,7 @@ export default class Character5e {
         this.spell_slots_cur = spell_slots_cur;
         this.spells = spells;
         this.updated = updated;
+        this.key_prev = key_prev;
     }
     /**
      * A quick summary header for use in lists.

@@ -16,7 +16,7 @@ const Storage = {
     /**
      * Returns blank or the value for the key
      * @param {String} key
-     * @return {Object|String} object or the empty string
+     * @return {Object|Null} object or null
      */
     get: function (key) {
         let txt = localStorage.getItem(`${this.prefix}${key}`);
@@ -27,7 +27,7 @@ const Storage = {
                 this.set(key, txt);
             }
         }
-        return (txt !== null) ? JSON.parse(txt) : '';
+        return (txt !== null) ? JSON.parse(txt) : null;
     },
     /**
      * Store a value for the key

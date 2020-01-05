@@ -18,6 +18,7 @@ var config = {
         '/images/heart_broken.svg',
         '/src/ActionMenu.js',
         '/src/Character5e.js',
+        '/src/CharacterService.js',
         '/src/EventEmitter.js',
         '/src/Manager.js',
         '/src/Modal.js',

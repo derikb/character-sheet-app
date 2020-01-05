@@ -522,8 +522,8 @@
 
         <script type="module">
             import { default as ActionMenu } from './src/ActionMenu.js';
-            import { default as EventEmitter } from './src/EventEmitter.js';            import { default as Manager } from './src/Manager.js';
-            import { default as model } from './src/Character5e.js';
+            import { default as EventEmitter } from './src/EventEmitter.js';
+            import { default as Manager } from './src/Manager.js';
             import { default as ui } from './src/UI5e.js';
 
             /**
@@ -540,7 +540,6 @@
 
             Manager.initialize({
                 emitter: emitter,
-                model: model,
                 ui: ui,
                 prefix: 'charsheet-5e-',
                 appname: 'character-sheet-5e'

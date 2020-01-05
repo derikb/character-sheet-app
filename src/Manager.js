@@ -2,19 +2,14 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
+import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from './CharacterService.js';
 import { default as Modal } from './Modal.js';
 import { default as ShortCutKeys } from './ShortCutKeys.js';
-import { default as Storage } from './Storage.js';
 import { default as Tabs} from './Tabs.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
     emitter: null,
-    /**
-     * App/rules/game specific character model and UI handling
-     * @prop {Character5e}
-     */
-    Character: null,
     /**
      * App/rules/game specific UI handling
      */
@@ -33,30 +28,10 @@ const Manager = {
      */
     dialog_unsaved: document.querySelector('.alert-unsaved'),
     /**
-     * Return UTC datetime string for right now
-     * @return {String}
-     */
-    currentTimestamp: function () {
-        const d = new Date();
-        return d.toUTCString();
-    },
-    /**
-     * Generate a random key for character storage
-     * make sure key is not already existing
-     * @return {String}
-     */
-    generateKey: function () {
-        let key = (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
-        while (Storage.get(key) !== '') {
-            key = (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
-        }
-        return key;
-    },
-    /**
      * Start a new character by changing the hash.
      */
-    newCharacter: function () {
-        window.location.hash = `#${this.generateKey()}`;
+    triggerNewCharacter: function () {
+        window.location.hash = `#${generateCharacterKey()}`;
     },
     /**
      * Change the character based on a hash change
@@ -69,17 +44,14 @@ const Manager = {
     },
     /**
      * Load character data based on a key
-     * @param {String} key character identifier...????
+     * @param {String} key Character identifier
      */
     loadCharacter: function (key) {
         this.dialog_unsaved.hidden = true;
-        const data = Storage.get(key);
-        if (data === '') {
-            this.cur_character = new this.Character({key});
-            this.renderCharacter();
-            return;
+        this.cur_character = getCharacter(key);
+        if (!this.cur_character) {
+            this.cur_character = newCharacter(key);
         }
-        this.cur_character = new this.Character(data);
         this.renderCharacter();
         this.emitter.trigger('loaddialog:close');
     },
@@ -219,11 +191,12 @@ const Manager = {
         this.rules_ui.postRender();
     },
     /**
-     * Save character data to localStorage
+     * Save character data
      */
     saveCharacter: function () {
         if (this.cur_character === null) {
-            this.cur_character = new this.Character({});
+            alert('No character to save.');
+            return;
         }
         const fields = Array.from(document.querySelectorAll('*[data-name]'));
         fields.forEach((el) => {
@@ -330,11 +303,7 @@ const Manager = {
             alert('Your character must have name to save!');
             return;
         }
-        // update saved timestamp
-        this.cur_character.updated = this.currentTimestamp();
-        // make sure app name is set
-        this.cur_character.app = this.appname;
-        Storage.set(this.cur_character.key, this.cur_character);
+        saveCharacter(this.cur_character, this.appname);
         this.dialog_unsaved.hidden = true;
     },
     /**
@@ -346,9 +315,9 @@ const Manager = {
         const names = [];
         const checks = Array.from(form.querySelectorAll('input[type=checkbox]:checked'));
         checks.forEach((ch) => {
-            const char_obj = Storage.get(ch.value);
-            data.push(char_obj);
-            names.push(char_obj.charname);
+            const character = getCharacter(ch.value);
+            data.push(character);
+            names.push(character.charname);
         });
 
         const format = form.querySelector('input[name=format]:checked').value;
@@ -447,33 +416,15 @@ ${JSON.stringify(data)}`;
             }
             const imported_chars = [];
             backups.forEach((char_obj) => {
-                // is it a char object for this app
-                if (typeof char_obj !== 'object' || !char_obj.key || char_obj.app !== this.appname) {
-                    throw new Error(`Data appears to be invalid. Try removing any text that isn't part of the backup (i.e. email introduction).`);
-                }
-                // do we have this char key already
-                const ex_char = Storage.get(char_obj.key);
-                if (ex_char !== '' && ex_char.charname !== '' && ex_char.charname !== char_obj.charname) {
-                    // existing key but different name
-                    if (!char_obj.key_prev) {
-                        char_obj.key_prev = char_obj.key;
-                        char_obj.key = this.generateKey();
-                    } else {
-                        const temp_key = char_obj.key_prev;
-                        char_obj.key_prev = char_obj.key;
-                        char_obj.key = temp_key;
-                    }
-                }
-                Storage.set(char_obj.key, char_obj);
-
+                const newCharacter = importCharacter(char_obj, this.appname);
                 // if its the current character we should reload them
-                if (char_obj.key === this.cur_character.key) {
-                    this.loadCharacter(char_obj.key);
+                if (newCharacter.key === this.cur_character.key) {
+                    this.loadCharacter(newCharacter.key);
                 }
                 const li = document.createElement('li');
-                li.textContent = `${char_obj.charname} has been added. `;
+                li.textContent = `${newCharacter.charname} has been added. `;
                 const a = document.createElement('a');
-                a.setAttribute('href', `#${char_obj.key}`);
+                a.setAttribute('href', `#${newCharacter.key}`);
                 a.textContent = 'View character now.';
                 a.addEventListener('click', (e) => {
                     this.alert.closeClear();
@@ -500,11 +451,11 @@ ${JSON.stringify(data)}`;
      * @param {String} key character key
      */
     deletePrompt: function (key) {
-        const data = Storage.get(key);
-        if (data === '') {
+        const character = getCharacter(key);
+        if (!character) {
             return;
         }
-        if (!confirm(`Are you sure you want to delete the character: ${(data.charname) ? data.charname : '[Unnamed]'}`)) {
+        if (!confirm(`Are you sure you want to delete the character: ${(character.charname) ? character.charname : '[Unnamed]'}`)) {
             return;
         }
         this.deleteCharacter(key);
@@ -515,15 +466,15 @@ ${JSON.stringify(data)}`;
      */
     deleteCharacter: function (key) {
         if (key === '' || key === 'settings') { return; }
-        Storage.remove(key);
-        if (Storage.get(key) !== '') {
+        removeCharacter(key);
+        if (getCharacter(key)) {
             // error
             alert('Error deleting the character...');
         } else {
             // success
             // if its the current character we should trigger "new character" action
             if (this.cur_character !== null && this.cur_character.key === key) {
-                window.location.hash = `#${Manager.generateKey()}`;
+                this.triggerNewCharacter();
             }
             // @todo Focus back on?
         }
@@ -539,32 +490,24 @@ ${JSON.stringify(data)}`;
      * Start up the app with some events and such
      * @param {Object} settings things we need to set external to this script
      * @param {EventEmitter} settings.emitter
-     * @param {Object} settings.model 5e character model.
      * @param {Object} settings.ui UI events.
      * @param {String} settings.prefix prefix for localStorage keys
      * @param {String} settings.appname used to identify the app property in a character model
      */
     initialize: function (settings) {
-        if (!settings.emitter || !settings.model || !settings.ui || !settings.prefix || !settings.appname) {
+        if (!settings.emitter || !settings.ui || !settings.prefix || !settings.appname) {
             document.body.innerHTML = '<p>App is missing required settings.</p>';
             return;
         }
         this.emitter = settings.emitter;
-        this.Character = settings.model;
         this.rules_ui = settings.ui;
         this.appname = settings.appname;
         // set up storage
-        Storage.setPrefix(settings.prefix);
+        setLocalStoragePrefix(settings.prefix);
         // set up default alert
         this.alert = new Modal(document.getElementById('alert-main'));
 
-        let charCount = 0;
-        Storage.getAllKeys().forEach((key) => {
-            const char_obj = Storage.get(key);
-            charCount++;
-        });
-
-        if (charCount === 0) {
+        if (getCharacterCount() === 0) {
             this.showIntroDialog();
         }
         // set up all the rule specific ui events (attribute modifiers and the like)
@@ -604,13 +547,13 @@ ${JSON.stringify(data)}`;
         if (urlhash !== '') {
             this.loadCharacter(urlhash);
         } else {
-            this.newCharacter();
+            this.triggerNewCharacter();
         }
 
         this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => { this.emitter.trigger('character:save'); });
 
         // Listen for events, mostly from the menus.
-        this.emitter.on('character:new', this.newCharacter, this);
+        this.emitter.on('character:new', this.triggerNewCharacter, this);
         this.emitter.on('character:save', this.saveCharacter, this);
         this.emitter.on('character:delete:confirm', this.deletePrompt, this);
         this.emitter.on('backup:download', this.downloadBackup, this);

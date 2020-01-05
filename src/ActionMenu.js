@@ -2,7 +2,7 @@
  * Action Toolbar
  */
 import { default as Modal } from './Modal.js';
-import { default as Storage } from './Storage.js';
+import { getAllCharacters } from './CharacterService.js';
 
 /**
  * Buttons in the toolbar.
@@ -123,10 +123,8 @@ const ActionMenu = {
         const form = document.importNode(template.content, true);
 
         const checkboxes = [];
-        Storage.getAllKeys().forEach((key) => {
-            const char_obj = Storage.get(key);
-            if (!char_obj.key) { return; }
-            const li = `<li><label><input type="checkbox" name="${char_obj.key}" value="${char_obj.key}" /> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</label></li>`;
+        getAllCharacters().forEach((char) => {
+            const li = `<li><label><input type="checkbox" name="${char.key}" value="${char.key}" /> ${char.summaryHeader}</label></li>`;
             checkboxes.push(li);
         });
         form.querySelector('.character_downloads').innerHTML = checkboxes.join('');
@@ -217,13 +215,11 @@ const ActionMenu = {
         const template = document.getElementById('loadModal');
         const content = document.importNode(template.content, true);
         const list = content.querySelector('ul');
-        Storage.getAllKeys().forEach((key) => {
-            const char_obj = Storage.get(key);
-            if (!char_obj.key) { return; }
+        getAllCharacters().forEach((char) => {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.textContent = `${char_obj.charname} (${char_obj.charclass} ${char_obj.level})`;
-            a.setAttribute('href', `#${char_obj.key}`);
+            a.textContent = char.summaryHeader;
+            a.setAttribute('href', `#${char.key}`);
             li.appendChild(a);
             list.appendChild(li);
         });
@@ -250,10 +246,8 @@ const ActionMenu = {
         const content = document.importNode(template.content, true);
 
         const items = [];
-        Storage.getAllKeys().forEach((key) => {
-            const char_obj = Storage.get(key);
-            if (!char_obj.key) { return; }
-            const li = `<li><button type="button" data-key="${char_obj.key}" class="btn-plain btn-delete-char"> ${char_obj.charname} (${char_obj.charclass} ${char_obj.level})</button></li>`;
+        getAllCharacters().forEach((char) => {
+            const li = `<li><button type="button" data-key="${char.key}" class="btn-plain btn-delete-char"> ${char.summaryHeader}</button></li>`;
             items.push(li);
         });
         content.querySelector('ul').innerHTML = items.join('');
