@@ -314,14 +314,14 @@ h1 {
     margin: 0 0 0 2rem;
 }
 
-/* unsaved changes alert */
-.alert-unsaved {
-    transform: none;
+/* Alerts in bottom corner of screen */
+.alertContainer {
     position: fixed;
     bottom: 0;
-    top: unset;
     right: 0;
-    left: initial;
+    z-index: 125;
+}
+.alert {
     z-index: 125;
     font-weight: bold;
     color: rgb(207,0,15);
@@ -329,7 +329,11 @@ h1 {
     line-height: 1rem;
     padding: .25rem 1rem;
     min-width: initial;
-    margin-right: 1rem;
+    margin: 1rem 1rem 1rem auto;
+    border: 2px solid rgb(207,0,15);
+    border-radius: 4px;
+    background-color: #fefefe;
+    box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
 }
 #dialog-backup {
     position: absolute;
@@ -337,6 +341,32 @@ h1 {
 .dialog button.delete-conf {
     float: left;
     margin: 1rem 0 0 0;
+}
+
+.alert-delete {
+    padding: 0;
+    position: relative;
+}
+.alert-delete span {
+    display: inline-block;
+    padding: 0.75rem 1.5rem 1rem 1.5rem;
+}
+/** Delete undo timeout progress. */
+.alert-delete span.delete-timeout {
+    padding: 0;
+    height: .5rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgb(207,0,15);
+}
+/** Only change this timing if the delete undo time changes. They need to match. */
+.alert-delete span.delete-timeout.transition {
+    transition: width linear 8s;
+}
+.alert-delete span.delete-timeout.timeout {
+    width: 0%;
 }
 
 @media (min-width: 50.0rem) {
@@ -348,14 +378,16 @@ h1 {
         left: 50%;
         transform: translateX(-50%);
     }
-    .alert-unsaved {
+    .alertContainer {
+        right: 2rem;
+        left: auto;
+    }
+    .alert {
+        margin: 2rem auto;
         font-size: 1rem;
         line-height: 1.5rem;
         padding: 0.75rem 1.5rem;
-        right: 2rem;
         min-width: initial;
-        left: auto;
-        transform: none;
     }
 }
 

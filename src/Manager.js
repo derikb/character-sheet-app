@@ -28,6 +28,10 @@ const Manager = {
      */
     dialog_unsaved: document.querySelector('.alert-unsaved'),
     /**
+     * Undo delete dialog
+     */
+    dialog_undo: document.querySelector('.alert-delete'),
+    /**
      * Start a new character by changing the hash.
      */
     triggerNewCharacter: function () {
@@ -458,25 +462,67 @@ ${JSON.stringify(data)}`;
         if (!confirm(`Are you sure you want to delete the character: ${(character.charname) ? character.charname : '[Unnamed]'}`)) {
             return;
         }
-        this.deleteCharacter(key);
+        this.deleteCharacterTemp(key);
+    },
+    /**
+     * Set a timeout to remove the character in a few seconds.
+     * @param {String} key character key
+     */
+    deleteCharacterTemp: function (key) {
+        if (key === '' || key === 'settings') {
+            return;
+        }
+        // if its the current character we should trigger "new character" action
+        if (this.cur_character !== null && this.cur_character.key === key) {
+            this.triggerNewCharacter();
+        }
+        this.dialog_undo.querySelector('button').dataset.key = key;
+        this.dialog_undo.hidden = false;
+        // This will trigger a transition bar.
+        const timeoutIndicator = this.dialog_undo.querySelector('.delete-timeout');
+        // The transition animation doesn't happen if you don't have this timeout,
+        // since we are also just now revealing the element.
+        setTimeout(() => {
+            timeoutIndicator.classList.add('transition', 'timeout');
+        }, 10);
+        // Note: if we change the timeout of the delete undo, we also need to change the transition timing in the css.
+        this[`deleteTimeout${key}`] = setTimeout(this.deleteCharacter.bind(this), 8000, key);
     },
     /**
      * Delete a character from local storage
      * @param {String} key character key
      */
     deleteCharacter: function (key) {
-        if (key === '' || key === 'settings') { return; }
+        if (key === '' || key === 'settings') {
+            return;
+        }
         removeCharacter(key);
+        this.dialog_undo.querySelector('button').dataset.key = '';
+        this.dialog_undo.hidden = true;
+        // This will reset the transition bar.
+        const timeoutIndicator = this.dialog_undo.querySelector('.delete-timeout');
+        timeoutIndicator.classList.remove('transition', 'timeout');
         if (getCharacter(key)) {
-            // error
-            alert('Error deleting the character...');
-        } else {
-            // success
-            // if its the current character we should trigger "new character" action
-            if (this.cur_character !== null && this.cur_character.key === key) {
-                this.triggerNewCharacter();
-            }
-            // @todo Focus back on?
+            // Character is still around, so error, I guess.
+            alert(`Error deleting the character with key: ${key}`);
+        }
+    },
+    /**
+     * Remove the timeout and stop the delete from happening.
+     * @param {Event} ev Undo button click.
+     */
+    undoDelete: function(ev) {
+        const key = ev.target.dataset.key || null;
+        if (!key) {
+            return;
+        }
+        this.dialog_undo.querySelector('button').dataset.key = '';
+        this.dialog_undo.hidden = true;
+        // Reset transition bar.
+        const timeoutIndicator = this.dialog_undo.querySelector('.delete-timeout');
+        timeoutIndicator.classList.remove('transition', 'timeout');
+        if (this[`deleteTimeout${key}`]) {
+            clearTimeout(this[`deleteTimeout${key}`]);
         }
     },
     /**
@@ -551,6 +597,9 @@ ${JSON.stringify(data)}`;
         }
 
         this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => { this.emitter.trigger('character:save'); });
+        this.dialog_undo.querySelector('.btn-delete-undo').addEventListener('click', (ev) => {
+            this.undoDelete(ev);
+        });
 
         // Listen for events, mostly from the menus.
         this.emitter.on('character:new', this.triggerNewCharacter, this);

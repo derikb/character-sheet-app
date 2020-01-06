@@ -20,7 +20,13 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <div class="alert-unsaved dialog" hidden>Unsaved changes... <button type="button" class="btn-save btn-sm">Save</button></div>
+        <div class="alertContainer">
+            <div class="alert alert-unsaved" hidden>Unsaved changes... <button type="button" class="btn-save btn-sm">Save</button></div>
+            <div class="alert alert-delete" hidden>
+                <span>Deleting character... <button type="button" class="btn-delete-undo btn-sm" data-key="">Undo</button></span>
+                <span class="delete-timeout"></span>
+            </div>
+        </div>
         <div id="alert-main" class="dialog" role="dialog" aria-labelledby="dialog-label" hidden></div>
         <div id="dialog-load" class="dialog" role="dialog"  aria-labelledby="dialog-label-load" hidden></div>
         <div id="dialog-backup" class="dialog" role="dialog"  aria-labelledby="dialog-label-backup" hidden></div>
