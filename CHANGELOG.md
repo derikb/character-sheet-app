@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/derikb/character-sheet-5e/compare/v2.0.1...v2.1.0) (2020-01-07)
+
+
+### Features
+
+* Add delete undo option ([5f9ef00](https://github.com/derikb/character-sheet-5e/commit/5f9ef008ba164eda9c91a26de8b24354ed51db45)), closes [#63](https://github.com/derikb/character-sheet-5e/issues/63)
+* **accessibility:** Improve modal labelling ([f43196f](https://github.com/derikb/character-sheet-5e/commit/f43196f08485ac9fff02a7cf7ea448be022feb21))
+* **accessibility:** Improvements to top toolbar/menu ([e54fd42](https://github.com/derikb/character-sheet-5e/commit/e54fd42eb6a1a86f3d6c9327273616ba6a09f133)), closes [#5](https://github.com/derikb/character-sheet-5e/issues/5)
+* **accessibility:** Spme labelling improvements ([39ce8ff](https://github.com/derikb/character-sheet-5e/commit/39ce8ff9dea15c3577adf95516bcfa1f29946798))
+* **shortcuts:** Add toggle load menu shortcut ([8d31bc6](https://github.com/derikb/character-sheet-5e/commit/8d31bc6fd3ed2f82cda9c0bc18986e4d20cbeeb2)), closes [#60](https://github.com/derikb/character-sheet-5e/issues/60)
+* **ui:** Add save button to unsaved changes alert ([3dcd2ff](https://github.com/derikb/character-sheet-5e/commit/3dcd2ff12c4b5e24105ea77bab3c96d02f380e15)), closes [#59](https://github.com/derikb/character-sheet-5e/issues/59)
+
+
+### Bug Fixes
+
+* **css:** Fix margin on lists ([f1af8d4](https://github.com/derikb/character-sheet-5e/commit/f1af8d4ef73647c99fe272b68f6cc8950d5259f2)), closes [#61](https://github.com/derikb/character-sheet-5e/issues/61)
+* **dialogs:** Fix backup dialog issues and a lot of refactoring ([eee2020](https://github.com/derikb/character-sheet-5e/commit/eee2020aabb19a1827afc3870a62c538955b0c43)), closes [#62](https://github.com/derikb/character-sheet-5e/issues/62)
+
 ### [2.0.1](https://github.com/derikb/character-sheet-5e/compare/v2.0.0...v2.0.1) (2020-01-01)
 
 
