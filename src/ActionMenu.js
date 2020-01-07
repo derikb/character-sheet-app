@@ -25,6 +25,10 @@ class ActionButton {
      * @param {KeyboardEvent} ev Keydown event.
      */
     handleKeyBoardEvent(ev) {
+        // Stop if any other modifer keys are pressed.
+        if (ev.shiftKey || ev.ctrlKey || ev.metaKey || ev.altKey) {
+            return;
+        }
         if (ev.key === 'ArrowRight') {
             this.removeTabFocus();
             this.menu.setFocusToNext(this);

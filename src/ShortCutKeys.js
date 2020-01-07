@@ -53,6 +53,7 @@ class ShortCutKeys {
         var event = this.shortcuts[code] || null;
         if (event) {
             ev.preventDefault();
+            ev.stopPropagation();
             this.emitter.trigger(event);
         }
     }

@@ -561,9 +561,10 @@ ${JSON.stringify(data)}`;
 
         const mainTabs = new Tabs(document.querySelector('main > ul[role=tablist]'));
         const shortCuts = new ShortCutKeys(this.emitter);
-        shortCuts.addShortCut('Ctrl+Shift+S', 'character:save');
-        shortCuts.addShortCut('Ctrl+Shift+T', 'tab:switch');
-        shortCuts.addShortCut('Ctrl+Shift+L', 'loaddialog:toggle');
+        shortCuts.addShortCut('Ctrl+Shift+ArrowDown', 'character:save');
+        shortCuts.addShortCut('Ctrl+Shift+ArrowRight', 'tab:switch');
+        shortCuts.addShortCut('Ctrl+Shift+ArrowLeft', 'tab:switch');
+        shortCuts.addShortCut('Ctrl+Shift+ArrowUp', 'loaddialog:toggle');
 
         document.querySelector('nav').addEventListener('click', (e) => {
             if (e.target.tagName === 'A') {
