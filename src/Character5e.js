@@ -37,6 +37,10 @@ export default class Character5e {
             success: 0,
             fail: 0
         },
+        classPoints = {
+            cur: 0,
+            max: 0
+        },
         str = 10,
         dex = 10,
         con = 10,
@@ -148,6 +152,7 @@ export default class Character5e {
         this.hd_cur = hd_cur;
         this.hd_max = hd_max;
         this.deathSave = deathSave;
+        this.classPoints = classPoints;
         this.str = str;
         this.dex = dex;
         this.con = con;
