@@ -74,7 +74,7 @@ export default class Character5e {
             performance: 0,
             persuasion: 0,
             religion: 0,
-            sleight_of_Hand: 0,
+            sleight_of_hand: 0,
             stealth: 0,
             survival: 0
         },
@@ -163,6 +163,13 @@ export default class Character5e {
         this.cha = cha;
         this.saves = saves;
         this.skills = skills;
+        // @version < 2.2.0 Backwards compatibile convert sleight_of_Hand to sleight_of_hand
+        if (typeof this.skills['sleight_of_Hand'] !== 'undefined') {
+            const sleight = this.skills['sleight_of_Hand'];
+            delete this.skills['sleight_of_Hand'];
+            this.skills['sleight_of_hand'] = sleight;
+        }
+
         // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
         if (!Array.isArray(weapons)) {
             const lines = weapons.split(new RegExp('<br/?>', 'i'));
