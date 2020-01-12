@@ -97,6 +97,7 @@ export default class Character5e {
         notes_cam = [],
         npcs = [],
         factions = [],
+        partymembers = [],
         spell_ability = '',
         spell_save = '',
         spell_attack = '',
@@ -214,6 +215,7 @@ export default class Character5e {
         this.notes_cam = notes_cam;
         this.npcs = npcs;
         this.factions = factions;
+        this.partymembers = partymembers;
         this.spell_ability = spell_ability;
         this.spell_save = spell_save;
         this.spell_attack = spell_attack;
