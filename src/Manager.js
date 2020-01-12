@@ -6,6 +6,7 @@ import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, remove
 import { default as Modal } from './Modal.js';
 import { default as ShortCutKeys } from './ShortCutKeys.js';
 import { default as Tabs} from './Tabs.js';
+import { constants as characterConstants } from './Character5e.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -83,10 +84,20 @@ const Manager = {
                     case 'TEXTAREA':
                         if (el.getAttribute('type') === 'checkbox') {
                             const checked = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                            if (checked === 1) {
+                            if (checked) {
                                 el.checked = true;
                             } else {
                                 el.checked = false;
+                            }
+                            if (f === 'skills') {
+                                const expertise = el.nextElementSibling;
+                                if (expertise) {
+                                    if (checked === characterConstants.SKILL_EXPERT) {
+                                        expertise.checked = true;
+                                    } else {
+                                        expertise.checked = false;
+                                    }
+                                }
                             }
                             break;
                         }
@@ -224,6 +235,12 @@ const Manager = {
                             this.cur_character[f][subf] = checked;
                         } else {
                             this.cur_character[f] = checked;
+                        }
+                        if (checked && f === 'skills') {
+                            const expertise = el.nextElementSibling;
+                            if (expertise && expertise.checked) {
+                                this.cur_character[f][subf] = characterConstants.SKILL_EXPERT;
+                            }
                         }
                         break;
                     }

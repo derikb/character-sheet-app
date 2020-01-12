@@ -2,6 +2,12 @@
  * Model for 5e character data
  */
 
+ export const constants = Object.freeze({
+    SKILL_UNSKILLED: 0,
+    SKILL_PROFICIENT: 1,
+    SKILL_EXPERT: 2
+ });
+
 export default class Character5e {
     /**
      * Property notes...
@@ -15,6 +21,7 @@ export default class Character5e {
      * @prop {Array[]} npcs NPC notes [header, text]
      * @prop {Array[]} factions NPC notes [header, text]
      * @prop {String} key_prev If character was imported into app with identical key. This is that key and the character is given a new one on import.
+     * @prop {Object} skills Skill and its level. 0/1/2 (See constants).
      */
     constructor ({
         key = '',

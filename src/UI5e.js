@@ -23,11 +23,18 @@ const ui = {
      */
     spell_slots: Array.from(document.querySelectorAll('input[data-name=spell_slots]')),
     /**
-     * Calculate the attribute modifier based on the score
-     * @return {String} 0, a negative number, or a positive number preceded by a +
+     * Get attribute modifier -x to +x as String.
+     * @param {Number} score Attribute score.
+     * @returns {String}
      */
-    calcAttrMod: function (val) {
-        const raw = Math.floor((val - 10) / 2);
+    calcAttrMod(score = 10) {
+        if (!Number.isInteger(score)) {
+            score = parseInt(score, 10);
+        }
+        if (Number.isNaN(score)) {
+            score = 10;
+        }
+        const raw = Math.floor((score - 10) / 2);
         return (raw > 0) ? `+${raw}` : raw.toString();
     },
     /**
@@ -53,6 +60,11 @@ const ui = {
      */
     calcSkillMod: function (el) {
         const skill_checked = el.checked;
+        const expertise = el.nextElementSibling;
+        let isExpert = false;
+        if (skill_checked && expertise && expertise.checked) {
+            isExpert = true;
+        }
         const attribute = el.getAttribute('data-attr');
         const mod_field = el.parentNode.nextElementSibling;
 
@@ -62,8 +74,27 @@ const ui = {
         }
         const attr = document.querySelector(`[data-name=${attribute}]`);
         const attr_mod = parseInt(this.calcAttrMod(attr.value), 10);
-        const raw = 0 + prof + attr_mod;
-        mod_field.innerText = (raw > 0) ? `+${raw}` : raw;
+
+        const skillMod = this.getSkillModifier(attr_mod, prof, skill_checked, isExpert);
+        mod_field.innerText = skillMod;
+    },
+    /**
+     * Get the skill modifier.
+     * @param {Number} attributeMod Attribute modifier.
+     * @param {Number} proficiency Proficiency bonus.
+     * @param {Boolean} isProficient Is the character proficient.
+     * @param {Boolean} isExpert Does the character have expertise.
+     * @returns {String}
+     */
+    getSkillModifier: function(attributeMod = 0, proficiency = 0, isProficient = false, isExpert = false) {
+        let raw = 0 + attributeMod;
+        if (isProficient) {
+            raw += proficiency;
+        }
+        if (isExpert) {
+            raw += proficiency;
+        }
+        return (raw > 0) ? `+${raw}` : raw.toString();
     },
     /**
      * Calculate proficiency modifier based on level
@@ -155,6 +186,15 @@ const ui = {
      */
     skillChange: function (e) {
         this.calcSkillMod(e.currentTarget);
+        this.dialog_unsaved.hidden = false;
+    },
+    /**
+     * When skill expertise is checked.
+     * @param {Event} ev Change event.
+     */
+    updateExpertise: function(ev) {
+        const skillCheck =  ev.target.previousElementSibling;
+        this.calcSkillMod(skillCheck);
         this.dialog_unsaved.hidden = false;
     },
     /**
@@ -316,6 +356,10 @@ const ui = {
          */
         this.skill_checks.forEach((el) => {
             el.addEventListener('change', this.skillChange.bind(this));
+        });
+        // Expertise checkbox click.
+        Array.from(document.querySelectorAll('input[data-name="expert"]')).forEach((el) => {
+            el.addEventListener('change', this.updateExpertise.bind(this));
         });
         /**
          * Event: If spell slot changes, show show/hide spell list.
