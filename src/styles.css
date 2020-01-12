@@ -552,13 +552,17 @@ td[contenteditable=true] {
 */
 .pc-attributes, .pc-skills {
     list-style-type: none;
-    font-size: 1.25rem;
+    font-size: 1rem;
     line-height: 1.75rem;
-    margin: 0;
+    margin: 0 0 1.5rem 0;
     padding: 0;
 }
-.pc-attributes li, .pc-skills li {
-    margin-bottom: 1.25rem;
+.pc-attributes li {
+    margin-bottom: .75rem;
+    white-space: nowrap;
+}
+.pc-skills li {
+    margin-bottom: .25rem;
     white-space: nowrap;
 }
 .pc-attributes label {
@@ -571,7 +575,7 @@ td[contenteditable=true] {
 }
 .pc-skills label {
     display: inline-block;
-     margin-right: 1rem;
+    margin-right: 1rem;
 }
 .pc-attributes input[type=number] {
     display: inline-block;
