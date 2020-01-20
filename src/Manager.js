@@ -5,16 +5,11 @@
 import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from './CharacterService.js';
 import { default as Modal } from './Modal.js';
 import { default as ShortCutKeys } from './ShortCutKeys.js';
-import { default as Tabs} from './Tabs.js';
-import { constants as characterConstants } from './Character5e.js';
+import { default as SheetView } from './views/SheetView.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
     emitter: null,
-    /**
-     * App/rules/game specific UI handling
-     */
-    rules_ui: null,
     /**
      * Currently loaded character data is here
      * @prop {Character5e}
@@ -52,158 +47,14 @@ const Manager = {
      * @param {String} key Character identifier
      */
     loadCharacter: function (key) {
-        this.dialog_unsaved.hidden = true;
+        this.hideUnsavedDialog();
         this.cur_character = getCharacter(key);
         if (!this.cur_character) {
             this.cur_character = newCharacter(key);
         }
-        this.renderCharacter();
+        this.cur_character.emitter = this.emitter;
+        this.sheetView.character = this.cur_character;
         this.emitter.trigger('loaddialog:close');
-    },
-    /**
-     * Take character data and fill it into the page
-     */
-    renderCharacter: function () {
-        if (this.cur_character === null) { return; }
-        const fields = Array.from(document.querySelectorAll('*[data-name]'));
-        fields.forEach((el) => {
-            const f = el.getAttribute('data-name');
-            if (typeof this.cur_character[f] === 'undefined') {
-                return;
-            }
-            const subf = el.getAttribute('data-subfield');
-            if (subf !== null) {
-                if (typeof this.cur_character[f][subf] === 'undefined') {
-                    return;
-                }
-            }
-            if (typeof this.cur_character[f] !== 'undefined') {
-                switch (el.tagName) {
-                    case 'INPUT':
-                    case 'SELECT':
-                    case 'TEXTAREA':
-                        if (el.getAttribute('type') === 'checkbox') {
-                            const checked = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                            if (checked) {
-                                el.checked = true;
-                            } else {
-                                el.checked = false;
-                            }
-                            if (f === 'skills') {
-                                const expertise = el.nextElementSibling;
-                                if (expertise) {
-                                    if (checked === characterConstants.SKILL_EXPERT) {
-                                        expertise.checked = true;
-                                    } else {
-                                        expertise.checked = false;
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                        el.value = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                        const event = new Event('change');
-                        el.dispatchEvent(event);
-                        break;
-                    case 'UL':
-                        // clear list
-                        while (el.firstChild) {
-                            el.removeChild(el.firstChild);
-                        }
-                        let items = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                        if (!Array.isArray(items)) { items = items.split(/;|<br\/?>/); }
-                        const li_blank = el.querySelector('li:empty');
-                        if (items.length > 0) {
-                            items.forEach((i) => {
-                                if (i === '') { return; }
-                                const li = document.createElement('li');
-                                li.setAttribute('contenteditable', 'true');
-                                li.innerHTML = i;
-                                el.insertBefore(li, li_blank);
-                            });
-                        }
-                        // add a blank one at the end
-                        const li = document.createElement('li');
-                        li.setAttribute('contenteditable', 'true');
-                        el.appendChild(li);
-                        break;
-                    case 'DL':
-                        // clear list
-                        while (el.firstChild) {
-                            el.removeChild(el.firstChild);
-                        }
-                        let defItems = this.cur_character[f];
-                        const template = document.getElementById('defListItem');
-                        // Add in the saved items.
-                        if (defItems.length > 0) {
-                            defItems.forEach((i) => {
-                                if (i.length === 0) {
-                                    return;
-                                }
-                                const header = Array.isArray(i) ? i[0] : i;
-                                const text = Array.isArray(i) ? i[1] : '';
-                                const div = document.importNode(template.content, true);
-                                if (header) {
-                                    div.querySelector('dt').innerHTML = header;
-                                }
-                                if (text) {
-                                    div.querySelector('dd').innerHTML = text;
-                                }
-                                el.insertBefore(div, null);
-                            });
-                        }
-                        // add a blank one at the end
-                        const div = document.importNode(template.content, true);
-                        el.appendChild(div);
-                        break;
-                    case 'TABLE':
-                        const columnCount = el.querySelectorAll('th').length;
-                        const tbody = el.querySelector('tbody');
-                        const row = document.createElement('tr');
-                        const td = document.createElement('td');
-                        td.setAttribute('contenteditable', 'true');
-
-                        // clear table body
-                        while (tbody.firstChild) {
-                            tbody.removeChild(tbody.firstChild);
-                        }
-                        const rowItems = this.cur_character[f];
-                        if (rowItems.length > 0) {
-                            rowItems.forEach((item) => {
-                                if (!Array.isArray(item)) {
-                                    return;
-                                }
-                                const curRow = row.cloneNode(false);
-                                item.forEach((cell) => {
-                                    const curCell = td.cloneNode(false);
-                                    curCell.innerHTML = cell;
-                                    curRow.appendChild(curCell);
-                                });
-                                let emptyCells = columnCount - item.length;
-                                while (emptyCells > 0) {
-                                    const curCell = td.cloneNode(false);
-                                    curRow.appendChild(curCell);
-                                    emptyCells--;
-                                }
-                                tbody.appendChild(curRow);
-                            });
-                        }
-
-                        for (let i = 1; i <= columnCount; i++) {
-                            row.appendChild(td.cloneNode(false));
-                        }
-                        tbody.appendChild(row);
-                        break;
-                    default:
-                        el.innerHTML = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                        const event2 = new Event('blur');
-                        el.dispatchEvent(event2);
-                        break;
-                }
-            }
-        });
-        // Update proficiency/attr/save/skill modifiers
-        this.rules_ui.postRender();
     },
     /**
      * Save character data
@@ -213,119 +64,12 @@ const Manager = {
             alert('No character to save.');
             return;
         }
-        const fields = Array.from(document.querySelectorAll('*[data-name]'));
-        fields.forEach((el) => {
-            const f = el.getAttribute('data-name');
-            if (typeof this.cur_character[f] === 'undefined') {
-                return;
-            }
-            const subf = el.getAttribute('data-subfield');
-            if (subf !== null) {
-                if (typeof this.cur_character[f][subf] === 'undefined') {
-                    return;
-                }
-            }
-            switch (el.tagName) {
-                case 'INPUT':
-                case 'SELECT':
-                case 'TEXTAREA':
-                    if (el.getAttribute('type') === 'checkbox') {
-                        const checked = el.checked ? 1 : 0;
-                        if (subf) {
-                            this.cur_character[f][subf] = checked;
-                        } else {
-                            this.cur_character[f] = checked;
-                        }
-                        if (checked && f === 'skills') {
-                            const expertise = el.nextElementSibling;
-                            if (expertise && expertise.checked) {
-                                this.cur_character[f][subf] = characterConstants.SKILL_EXPERT;
-                            }
-                        }
-                        break;
-                    }
-                    if (subf) {
-                        this.cur_character[f][subf] = el.value;
-                    } else {
-                        this.cur_character[f] = el.value;
-                    }
-                    break;
-                case 'UL':
-                    const items = [];
-                    const lis = Array.from(el.querySelectorAll('li'));
-                    if (lis.length > 0) {
-                        lis.forEach((li) => {
-                            const val = li.innerHTML;
-                            if (val === '') { return; }
-                            items.push(val);
-                        });
-                    }
-                    if (subf) {
-                        this.cur_character[f][subf] = items;
-                    } else {
-                        this.cur_character[f] = items;
-                    }
-                    break;
-                case 'DL':
-                    const objects = [];
-                    const pairs = Array.from(el.querySelectorAll('.defListPair'));
-                    if (pairs.length === 0) {
-                        break;
-                    }
-                    pairs.forEach((el) => {
-                        const dt = el.querySelector('dt');
-                        const dd = el.querySelector('dd');
-                        if (!dt && !dd) {
-                            return;
-                        }
-                        const header = dt ? dt.innerHTML : '';
-                        const text = dd ? dd.innerHTML : '';
-                        if (header === '' && text === '') {
-                            return;
-                        }
-                        objects.push([header, text]);
-                    });
-                    this.cur_character[f] = objects;
-                    break;
-                case 'TABLE':
-                    const entries = [];
-                    const rows = Array.from(el.querySelectorAll('tbody tr'));
-                    if (rows.length === 0) {
-                        break;
-                    }
-                    rows.forEach((el) => {
-                        const cells = Array.from(el.querySelectorAll('td'));
-                        if (cells.length === 0) {
-                            return;
-                        }
-                        const rowData = [];
-                        cells.forEach((cell) => {
-                            const text = cell.innerHTML;
-                            rowData.push(text);
-                        });
-                        const filledCells = rowData.filter((el) => { return el !== ''; });
-                        if (filledCells.length === 0) {
-                            return;
-                        }
-                        entries.push(rowData);
-                    });
-                    this.cur_character[f] = entries;
-                    break;
-                default:
-                    if (subf) {
-                        this.cur_character[f][subf] = el.innerHTML;
-                    } else {
-                        this.cur_character[f] = el.innerHTML;
-                    }
-                    break;
-            }
-        });
         if (this.cur_character.charname === '') {
             alert('Your character must have name to save!');
             return;
         }
         saveCharacter(this.cur_character, this.appname);
-        this.dialog_unsaved.hidden = true;
+        this.hideUnsavedDialog();
     },
     /**
      * Save a file of the current character
@@ -550,33 +294,96 @@ ${JSON.stringify(data)}`;
         this.alert.setContent(document.importNode(template.content, true));
     },
     /**
+     * Show the unsaved data dialog.
+     */
+    showUnsavedDialog: function () {
+        this.dialog_unsaved.hidden = false;
+    },
+    /**
+     * Hide the unsaved data dialog.
+     */
+    hideUnsavedDialog: function() {
+        this.dialog_unsaved.hidden = true;
+    },
+    /**
+     * When a field is changed in the UI.
+     * @param {CustomEvent} ev
+     */
+    handleFieldChange: function (ev) {
+        const field = ev.detail.field || '';
+        const subfield = ev.detail.subfield || '';
+        if (!field) {
+            return;
+        }
+        if (typeof this.cur_character[field] === 'undefined') {
+            return;
+        }
+        if (field === 'skills') {
+            this.cur_character.setSkill(subfield, ev.detail.value);
+            this.dialog_unsaved.hidden = false;
+            return;
+        }
+        if (subfield) {
+            if (!this.cur_character[field][subfield]) {
+                return;
+            }
+            this.cur_character[field][subfield] = ev.detail.value;
+            this.dialog_unsaved.hidden = false;
+            return;
+        }
+        this.cur_character[field] = ev.detail.value;
+        this.dialog_unsaved.hidden = false;
+    },
+    /**
+     * When an attribute is changed in the UI.
+     * @param {CustomEvent} ev
+     */
+    handleAttributeChange: function (ev) {
+        const field = ev.detail.field || '';
+        if (!field) {
+            return;
+        }
+        this.cur_character.setAttribute(field, ev.detail.value);
+        this.dialog_unsaved.hidden = false;
+    },
+    /**
+     * When a save is (un)checked in the UI.
+     * @param {CustomEvent} ev
+     */
+    handleSaveChange: function(ev) {
+        const field = ev.detail.field || '';
+        if (!field) {
+            return;
+        }
+        this.cur_character.setSaveProficiency(field, ev.detail.value);
+        this.dialog_unsaved.hidden = false;
+    },
+    /**
      * Start up the app with some events and such
      * @param {Object} settings things we need to set external to this script
      * @param {EventEmitter} settings.emitter
-     * @param {Object} settings.ui UI events.
      * @param {String} settings.prefix prefix for localStorage keys
      * @param {String} settings.appname used to identify the app property in a character model
      */
     initialize: function (settings) {
-        if (!settings.emitter || !settings.ui || !settings.prefix || !settings.appname) {
+        if (!settings.emitter || !settings.prefix || !settings.appname) {
             document.body.innerHTML = '<p>App is missing required settings.</p>';
             return;
         }
         this.emitter = settings.emitter;
-        this.rules_ui = settings.ui;
         this.appname = settings.appname;
         // set up storage
         setLocalStoragePrefix(settings.prefix);
         // set up default alert
         this.alert = new Modal(document.getElementById('alert-main'));
 
+        this.sheetView = new SheetView(this.emitter);
+        this.sheetView.initialize();
+
         if (getCharacterCount() === 0) {
             this.showIntroDialog();
         }
-        // set up all the rule specific ui events (attribute modifiers and the like)
-        this.rules_ui.initialize();
 
-        const mainTabs = new Tabs(document.querySelector('main > ul[role=tablist]'));
         const shortCuts = new ShortCutKeys(this.emitter);
         shortCuts.addShortCut('Ctrl+Shift+ArrowDown', 'character:save');
         shortCuts.addShortCut('Ctrl+Shift+ArrowRight', 'tab:switch');
@@ -589,7 +396,7 @@ ${JSON.stringify(data)}`;
                 const link = e.target;
                 const targetPane = link.dataset.tab;
                 if (targetPane) {
-                    mainTabs.switchToPane(targetPane);
+                    this.sheetView.switchToPane(targetPane);
                 }
                 const target_id = link.getAttribute('href').substring(1);
                 document.getElementById(target_id).scrollIntoView();
@@ -614,7 +421,9 @@ ${JSON.stringify(data)}`;
             this.triggerNewCharacter();
         }
 
-        this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => { this.emitter.trigger('character:save'); });
+        this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => {
+            this.emitter.trigger('character:save');
+        });
         this.dialog_undo.querySelector('.btn-delete-undo').addEventListener('click', (ev) => {
             this.undoDelete(ev);
         });
@@ -625,7 +434,13 @@ ${JSON.stringify(data)}`;
         this.emitter.on('character:delete:confirm', this.deletePrompt, this);
         this.emitter.on('backup:download', this.downloadBackup, this);
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
-        this.emitter.on('tab:switch', mainTabs.switchToPane, mainTabs);
+        this.emitter.on('tab:switch', this.sheetView.switchToPane, this.sheetView);
+        this.emitter.on('dialog:save:show', this.showUnsavedDialog, this);
+        this.emitter.on('dialog:save:hide', this.hideUnsavedDialog, this);
+
+        document.addEventListener('fieldChange', this.handleFieldChange.bind(this));
+        document.addEventListener('attributeChange', this.handleAttributeChange.bind(this));
+        document.addEventListener('saveChange', this.handleSaveChange.bind(this));
     }
 };
 

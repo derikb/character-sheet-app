@@ -393,36 +393,28 @@ h1 {
 
 
 /* Fields at top of page */
-[contenteditable=true] {
-    display: inline-block;
-}
-[contenteditable=true]:empty:before {
-    content: attr(placeholder);
-    color: #aaa;
-}
-[contenteditable=true]:empty {
-    border: 1px dotted #bbb;
-    border-radius: 4px;
-}
-.field [contenteditable=true] {
+.field field-editable {
     min-width: 7rem;
 }
-.field [contenteditable=true]:empty {
-    line-height: 1.4rem;
-    min-height: 1.5rem;
-}
-.field .small[contenteditable=true] {
+.field field-editable.small {
     min-width: 3rem;
 }
-.large[contenteditable=true] {
-/*     min-width: 15rem; */
+
+field-editable.smallinline {
+    display: inline-block;
+    min-width: 3rem;
+    width: auto;
 }
-.smallarea[contenteditable=true] {
+field-editable + strong + field-editable {
+    text-align: right;
+}
+
+field-editable.smallarea {
     min-width: 100%;
     margin-bottom: 1.5rem;
     min-height: 4.5rem;
 }
-.largearea[contenteditable=true] {
+field-editable.largearea {
     min-width: 100%;
     margin-bottom: 1.5rem;
     min-height: 7.5rem;
@@ -453,12 +445,6 @@ dl.field div {
 dl.field div.with_icon {
     margin-top: 0;
 }
-div.with_icon [contenteditable=true]:empty {
-    border: none;
-}
-div.with_icon [contenteditable=true]:empty:before {
-    line-height: 2.5rem;
-}
 dl.field dt {
     display: inline-block;
     font-weight: 500;
@@ -477,11 +463,8 @@ dl.field dd:first-of-type {
 dl.field dd:last-of-type {
     margin-right: 0rem;
 }
-span[data-name=hd_max] {
-    text-align: right;
-}
 
-dd[data-name=armor_class] {
+[data-name=armor_class] {
     background-image: url(/images/shield.svg);
     background-repeat: no-repeat;
     height: 3rem;
@@ -490,7 +473,7 @@ dd[data-name=armor_class] {
     background-position: center;
     line-height: 2.5rem;
 }
-span[data-name=hp_max] {
+[data-name=hp_max] {
     background-image: url(/images/heart.svg);
     background-repeat: no-repeat;
     height: 3rem;
@@ -500,7 +483,7 @@ span[data-name=hp_max] {
     background-position: center;
     line-height: 2.5rem;
 }
-span[data-name=hp_cur] {
+[data-name=hp_cur] {
     background-image: url(/images/heart_broken.svg);
     background-repeat: no-repeat;
     height: 3rem;
@@ -516,12 +499,6 @@ input[type='number'].small {
     width: 3rem;
 }
 
-td[contenteditable=true] {
-    display: table-cell;
-    padding: .25rem;
-    margin-bottom: .25rem;
-}
-
 /* Larger than phone screen */
 @media (min-width: 50.0rem), print {
     dl.field {
@@ -535,7 +512,6 @@ td[contenteditable=true] {
     .grid {
         display: grid;
         grid-gap: 2rem;
-        /* grid-template-columns: repeat(auto-fill, minmax(30%,1fr)); */
         grid-template-columns: 1fr 1fr 1fr;
     }
     .grid .fullwidth {
@@ -556,66 +532,6 @@ td[contenteditable=true] {
     line-height: 1.75rem;
     margin: 0 0 1.5rem 0;
     padding: 0;
-}
-.pc-attributes li {
-    margin-bottom: .75rem;
-    white-space: nowrap;
-}
-.pc-skills li {
-    margin-bottom: .25rem;
-    white-space: nowrap;
-}
-.pc-attributes label {
-    display: inline-block;
-     margin-right: 1rem;
-     width: auto;
-}
-.pc-attributes label:first-of-type {
-     width: 2rem;
-}
-.pc-skills label {
-    display: inline-block;
-    margin-right: 1rem;
-}
-.pc-attributes input[type=number] {
-    display: inline-block;
-    margin-right: 1rem;
-    width: 3rem;
-    border: 1px dotted #bbb;
-    padding: 0;
-}
-.pc-attributes input[type=checkbox], .pc-skills input[type=checkbox] {
-    width: auto;
-    margin-right: 0.5rem;
-    display: inline-block;
-}
-.pc-attribute-mod, .pc-save-mode {
-    display: inline-block;
-    margin-right: 1rem;
-    font-weight: bold;
-    min-width: 1.5rem;
-    text-align: right;
-}
-
-ul.list-vertical {
-    margin-bottom: 1rem;
-}
-ul.list-vertical li {
-    display: block;
-    margin-bottom: 0.125rem;
-    border-bottom: 1px solid rgb(207,0,15);
-}
-
-dl.list-vertical dt, dl.list-vertical dd {
-    display: block;
-}
-dl.list-vertical dt {
-    font-weight: bold;
-}
-dl.list-vertical div.defListPair {
-    margin-bottom: .5rem;
-    padding-bottom: .5rem;
-    border-bottom: 1px solid rgb(207,0,15);
 }
 
 /*
@@ -657,13 +573,6 @@ nav ol {
 }
 nav ol li {
     display: inline-block;
-/*    margin-right: 1rem;
-    border-right: 1px solid rgb(51, 51, 51);
-    padding-right: 1rem;
-
-    font-size: 0.75rem;
-    line-height: 1rem;
-*/
 }
 nav ol li:last-of-type {
     margin-bottom: 0;
@@ -730,9 +639,8 @@ ul[role=tablist] a[aria-selected=true] {
    }
    h2, h3 {
        font-size: 1rem;
-    line-height: 1.5rem;
-    margin: 0 0 .5rem;
-/*      page-break-after: avoid; */
+        line-height: 1.5rem;
+        margin: 0 0 .5rem;
    }
    dl.field div {
        margin: 0 0 0.5rem 0;
@@ -744,7 +652,7 @@ ul[role=tablist] a[aria-selected=true] {
    .pc-attributes li, .pc-skills li {
        margin: 0 0 0 0;
    }
-   .smallarea[contenteditable=true], .largearea[contenteditable=true] {
+   field-editable.smallarea, field-editable.largearea {
        margin-bottom: .5rem;
        min-height: 0;
        display: block; /* somehow this makes a big difference with page breaks */

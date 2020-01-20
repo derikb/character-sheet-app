@@ -27,7 +27,11 @@ const Storage = {
                 this.set(key, txt);
             }
         }
-        return (txt !== null) ? JSON.parse(txt) : null;
+        try {
+            return (txt !== null) ? JSON.parse(txt) : null;
+        } catch(e) {
+            return null;
+        }
     },
     /**
      * Store a value for the key
@@ -45,6 +49,7 @@ const Storage = {
             }
         } catch (e) {
             // Should only happen when over quota
+            console.log(e.message);
             return false;
         }
         return true;

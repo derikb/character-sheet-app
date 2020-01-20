@@ -43,7 +43,7 @@
                 <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
             </div>
             <header id="page-top" class="page-header">
-                <h1 class="pc-charname" data-name="charname" placeholder="Character Name" contenteditable="true" aria-label="Character Name"></h1>
+                <h1 class="pc-charname" aria-label="Character Name"><field-editable data-name="charname" placeholder="Character Name"></field-editable></h1>
                 <div class="menu-open">
                     <button type="button" class="btn-open-actions">Menu</button>
                 </div>
@@ -59,47 +59,45 @@
                     <section class="fullwidth">
                         <dl class="field">
                             <div>
-                                <dt>Class</dt><dd contenteditable="true" data-name="charclass"></dd>
+                                <dt>Class</dt><dd><field-editable data-name="charclass"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Race</dt><dd contenteditable="true" data-name="race"></dd>
+                                <dt>Race</dt><dd><field-editable data-name="race"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Background</dt><dd contenteditable="true" data-name="background"></dd>
+                                <dt>Background</dt><dd><field-editable data-name="background"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Alignment</dt><dd contenteditable="true" class="large" data-name="alignment"></dd>
+                                <dt>Alignment</dt><dd><field-editable data-name="alignment"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Level</dt><dd contenteditable="true" class="small" data-name="level"></dd>
+                                <dt>Level</dt><dd><field-editable data-name="level" class="small"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Experience</dt><dd contenteditable="true" class="small" data-name="experience"></dd>
+                                <dt>Experience</dt><dd><field-editable data-name="experience" class="small"></field-editable></dd>
                             </div>
                             <div>
                                 <dt>Proficiency Bonus</dt><dd class="small" data-name="proficiency"></dd>
                             </div>
                             <div>
-                                <dt>Inspiration</dt><dd contenteditable="true" class="small" data-name="inspiration"></dd>
+                                <dt>Inspiration</dt><dd><field-editable data-name="inspiration" class="small"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Speed</dt><dd contenteditable="true" class="small" data-name="speed"></dd>
+                                <dt>Speed</dt><dd><field-editable data-name="speed" class="small"></field-editable></dd>
                             </div>
                             <div>
                                 <dt>Hit Dice</dt>
                                 <dd>
-                                    <span contenteditable="true" class="small" data-name="hd_cur" placeholder="1" aria-label="Current Hit Dice"></span> <strong>/</strong>
-                                    <span contenteditable="true" class="small" data-name="hd_max" placeholder="1" aria-label="Maximum Hit Dice"></span>
+                                    <field-editable class="smallinline" data-name="hd_cur" placeholder="0" aria-label="Current Hit Dice"></field-editable> <strong>/</strong> <field-editable class="smallinline" data-name="hd_max" placeholder="0" aria-label="Maximum Hit Dice"></field-editable>
                                 </dd>
                             </div>
                             <div class="with_icon">
-                                <dt>Armor Class</dt><dd contenteditable="true" class="small" data-name="armor_class" placeholder="10"></dd>
+                                <dt>Armor Class</dt><dd><field-editable data-name="armor_class" placeholder="10" class="small"></field-editable></dd>
                             </div>
                             <div class="with_icon">
                                 <dt>Hit Points</dt>
                                 <dd>
-                                    <span contenteditable="true" class="small" data-name="hp_cur" placeholder="0" aria-label="Current Hit Points"></span> <strong>/</strong>
-                                    <span contenteditable="true" class="small" data-name="hp_max" placeholder="0" aria-label="Maximum Hit Points"></span>
+                                    <field-editable class="smallinline" data-name="hp_cur" placeholder="0" aria-label="Current Hit Points"></field-editable> <strong>/</strong> <field-editable class="smallinline" data-name="hp_max" placeholder="0" aria-label="Maximum Hit Points"></field-editable>
                                 </dd>
                             </div>
                             <div>
@@ -116,244 +114,58 @@
                     <section>
                         <h2 id="page-attributes">Attributes</h2>
                         <ul class="pc-attributes">
-                            <li>
-                                <label for="str">Str</label>
-                                <input type="number" id="str" class="pc-str pc-attribute" data-name="str" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-str-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-str-save" data-name="saves" data-subfield="str" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="dex">Dex</label>
-                                <input type="number" id="dex" class="pc-dex pc-attribute" data-name="dex" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-dex-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-dex-save" data-name="saves" data-subfield="dex" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="con">Con</label>
-                                <input type="number" id="con" class="pc-con pc-attribute" data-name="con" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-con-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-con-save" data-name="saves" data-subfield="con" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="intel">Int</label>
-                                <input type="number" id="intel" class="pc-int pc-attribute" data-name="intel" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-intel-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-intel-save" data-name="saves" data-subfield="intel" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="wis">Wis</label>
-                                <input type="number" id="wis" class="pc-wis pc-attribute" data-name="wis" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-wis-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-wis-save" data-name="saves" data-subfield="wis" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
-                            <li>
-                                <label for="cha">Cha</label>
-                                <input type="number" id="cha" class="pc-cha pc-attribute" data-name="cha" value=10 min=3 max=25 />
-                                <span class="pc-attribute-mod" id="pc-cha-mod">0</span>
-                                <label>
-                                    <input type="checkbox" name="pc-cha-save" data-name="saves" data-subfield="cha" value=1 />
-                                    Save
-                                </label>
-                                <span class="pc-save-mod small" contenteditable="true">0</span>
-                            </li>
+                            <attr-listing data-name="str">Str</attr-listing>
+                            <attr-listing data-name="dex">Dex</attr-listing>
+                            <attr-listing data-name="con">Con</attr-listing>
+                            <attr-listing data-name="intel">Int</attr-listing>
+                            <attr-listing data-name="wis">Wis</attr-listing>
+                            <attr-listing data-name="cha">Cha</attr-listing>
                         </ul>
 
                         <h2 id="page-skills">Skills</h2>
                         <ul class="pc-skills">
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="acrobatics" data-attr="dex" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="acrobatics" aria-label="Skill Expertise" />
-                                    Acrobatics (Dex)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="animal_handling" data-attr="wis" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="animal_handling" aria-label="Skill Expertise" />
-                                    Animal Handling (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="arcana" data-attr="intel" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="arcana" aria-label="Skill Expertise" />
-                                    Arcana (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                                </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="athletics" data-attr="str"  />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="athletics" aria-label="Skill Expertise" />
-                                    Athletics (Str)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="deception" data-attr="cha" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="deception" aria-label="Skill Expertise" />
-                                    Deception (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="history" data-attr="intel" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="history" aria-label="Skill Expertise" />
-                                    History (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="insight" data-attr="wis" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="insight" aria-label="Skill Expertise" />
-                                    Insight (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="intimidation" data-attr="cha" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="intimidation" aria-label="Skill Expertise" />
-                                    Intimidation (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="investigation" data-attr="intel" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="investigation" aria-label="Skill Expertise" />
-                                    Investigation (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="medicine" data-attr="wis" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="medicine" aria-label="Skill Expertise" />
-                                    Medicine (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="nature" data-attr="intel" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="nature" aria-label="Skill Expertise" />
-                                    Nature (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="perception" data-attr="wis" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="perception" aria-label="Skill Expertise" />
-                                    Perception (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="performance" data-attr="cha" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="performance" aria-label="Skill Expertise" />
-                                    Performance (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="persuasion" data-attr="cha" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="persuasion" aria-label="Skill Expertise" />
-                                    Persuasion (Cha)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="religion" data-attr="intel" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="religion" aria-label="Skill Expertise" />
-                                    Religion (Int)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="sleight_of_hand" data-attr="dex" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="sleight_of_hand" aria-label="Skill Expertise" />
-                                    Sleight of Hand (Dex)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="stealth" data-attr="dex" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="stealth" aria-label="Skill Expertise" />
-                                    Stealth (Dex)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
-                            <li>
-                                <label>
-                                    <input type="checkbox" value=1 data-name="skills" data-subfield="survival" data-attr="wis" />
-                                    <input type="checkbox" value=1 data-name="expert" data-subfield="survival" aria-label="Skill Expertise" />
-                                    Survival (Wis)
-                                </label>
-                                <span class="pc-skill-mod">0</span>
-                            </li>
+                            <skill-listing data-name="skills" data-subfield="acrobatics">Acrobatics (Dex)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="animal_handling">Animal Handling (Wis)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="arcana">Arcana (Int)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="athletics">Athletics (Str)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="deception">Deception (Cha)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="history">History (Int)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="insight">Insight (Wis)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="intimidation">Intimidation (Cha)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="investigation">Investigation (Int)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="medicine">Medicine (Wis)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="nature">Nature (Int)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="perception">Perception (Wis)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="performance">Performance (Cha)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="persuasion">Persuasion (Cha)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="religion">Religion (Int)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="sleight_of_hand">Sleight of Hand (Dex)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="stealth">Stealth (Dex)</skill-listing>
+                            <skill-listing data-name="skills" data-subfield="survival">Survival (Wis)</skill-listing>
                         </ul>
                     </section>
 
                     <section class="grid-span-col-2">
                         <h2>Weapons & Attacks</h2>
-                        <table class="table-editable" data-name="weapons">
-                            <thead>
-                                <th>Weapon</th><th>Att.</th><th>Damage</th><th>Notes</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                        <table-editable columns="Weapon||Att.||Damage||Notes" data-name="weapons"></table-editable>
 
                         <h2>Features & Traits</h2>
-                        <ul class="list-vertical" data-name="features"></ul>
+                        <simple-list data-name="features"></simple-list>
 
                         <h2>Other Proficiencies</h2>
-                        <div contenteditable="true" class="largearea" data-name="proficiencies_other"></div>
+                        <field-editable class="largearea" data-name="proficiencies_other"></field-editable>
 
                         <h2>Equipment</h2>
-                        <ul class="list-vertical" data-name="equipment"></ul>
+                        <simple-list data-name="equipment"></simple-list>
 
                         <dl class="field">
                             <div>
-                                <dt>CP</dt><dd contenteditable="true" class="small" data-name="cp" placeholder="0"></dd>
-                                <dt>SP</dt><dd contenteditable="true" class="small" data-name="sp" placeholder="0"></dd>
+                                <dt>CP</dt><dd><field-editable data-name="cp" placeholder="0" class="small"></field-editable></dd>
+                                <dt>SP</dt><dd><field-editable data-name="sp" placeholder="0" class="small"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>GP</dt><dd contenteditable="true" class="small" data-name="gp" placeholder="0"></dd>
-                                <dt>PP</dt><dd contenteditable="true" class="small" data-name="pp" placeholder="0"></dd>
+                                <dt>GP</dt><dd><field-editable data-name="gp" placeholder="0" class="small"></field-editable></dd>
+                                <dt>PP</dt><dd><field-editable data-name="pp" placeholder="0" class="small"></field-editable></dd>
                             </div>
                         </dl>
                     </section>
@@ -363,13 +175,13 @@
 
                         <dl class="field">
                             <div>
-                                <dt>Spell Ability</dt><dd contenteditable="true" data-name="spell_ability"></dd>
+                                <dt>Spell Ability</dt><dd><field-editable data-name="spell_ability"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Spell Save DC</dt><dd contenteditable="true" data-name="spell_save"></dd>
+                                <dt>Spell Save DC</dt><dd><field-editable data-name="spell_save"></field-editable></dd>
                             </div>
                             <div>
-                                <dt>Spell Attack Bonus</dt><dd contenteditable="true" data-name="spell_attack"></dd>
+                                <dt>Spell Attack Bonus</dt><dd><field-editable data-name="spell_attack"></field-editable></dd>
                             </div>
                         </dl>
 
@@ -445,88 +257,88 @@
 
                     <section>
                         <h3>Cantrips</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="0"></ul>
+                        <simple-list data-name="spells" data-subfield="0"></simple-list>
                     </section>
                     <section hidden>
                         <h3>1st</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="1"></ul>
+                        <simple-list data-name="spells" data-subfield="1"></simple-list>
                     </section>
                     <section hidden>
                         <h3>2nd</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="2"></ul>
+                        <simple-list data-name="spells" data-subfield="2"></simple-list>
                     </section>
                     <section hidden>
                         <h3>3rd</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="3"></ul>
+                        <simple-list data-name="spells" data-subfield="3"></simple-list>
                     </section>
                     <section hidden>
                         <h3>4th</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="4"></ul>
+                        <simple-list data-name="spells" data-subfield="4"></simple-list>
                     </section>
                     <section hidden>
                         <h3>5th</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="5"></ul>
+                        <simple-list data-name="spells" data-subfield="5"></simple-list>
                     </section>
                     <section hidden>
                         <h3>6th</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="6"></ul>
+                        <simple-list data-name="spells" data-subfield="6"></simple-list>
                     </section>
                     <section hidden>
                         <h3>7th</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="7"></ul>
+                        <simple-list data-name="spells" data-subfield="7"></simple-list>
                     </section>
                     <section hidden>
                         <h3>8th</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="8"></ul>
+                        <simple-list data-name="spells" data-subfield="8"></simple-list>
                     </section>
                     <section hidden>
                         <h3>9th</h3>
-                        <ul class="list-vertical" data-name="spells" data-subfield="9"></ul>
+                        <simple-list data-name="spells" data-subfield="9"></simple-list>
                     </section>
                 </section>
 
                 <section id="pane-notes" role="tabpanel" aria-labelledby="tab-notes" hidden class="grid">
                     <section>
                         <h2>NPCs</h2>
-                        <dl class="list-vertical" data-name="npcs"></dl>
+                        <note-list data-name="npcs"></note-list>
                     </section>
                     <section>
                         <h2>Factions</h2>
-                        <dl class="list-vertical" data-name="factions"></dl>
+                        <note-list data-name="factions"></note-list>
                     </section>
                     <section>
                         <h2>Party Members</h2>
-                        <dl class="list-vertical" data-name="partymembers"></dl>
+                        <note-list data-name="partymembers"></note-list>
                     </section>
 
                     <section>
                         <h2>Personality</h2>
                         <h3>Traits</h3>
-                        <div contenteditable="true" class="smallarea" data-name="traits"></div>
+                        <field-editable class="smallarea" data-name="traits"></field-editable>
                         <h3>Ideals</h3>
-                        <div contenteditable="true" class="smallarea" data-name="ideals"></div>
+                        <field-editable class="smallarea" data-name="ideals"></field-editable>
                         <h3>Bonds</h3>
-                        <div contenteditable="true" class="smallarea" data-name="bonds"></div>
+                        <field-editable class="smallarea" data-name="bonds"></field-editable>
                         <h3>Flaws</h3>
-                        <div contenteditable="true" class="smallarea" data-name="flaws"></div>
+                        <field-editable class="smallarea" data-name="flaws"></field-editable>
                         <h3>Appearance</h3>
-                        <div contenteditable="true" class="smallarea" data-name="appearance"></div>
+                        <field-editable class="smallarea" data-name="appearance"></field-editable>
                         <h2>Languages</h2>
-                        <div contenteditable="true" class="smallarea" data-name="languages"></div>
+                        <field-editable class="smallarea" data-name="languages"></field-editable>
                     </section>
 
                     <section>
                         <h2 id="page-notes_adv">Adventure Notes</h2>
-                        <dl class="list-vertical" data-name="notes_adv"></dl>
+                        <note-list data-name="notes_adv"></note-list>
                     </section>
                     <section>
                         <h2>Campaign Notes</h2>
-                        <dl class="list-vertical" data-name="notes_cam"></dl>
+                        <note-list data-name="notes_cam"></note-list>
                     </section>
 
                     <section>
                         <h2>Character Notes</h2>
-                        <div contenteditable="true" class="largearea" data-name="notes"></div>
+                        <field-editable class="largearea" data-name="notes"></field-editable>
                     </section>
                 </section>
             </main>
@@ -553,8 +365,14 @@
             import { default as ActionMenu } from './src/ActionMenu.js';
             import { default as EventEmitter } from './src/EventEmitter.js';
             import { default as Manager } from './src/Manager.js';
-            import { default as ui } from './src/UI5e.js';
 
+            import { default as NoteListItem } from './src/components/NoteListItem.js';
+            import { default as NoteList } from './src/components/NoteList.js';
+            import { default as SimpleList } from './src/components/SimpleList.js';
+            import { default as TableEditable } from './src/components/TableEditable.js';
+            import { default as SkillListing } from './src/components/SkillListing.js';
+            import { default as AttributeListing } from './src/components/AttributeListing.js';
+            import { default as EditableField } from './src/components/EditableField.js';
             /**
             * Register service worker if it's supported
             */
@@ -569,7 +387,6 @@
 
             Manager.initialize({
                 emitter: emitter,
-                ui: ui,
                 prefix: 'charsheet-5e-',
                 appname: 'character-sheet-5e'
             });
@@ -584,12 +401,6 @@
             <p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p>
             <p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p>
             <p>This message will only appear until you save your first character.</p>
-        </template>
-        <template id="defListItem">
-            <div class="defListPair">
-                <dt contenteditable="true"></dt>
-                <dd contenteditable="true"></dd>
-            </div>
         </template>
         <template id="helpDialog">
             <h1 id="dialog-label" tabindex="-1">Help</h1>

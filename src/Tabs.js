@@ -59,7 +59,7 @@ class Tabs {
         }
         newPane.hidden = false;
         // Focus on first field.
-        newPane.querySelector('[contenteditable=true]').focus();
+        newPane.querySelector('[data-name]').focus();
     }
 }
 
