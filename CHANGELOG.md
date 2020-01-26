@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/derikb/character-sheet-5e/compare/v2.1.0...v2.2.0) (2020-01-26)
+
+
+### Features
+
+* **class points:** Added, also more refactoring fixes ([dcc9902](https://github.com/derikb/character-sheet-5e/commit/dcc990265793e5ed35b9e84745569923270b0bb7))
+* **design:** Make skills and attributes take up less space ([2116565](https://github.com/derikb/character-sheet-5e/commit/21165658eaeb8c445ba0575d41660abd8cfe4475)), closes [#67](https://github.com/derikb/character-sheet-5e/issues/67)
+* **notes:** Add party members fields ([8520ea6](https://github.com/derikb/character-sheet-5e/commit/8520ea6ddccdbd25fd2b3ddb2afcc3dd2b72ef56)), closes [#70](https://github.com/derikb/character-sheet-5e/issues/70)
+* **skills:** Add expertise checkbox ([6510e8e](https://github.com/derikb/character-sheet-5e/commit/6510e8e065e2ab9ada846140edaa01e33332dd70)), closes [#66](https://github.com/derikb/character-sheet-5e/issues/66)
+
+
+### Bug Fixes
+
+* **skills:** Fix sleight of hand skill typo ([eac2245](https://github.com/derikb/character-sheet-5e/commit/eac22457d95b62fddd13c1ec40b005183daabce6)), closes [#69](https://github.com/derikb/character-sheet-5e/issues/69)
+* **spell fields:** Fix for bad values in relation to spell fields ([91f22c5](https://github.com/derikb/character-sheet-5e/commit/91f22c5d96d59fb3709f6f1b41ed9bea4829e0d9))
+
 ## [2.1.0](https://github.com/derikb/character-sheet-5e/compare/v2.0.1...v2.1.0) (2020-01-07)
 
 
