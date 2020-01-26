@@ -26,6 +26,7 @@ var config = {
         '/src/views/SheetView.js',
         '/src/ActionMenu.js',
         '/src/Character5e.js',
+        '/src/CharacterConstants.js',
         '/src/CharacterService.js',
         '/src/EventEmitter.js',
         '/src/Manager.js',
