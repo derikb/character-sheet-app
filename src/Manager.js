@@ -68,6 +68,13 @@ const Manager = {
             alert('Your character must have name to save!');
             return;
         }
+        // For fields saved on blur we need to trigger it on the active field.
+        // Fields that save on change will already have saved.
+        if (document.activeElement) {
+            const event = new Event('blur');
+            document.activeElement.dispatchEvent(event);
+        }
+
         saveCharacter(this.cur_character, this.appname);
         this.hideUnsavedDialog();
     },

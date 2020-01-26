@@ -9,6 +9,9 @@ export default class Character5e {
      * Property notes...
      * @prop {String} key Unique (in one instance of the app) id for the character. 7 Random letters/numbers.
      * @prop {String} charname Name.
+     * @prop {Object} class_points Class point like ki, sorcerer points, etc.
+     * @prop {Number} class_points.cur
+     * @prop {Number} class_points.max
      * @prop {Array[]} weapons Weapon data (name, att, dam, notes).
      * @prop {String[]} features Special features and abilities.
      * @prop {String[]} equipment Stuff the character carries.
@@ -38,6 +41,10 @@ export default class Character5e {
         deathSave = {
             success: 0,
             fail: 0
+        },
+        class_points = {
+            cur: 0,
+            max: 0
         },
         str = 10,
         dex = 10,
@@ -151,6 +158,7 @@ export default class Character5e {
         this.hd_cur = hd_cur;
         this.hd_max = hd_max;
         this.deathSave = deathSave;
+        this.class_points = class_points;
         this.str = str;
         this.dex = dex;
         this.con = con;

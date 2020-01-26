@@ -45,74 +45,73 @@ class SheetView {
                 return;
             }
             const subf = el.getAttribute('data-subfield');
-            if (subf !== null) {
-                if (typeof this.cur_character[f][subf] === 'undefined') {
-                    return;
-                }
-            }
-            if (typeof this.cur_character[f] !== 'undefined') {
-                switch (el.tagName) {
-                    case 'INPUT':
-                        el.value = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                        // For spell slot input we need to trigger the display or not of spells
-                        const event = new Event('change');
-                        el.dispatchEvent(event);
-                        break;
-                    case 'SIMPLE-LIST':
-                        el.clear();
-                        let listItems = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
-                        if (listItems.length > 0) {
-                            listItems.forEach((item) => {
-                                if (item.length === 0) {
-                                    return;
-                                }
-                                el.addItem(item);
-                            })
-                        }
-                        el.addItem();
-                        break;
-                    case 'NOTE-LIST':
-                        el.clear();
-                        let noteItems = this.cur_character[f];
-                        if (noteItems.length > 0) {
-                            noteItems.forEach((item) => {
-                                if (item.length === 0) {
-                                    return;
-                                }
-                                el.addItem(item);
-                            })
-                        }
-                        el.addItem([]);
-                        break;
-                    case 'TABLE-EDITABLE':
-                        el.clear();
-                        let rowItems = this.cur_character[f];
-                        if (rowItems.length > 0) {
-                            rowItems.forEach((item) => {
-                                if (item.length === 0) {
-                                    return;
-                                }
-                                el.addRow(item);
-                            })
-                        }
-                        el.addRow();
-                        break;
-                    case 'SKILL-LISTING':
-                        el.skillValue = this.cur_character[f][subf];
-                        el.skillMod = this.cur_character.getSkillMod(subf);
-                        break;
-                    case 'ATTR-LISTING':
-                        el.attributeScore = this.cur_character[f];
-                        el.attributeMod = this.cur_character.attributeMod(f);
-                        el.saveProficiency = this.cur_character.saves[f];
-                        el.saveMod = this.cur_character.saveMod(f);
-                        break;
+            const charValue = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
+            switch (el.tagName) {
+                case 'INPUT':
+                    // Make sure numbers default to 0.
+                    // this is especially relevant for spell slots.
+                    if (el.getAttribute('type') === 'number') {
+                        el.value = charValue || 0;
+                    } else {
+                        el.value = charValue || '';
+                    }
+                    // For spell slot input we need to trigger the display or not of spells
+                    const event = new Event('change');
+                    el.dispatchEvent(event);
+                    break;
+                case 'SIMPLE-LIST':
+                    el.clear();
+                    let listItems = charValue || [];
+                    if (listItems.length > 0) {
+                        listItems.forEach((item) => {
+                            if (item.length === 0) {
+                                return;
+                            }
+                            el.addItem(item);
+                        })
+                    }
+                    el.addItem();
+                    break;
+                case 'NOTE-LIST':
+                    el.clear();
+                    let noteItems = charValue || [];
+                    if (noteItems.length > 0) {
+                        noteItems.forEach((item) => {
+                            if (item.length === 0) {
+                                return;
+                            }
+                            el.addItem(item);
+                        })
+                    }
+                    el.addItem([]);
+                    break;
+                case 'TABLE-EDITABLE':
+                    el.clear();
+                    let rowItems = charValue || [];
+                    if (rowItems.length > 0) {
+                        rowItems.forEach((item) => {
+                            if (item.length === 0) {
+                                return;
+                            }
+                            el.addRow(item);
+                        })
+                    }
+                    el.addRow();
+                    break;
+                case 'SKILL-LISTING':
+                    el.skillValue = charValue || 0;
+                    el.skillMod = this.cur_character.getSkillMod(subf);
+                    break;
+                case 'ATTR-LISTING':
+                    el.attributeScore = charValue || 10;
+                    el.attributeMod = this.cur_character.attributeMod(f);
+                    el.saveProficiency = this.cur_character.saves[f];
+                    el.saveMod = this.cur_character.saveMod(f);
+                    break;
 
-                    case 'FIELD-EDITABLE':
-                        console.log(f);
-                        el.content = this.cur_character[f];
-                        break;
-                }
+                case 'FIELD-EDITABLE':
+                    el.content = charValue || '';
+                    break;
             }
         });
 
@@ -173,34 +172,27 @@ class SheetView {
         el.saveMod = this.cur_character.saveMod(attribute);
     }
     /**
-     * When a spell slot changes, hide/show spell lists.
-     * @param {Object} e Change event object
-     */
-    spellSlotChange(ev) {
-        const spellLevel = ev.target.getAttribute('data-subfield');
-        const slots = parseInt(ev.target.value, 10);
-        this.cur_character.spell_slots[spellLevel] = slots;
-        const spellList = this.el.querySelector(`[data-name="spells"][data-subfield="${spellLevel}"]`);
-        if (!slots) {
-            // this covers 0 and NaN
-            spellList.parentNode.hidden = true;
-        } else {
-            spellList.parentNode.hidden = false;
-        }
-        this.emitter.trigger('dialog:save:show');
-    }
-    /**
-     * Handle death save field changes.
+     * Handle input[name=number] changes.
      * @param {Event} ev
      */
-    deathSaveChange(ev) {
+    numberInputChange(ev) {
         const field = ev.target.dataset.name;
         const subfield = ev.target.dataset.subfield;
         if (typeof this.cur_character[field][subfield] === 'undefined') {
             return;
         }
-        this.cur_character[field][subfield] = parseInt(ev.target.value, 10);
+        const newValue = parseInt(ev.target.value, 10);
+        this.cur_character[field][subfield] = newValue;
         this.emitter.trigger('dialog:save:show');
+        if (field === 'spell_slots') {
+            const spellList = this.el.querySelector(`[data-name="spells"][data-subfield="${subfield}"]`);
+            if (!newValue) {
+                // this covers 0 and NaN
+                spellList.parentNode.hidden = true;
+            } else {
+                spellList.parentNode.hidden = false;
+            }
+        }
     }
     /**
      * Initialize the view.
@@ -208,12 +200,8 @@ class SheetView {
     initialize() {
         this.el = document.querySelector('main');
         this.mainTabs = new Tabs(this.el.querySelector('ul[role=tablist]'));
-
-        Array.from(this.el.querySelectorAll('input[data-name=spell_slots]')).forEach((el) => {
-            el.addEventListener('change', this.spellSlotChange.bind(this));
-        });
-        Array.from(this.el.querySelectorAll('input[data-name="deathSave"]')).forEach((el) => {
-            el.addEventListener('change', this.deathSaveChange.bind(this));
+        Array.from(this.el.querySelectorAll('input[type=number]')).forEach((el) => {
+            el.addEventListener('change', this.numberInputChange.bind(this));
         });
 
         this.emitter.on('character:skill:update', this.updateSkillMod, this);

@@ -1,4 +1,4 @@
-- [ ] Make spell slot fields work right again for saving and load.
-- [ ] Test other fields to make sure they all still save / load.
+- [x] Make spell slot fields work right again for saving and load.
+- [x] Test other fields to make sure they all still save / load.
 - [ ] Move more code out of Manager, especially the backup/restore stuff.
-- [ ] On save we need to set the field that is currently focused when saving via keyboard command.
+- [x] On save we need to set the field that is currently focused when saving via keyboard command.

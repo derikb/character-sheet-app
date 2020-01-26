@@ -16,6 +16,14 @@ var config = {
         '/images/shield.svg',
         '/images/heart.svg',
         '/images/heart_broken.svg',
+        '/src/components/AttributeListing.js',
+        '/src/components/EditableField.js',
+        '/src/components/NoteList.js',
+        '/src/components/NoteListItem.js',
+        '/src/components/SimpleList.js',
+        '/src/components/SkillListing.js',
+        '/src/components/TableEditable.js',
+        '/src/views/SheetView.js',
         '/src/ActionMenu.js',
         '/src/Character5e.js',
         '/src/CharacterService.js',
@@ -25,7 +33,6 @@ var config = {
         '/src/ShortCutKeys.js',
         '/src/Storage.js',
         '/src/Tabs.js',
-        '/src/UI5e.js',
         '/'
     ]
 };
