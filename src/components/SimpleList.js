@@ -161,6 +161,7 @@ class SimpleList extends HTMLElement {
     _blur(ev) {
         const detail = {
             field: this.fieldName,
+            subfield: this.subFieldName,
             value: this.contentArray
         };
         this.dispatchEvent(new CustomEvent('fieldChange', { bubbles: true, detail }));

@@ -331,7 +331,7 @@ ${JSON.stringify(data)}`;
             return;
         }
         if (subfield) {
-            if (!this.cur_character[field][subfield]) {
+            if (typeof this.cur_character[field] !== 'object' || Array.isArray(this.cur_character[field])) {
                 return;
             }
             this.cur_character[field][subfield] = ev.detail.value;
