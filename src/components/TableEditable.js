@@ -134,9 +134,9 @@ class TableEditable extends HTMLElement {
         const cell = document.createElement('td');
         cell.setAttribute('contenteditable', true);
 
-        for (let i = 1; i <= this.columns; i++) {
+        for (let i = 0; i < this.columns; i++) {
             const newCell = cell.cloneNode(false);
-            newCell.innerHTML = content.shift() || '';
+            newCell.innerHTML = content[i] || '';
             row.appendChild(newCell);
         }
         this.shadowRoot.querySelector('tbody').appendChild(row);
