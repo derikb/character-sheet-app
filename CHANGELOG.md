@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.2](https://github.com/derikb/character-sheet-5e/compare/v2.2.1...v2.2.2) (2020-07-25)
+
+
+### Bug Fixes
+
+* **table-edit:** Fix component changing array content ([2ef7be0](https://github.com/derikb/character-sheet-5e/commit/2ef7be0b3271d8342f326a4b0b544aa2ceff12a6))
+
 ### [2.2.1](https://github.com/derikb/character-sheet-5e/compare/v2.2.0...v2.2.1) (2020-04-11)
 
 ## [2.2.0](https://github.com/derikb/character-sheet-5e/compare/v2.1.0...v2.2.0) (2020-01-26)
