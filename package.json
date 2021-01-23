@@ -30,15 +30,16 @@
   "devDependencies": {
     "clean-css": "^4.2.3",
     "clean-css-cli": "^4.3.0",
-    "cz-conventional-changelog": "^3.2.0",
-    "eslint": "^7.5.0",
-    "eslint-config-standard": "^14.1.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.18.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
     "minifyify": "^7.3.5",
     "normalize.css": "^8.0.1",
     "replace-in-file": "^6.1.0",
-    "standard-version": "^8.0.2"
+    "standard-version": "^9.1.0"
   },
   "standard-version": {
     "scripts": {
