@@ -3,9 +3,9 @@
  * Interface for save/backup/restore of data...
  */
 import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from './CharacterService.js';
-import { default as Modal } from './Modal.js';
-import { default as ShortCutKeys } from './ShortCutKeys.js';
-import { default as SheetView } from './views/SheetView.js';
+import Modal from './Modal.js';
+import ShortCutKeys from './ShortCutKeys.js';
+import SheetView from './views/SheetView.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -219,20 +219,6 @@ ${JSON.stringify(data)}`;
         }
     },
     /**
-     * Prompt to confirm deletion of character
-     * @param {String} key character key
-     */
-    deletePrompt: function (key) {
-        const character = getCharacter(key);
-        if (!character) {
-            return;
-        }
-        if (!confirm(`Are you sure you want to delete the character: ${(character.charname) ? character.charname : '[Unnamed]'}`)) {
-            return;
-        }
-        this.deleteCharacterTemp(key);
-    },
-    /**
      * Set a timeout to remove the character in a few seconds.
      * @param {String} key character key
      */
@@ -279,7 +265,7 @@ ${JSON.stringify(data)}`;
      * Remove the timeout and stop the delete from happening.
      * @param {Event} ev Undo button click.
      */
-    undoDelete: function(ev) {
+    undoDelete: function (ev) {
         const key = ev.target.dataset.key || null;
         if (!key) {
             return;
@@ -297,7 +283,7 @@ ${JSON.stringify(data)}`;
      * If no characters are saved we show an app intro dialog
      */
     showIntroDialog: function () {
-        var template = document.getElementById('introAlert');
+        const template = document.getElementById('introAlert');
         this.alert.setContent(document.importNode(template.content, true));
     },
     /**
@@ -309,7 +295,7 @@ ${JSON.stringify(data)}`;
     /**
      * Hide the unsaved data dialog.
      */
-    hideUnsavedDialog: function() {
+    hideUnsavedDialog: function () {
         this.dialog_unsaved.hidden = true;
     },
     /**
@@ -357,7 +343,7 @@ ${JSON.stringify(data)}`;
      * When a save is (un)checked in the UI.
      * @param {CustomEvent} ev
      */
-    handleSaveChange: function(ev) {
+    handleSaveChange: function (ev) {
         const field = ev.detail.field || '';
         if (!field) {
             return;
@@ -438,7 +424,7 @@ ${JSON.stringify(data)}`;
         // Listen for events, mostly from the menus.
         this.emitter.on('character:new', this.triggerNewCharacter, this);
         this.emitter.on('character:save', this.saveCharacter, this);
-        this.emitter.on('character:delete:confirm', this.deletePrompt, this);
+        this.emitter.on('character:delete', this.deleteCharacterTemp, this);
         this.emitter.on('backup:download', this.downloadBackup, this);
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
         this.emitter.on('tab:switch', this.sheetView.switchToPane, this.sheetView);

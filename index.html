@@ -37,7 +37,9 @@
             <div class="app-actions" roled="toolbar" aria-label="Character Actions">
                 <button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
                 <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>
-                <button type="button" class="btn-new-character" data-action="new" tabindex="-1">New</button>
+                <confirm-button class="btn btn-new-character" data-action="new" tabindex="-1">
+                    <span slot="default">New</span>
+                </confirm-button>
                 <button type="button" class="btn-backup btn-dialog" data-action="backup" tabindex="-1">Backup</button>
                 <button type="button" class="btn-restore-backup btn-dialog" data-action="restore" tabindex="-1">Restore</button>
                 <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
@@ -379,6 +381,7 @@
             import { default as SkillListing } from './src/components/SkillListing.js';
             import { default as AttributeListing } from './src/components/AttributeListing.js';
             import { default as EditableField } from './src/components/EditableField.js';
+            import ConfirmButton from './src/components/ConfirmButton.js';
             /**
             * Register service worker if it's supported
             */

@@ -1,7 +1,7 @@
 /**
  * Action Toolbar
  */
-import { default as Modal } from './Modal.js';
+import Modal from './Modal.js';
 import { getAllCharacters } from './CharacterService.js';
 
 /**
@@ -13,7 +13,7 @@ class ActionButton {
      * @param {HTMLElement} el Button element.
      * @param {ActionMenu} menu
      */
-    constructor(el, menu) {
+    constructor (el, menu) {
         this.el = el;
         this.menu = menu;
         this.action = el.dataset.action || '';
@@ -24,7 +24,7 @@ class ActionButton {
      * Handler: Keyboard actions.
      * @param {KeyboardEvent} ev Keydown event.
      */
-    handleKeyBoardEvent(ev) {
+    handleKeyBoardEvent (ev) {
         // Stop if any other modifer keys are pressed.
         if (ev.shiftKey || ev.ctrlKey || ev.metaKey || ev.altKey) {
             return;
@@ -47,31 +47,30 @@ class ActionButton {
         if (ev.key === 'End') {
             this.removeTabFocus();
             this.menu.setFocusToLast();
-            return;
         }
     }
     /**
      * Set button to not be tabbable.
      */
-    removeTabFocus() {
+    removeTabFocus () {
         this.el.setAttribute('tabindex', '-1');
     }
     /**
      * Set button to be tabbable.
      */
-    setTabFocus() {
+    setTabFocus () {
         this.el.setAttribute('tabindex', '0');
     }
     /**
      * Focus on this button.
      */
-    focus() {
+    focus () {
         this.el.focus();
     }
     /**
      * Switch to this button. Set its tabindex and focus.
      */
-    switchTo() {
+    switchTo () {
         this.setTabFocus();
         this.focus();
     }
@@ -85,12 +84,12 @@ const ActionMenu = {
      * @prop {Array} Matching action button classes to methods to calls.
      */
     actions: {
-        'save': 'saveCharacter',
-        'load': 'openLoadModal',
-        'new': 'newCharacter',
-        'backup': 'openDownloadForm',
-        'restore': 'openRestoreForm',
-        'delete': 'openDeleteModal'
+        save: 'saveCharacter',
+        load: 'openLoadModal',
+        new: 'newCharacter',
+        backup: 'openDownloadForm',
+        restore: 'openRestoreForm',
+        delete: 'openDeleteModal'
     },
     /**
      * @prop {HTMLELement} Menu element
@@ -116,7 +115,7 @@ const ActionMenu = {
      * Show the dialog for backing up characters.
      * Else close it if its open.
      */
-    openDownloadForm: function() {
+    openDownloadForm: function () {
         this.downloadDialog = this.downloadDialog || new Modal(document.getElementById('dialog-backup'));
         this.downloadDialog.clear();
         if (this.downloadDialog.isOpen) {
@@ -142,7 +141,7 @@ const ActionMenu = {
      * Show the back up restore form.
      * Else close it if its open.
      */
-    openRestoreForm: function() {
+    openRestoreForm: function () {
         this.restoreDialog = this.restoreDialog || new Modal(document.getElementById('dialog-restore'));
         this.restoreDialog.clear();
         if (this.restoreDialog.isOpen) {
@@ -197,19 +196,20 @@ const ActionMenu = {
     /**
      * Trigger a save character event.
      */
-    saveCharacter: function() {
+    saveCharacter: function () {
         this.emitter.trigger('character:save');
     },
     /**
      * Trigger a new character event.
      */
-    newCharacter: function() {
+    newCharacter: function (button) {
         this.emitter.trigger('character:new');
+        button.el.reset();
     },
     /**
      * Open the dialog to load a character.
      */
-    openLoadModal: function() {
+    openLoadModal: function () {
         this.loadDialog = this.loadDialog || new Modal(document.getElementById('dialog-load'));
         this.loadDialog.clear();
         if (this.loadDialog.isOpen) {
@@ -232,7 +232,7 @@ const ActionMenu = {
     /**
      * Close the load modal.
      */
-    closeLoadModal: function() {
+    closeLoadModal: function () {
         if (this.loadDialog !== null) {
             this.loadDialog.closeClear();
         }
@@ -240,7 +240,7 @@ const ActionMenu = {
     /**
      * Modal for deleting characters.
      */
-    openDeleteModal: function() {
+    openDeleteModal: function () {
         const modal = new Modal(document.getElementById('dialog-delete'));
         if (modal.isOpen) {
             modal.close();
@@ -251,16 +251,20 @@ const ActionMenu = {
 
         const items = [];
         getAllCharacters().forEach((char) => {
-            const li = `<li><button type="button" data-key="${char.key}" class="btn-plain btn-delete-char"> ${char.summaryHeader}</button></li>`;
+            const li = `<li><confirm-button data-key="${char.key}" class="btn btn-plain btn-delete-char">
+                <span slot="default">${char.summaryHeader}</span>
+                <span slot="confirm" hidden>Are you sure you want to delete: ${(char.charname) ? char.charname : '[Unnamed]'}</span>
+            </confirm-button></li>`;
             items.push(li);
         });
         content.querySelector('ul').innerHTML = items.join('');
 
         modal.setContent([content]);
         modal.el.querySelector('ul').addEventListener('click', (ev) => {
-            if (ev.target.classList.contains('btn-delete-char')) {
+            const button = ev.target.tagName === 'CONFIRM-BUTTON' ? ev.target : ev.target.closest('confirm-button');
+            if (button && button.classList.contains('btn-delete-char')) {
                 ev.preventDefault();
-                this.emitter.trigger('character:delete:confirm', ev.target.getAttribute('data-key'));
+                this.emitter.trigger('character:delete', button.getAttribute('data-key'));
                 modal.closeClear();
             }
         });
@@ -269,7 +273,7 @@ const ActionMenu = {
      * Set focus to next button (or wrap around).
      * @param {ActionButton} currentBtn
      */
-    setFocusToNext: function(currentBtn) {
+    setFocusToNext: function (currentBtn) {
         const index = this.buttons.indexOf(currentBtn);
         const newIndex = index + 1;
         if (newIndex > this.buttons.length - 1) {
@@ -277,13 +281,12 @@ const ActionMenu = {
             return;
         }
         this.buttons[newIndex].switchTo();
-
     },
     /**
      * Set focus to previous button (or wrap around).
      * @param {ActionButton} currentBtn
      */
-    setFocusToPrevious: function(currentBtn) {
+    setFocusToPrevious: function (currentBtn) {
         const index = this.buttons.indexOf(currentBtn);
         const newIndex = index - 1;
         if (newIndex < 0) {
@@ -295,17 +298,17 @@ const ActionMenu = {
     /**
      * Set focus to first button.
      */
-    setFocusToFirst: function() {
+    setFocusToFirst: function () {
         this.buttons[0].switchTo();
     },
     /**
      * Set focus to last button.
      */
-    setFocusToLast: function() {
+    setFocusToLast: function () {
         this.buttons[this.buttons.length - 1].switchTo();
     },
 
-    setTabFocusToButton: function(button) {
+    setTabFocusToButton: function (button) {
         this.buttons.forEach((btn) => {
             if (btn === button) {
                 btn.switchTo();
@@ -322,7 +325,7 @@ const ActionMenu = {
         this.emitter = emitter;
         this.el = document.querySelector('.app-actions');
         this.buttons = [];
-        var buttons = this.el.querySelectorAll('button');
+        const buttons = this.el.querySelectorAll('button, confirm-button');
         Array.prototype.forEach.call(buttons, (btn) => {
             this.buttons.push(new ActionButton(btn, this));
         });
@@ -335,10 +338,8 @@ const ActionMenu = {
 
         // event handlers for all the menu buttons
         this.el.addEventListener('click', (ev) => {
-            if (ev.target.tagName !== 'BUTTON') {
-                return;
-            }
-            const button = this.buttons.find((btn) => { return btn.el === ev.target; });
+            const target = ev.target.closest('button, confirm-button');
+            const button = this.buttons.find((btn) => { return btn.el === target; });
             if (!button) {
                 return;
             }
@@ -346,14 +347,14 @@ const ActionMenu = {
             if (!action) {
                 return;
             }
-            this[action]();
+            this[action](button);
         });
 
         this.emitter.on('loaddialog:close', this.closeLoadModal, this);
         this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
-        this.emitter.on('backup:email',  this.emailDownload, this);
-        this.emitter.on('backup:textpaste',  this.altDownload, this);
-;    }
+        this.emitter.on('backup:email', this.emailDownload, this);
+        this.emitter.on('backup:textpaste', this.altDownload, this);
+    }
 };
 
 export default ActionMenu;

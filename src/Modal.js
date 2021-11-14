@@ -8,7 +8,7 @@ class Modal {
      * @prop {Function} boundOutsideClickClose Handler closes modal when user clicks outside it.
      * @prop {Function} boundKeyboardEvents Handler for keyboard events.
      */
-    constructor(el) {
+    constructor (el) {
         this.el = el;
         if (!this.el.classList.contains('dialog')) {
             this.el.classList.add('dialog');
@@ -28,14 +28,14 @@ class Modal {
     /**
      * Is the modal open or not
      */
-    get isOpen() {
+    get isOpen () {
         return !this.el.hidden;
     }
     /**
      * Return a close button to use
      * @returns {HTMLElement} button.close
      */
-    getCloseButton() {
+    getCloseButton () {
         const button = document.createElement('button');
         button.setAttribute('type', 'button');
         button.classList.add('close');
@@ -46,7 +46,7 @@ class Modal {
      * Get the first focusable element in the modal.
      * @returns {HTMLElement|null}
      */
-    findFirstFocusable() {
+    findFirstFocusable () {
         const focusable = this.el.querySelector('a, button, input, textarea, *[tabindex="-1"], *[contenteditable=true]');
         return focusable;
     }
@@ -54,7 +54,7 @@ class Modal {
      * Get the first tabbing focusable element in the modal.
      * @returns {HTMLElement|null}
      */
-    findFirstTabFocusable() {
+    findFirstTabFocusable () {
         const focusable = this.el.querySelector('a, button, input, textarea, *[contenteditable=true]');
         return focusable;
     }
@@ -62,15 +62,15 @@ class Modal {
      * Return last focusable element in the modal.
      * @returns {HTMLElement|null}
      */
-    findLastTabFocusable() {
+    findLastTabFocusable () {
         const focusables = this.el.querySelectorAll('a, button, input, textarea, *[contenteditable=true]');
         return focusables[focusables.length - 1];
     }
     /**
      * Find first focusable element in modal and focus on it.
      */
-    focusFirst() {
-        const focusable = this.el.querySelector('a, button, input, textarea, *[tabindex="-1"], *[contenteditable=true]');
+    focusFirst () {
+        const focusable = this.findFirstFocusable();
         if (focusable) {
             focusable.focus();
         }
@@ -78,7 +78,7 @@ class Modal {
     /**
      * Open/show Modal
      */
-    open() {
+    open () {
         if (this.isOpen) {
             return;
         }
@@ -89,12 +89,12 @@ class Modal {
         this.boundOutsideClickClose = this.outsideClickClose.bind(this);
         document.addEventListener('click', this.boundOutsideClickClose, true);
         this.boundKeyboardEvents = this.keyboardEvents.bind(this);
-        this.el.addEventListener('keydown', this.boundKeyboardEvents, true)
+        this.el.addEventListener('keydown', this.boundKeyboardEvents, true);
     }
     /**
      * Close/hide modal
      */
-    close() {
+    close () {
         this.el.hidden = true;
         // Remove click handler to close modal.
         document.removeEventListener('click', this.boundOutsideClickClose, true);
@@ -108,7 +108,7 @@ class Modal {
      * @param {Array|HTMLElement} content single element or Array of elements
      * @param {Boolean} includeCloseButton Include a close button at the bottom.
      */
-    setContent(content, includeCloseButton = true) {
+    setContent (content, includeCloseButton = true) {
         if (!Array.isArray(content)) {
             content = [content];
         }
@@ -126,7 +126,7 @@ class Modal {
     /**
      * Clear the modal (and close it)
      */
-    clear() {
+    clear () {
         while (this.el.firstChild) {
             this.el.removeChild(this.el.firstChild);
         }
@@ -134,7 +134,7 @@ class Modal {
     /**
      * Close and clear contents.
      */
-    closeClear() {
+    closeClear () {
         this.close();
         this.clear();
     }
@@ -142,7 +142,7 @@ class Modal {
      * Handler: Clicks outside modal close the modal.
      * @param {MouseEvent} ev Click event.
      */
-    outsideClickClose(ev) {
+    outsideClickClose (ev) {
         const close = ev.target.closest('.dialog');
         if (close === null) {
             if (ev.target.classList.contains('btn-dialog')) {
@@ -159,7 +159,7 @@ class Modal {
      * - Trap tab focus into modal.
      * @param {KeyboardEvent} ev Keydown event
      */
-    keyboardEvents(ev) {
+    keyboardEvents (ev) {
         if (ev.key === 'Escape') {
             this.close();
         }
