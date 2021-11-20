@@ -313,7 +313,7 @@ ${JSON.stringify(data)}`;
         }
         if (field === 'skills') {
             this.cur_character.setSkill(subfield, ev.detail.value);
-            this.dialog_unsaved.hidden = false;
+            this.showUnsavedDialog();
             return;
         }
         if (subfield) {
@@ -321,11 +321,11 @@ ${JSON.stringify(data)}`;
                 return;
             }
             this.cur_character[field][subfield] = ev.detail.value;
-            this.dialog_unsaved.hidden = false;
+            this.showUnsavedDialog();
             return;
         }
         this.cur_character[field] = ev.detail.value;
-        this.dialog_unsaved.hidden = false;
+        this.showUnsavedDialog();
     },
     /**
      * When an attribute is changed in the UI.
@@ -337,7 +337,7 @@ ${JSON.stringify(data)}`;
             return;
         }
         this.cur_character.setAttribute(field, ev.detail.value);
-        this.dialog_unsaved.hidden = false;
+        this.showUnsavedDialog();
     },
     /**
      * When a save is (un)checked in the UI.
@@ -349,7 +349,7 @@ ${JSON.stringify(data)}`;
             return;
         }
         this.cur_character.setSaveProficiency(field, ev.detail.value);
-        this.dialog_unsaved.hidden = false;
+        this.showUnsavedDialog();
     },
     /**
      * Start up the app with some events and such

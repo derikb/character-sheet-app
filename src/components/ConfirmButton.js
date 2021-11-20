@@ -31,6 +31,10 @@ class ConfirmButton extends HTMLElement {
         this._wait = 3000;
         // Default to not triggered
         this._triggered = false;
+        // Default to asking for confirmation.
+        this._confirm = true;
+        // No default callback after confirmation.
+        this._confirmCallback = null;
         this.shadowRoot.host.dataset.triggered = 'false';
         // Accessible role
         this.shadowRoot.host.setAttribute('role', 'button');
@@ -45,15 +49,27 @@ class ConfirmButton extends HTMLElement {
         // space/enter handler to simulate normal button
         this.addEventListener('keydown', this._handleKeyDown);
         this._wait = parseInt(this.shadowRoot.host.dataset.wait || 3000, 10);
+        // Allow for setting the confirm click feature to be disabled.
+        // Only set this here if the data attribute is explicitly set
+        // else it will overwrite the property set on the class directly.
+        if (this.shadowRoot.host.dataset.confirm !== undefined) {
+            this._confirm = !(this.shadowRoot.host.dataset.confirm === 'false');
+        }
         // Unhide slotted content now that the button is loaded.
         // CSS will handle this now based on data-triggered.
         Array.from(this.children).forEach((slotted) => {
             slotted.hidden = false;
         });
+        if (this._confirmCallback) {
+            this.addEventListener('click', this._confirmCallback);
+        }
     }
     disconnectedCallback () {
         this.removeEventListener('click', this._handleClick);
         this.removeEventListener('keydown', this._handleKeyDown);
+        if (this._confirmCallback) {
+            this.removeEventListener('click', this._confirmCallback);
+        }
     }
     /**
      * Update display when triggered value changes.
@@ -75,12 +91,34 @@ class ConfirmButton extends HTMLElement {
     get triggered () {
         return this._triggered;
     }
+    get confirm () {
+        return this._confirm;
+    }
+    /**
+     * Set if the confirm button/click should be used.
+     */
+    set confirm (value) {
+        this._confirm = !!value;
+    }
+
+    get confirmCallback () {
+        return this._confirmCallback;
+    }
+    /**
+     * Set confirm callback here if you need to set it _before_ putting the button in the DOM.
+     * This assures it is triggered after the default event handler.
+     */
+    set confirmCallback (func) {
+        if (typeof func === 'function') {
+            this._confirmCallback = func;
+        }
+    }
     /**
      * Clicking.
      * @param {Event} ev Click event on element.
      */
     _handleClick (ev) {
-        if (!this.triggered) {
+        if (!this.triggered && this._confirm) {
             // stop any other events from happening
             ev.preventDefault();
             ev.stopImmediatePropagation();

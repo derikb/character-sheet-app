@@ -3,6 +3,7 @@
  */
 import Modal from './Modal.js';
 import { getAllCharacters } from './CharacterService.js';
+import ConfirmButton from './components/ConfirmButton.js';
 
 /**
  * Buttons in the toolbar.
@@ -207,6 +208,19 @@ const ActionMenu = {
         button.el.reset();
     },
     /**
+     * Load up a character by triggering a hash change.
+     * @param {Event} ev Click event
+     * @returns
+     */
+    loadCharClick: function (ev) {
+        const button = ev.currentTarget;
+        const charKey = button.dataset.key || '';
+        if (charKey === '') {
+            return;
+        }
+        window.location.hash = `#${charKey}`;
+    },
+    /**
      * Open the dialog to load a character.
      */
     openLoadModal: function () {
@@ -216,15 +230,32 @@ const ActionMenu = {
             this.loadDialog.close();
             return;
         }
+
+        // Are there unsaved changes
+        // This could be done better in the future if we had some kind of central state management.
+        let currentlyUnsaved = false;
+        // is the unsaved dialog showing...
+        const unsavedDialog = document.querySelector('.alert-unsaved');
+        if (unsavedDialog && !unsavedDialog.hidden) {
+            currentlyUnsaved = true;
+        }
+
         const template = document.getElementById('loadModal');
         const content = document.importNode(template.content, true);
         const list = content.querySelector('ul');
         getAllCharacters().forEach((char) => {
             const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.textContent = char.summaryHeader;
-            a.setAttribute('href', `#${char.key}`);
-            li.appendChild(a);
+            const cButton = new ConfirmButton();
+            cButton.dataset.key = char.key;
+            cButton.classList.add('btn', 'btn-plain');
+            cButton.innerHTML = `<span slot="default">${char.summaryHeader}</span>
+            <span slot="confirm" hidden>Are you sure you want to load: ${(char.charname) ? char.charname : '[Unnamed]'}, you have unsaved changes.</span>`;
+            if (!currentlyUnsaved) {
+                cButton.confirm = false;
+            }
+            // set this so it's added _after_ the internal confirm event.
+            cButton.confirmCallback = this.loadCharClick.bind(this);
+            li.appendChild(cButton);
             list.appendChild(li);
         });
         this.loadDialog.setContent([content]);
