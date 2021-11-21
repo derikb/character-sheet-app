@@ -47,19 +47,19 @@ class NoteList extends HTMLElement {
      * this makes sure the value is retrieved and then reset so that the setter will get used.
      * @param {String} prop
      */
-    _upgradeProperty(prop) {
-        if (this.hasOwnProperty(prop)) {
-          let value = this[prop];
-          delete this[prop];
-          this[prop] = value;
+    _upgradeProperty (prop) {
+        if (Object.prototype.hasOwnProperty.call(this, prop)) {
+            const value = this[prop];
+            delete this[prop];
+            this[prop] = value;
         }
-      }
+    }
     /**
      * Setter: field name for data.
      */
-    set fieldName(value) {
+    set fieldName (value) {
         this.dataset.name = value;
-      }
+    }
     /**
      * Getter: field name for data.
      */
@@ -122,7 +122,7 @@ class NoteList extends HTMLElement {
         }
         // Get the focused element.
         const el = this.deepActiveElement();
-        if (el.tagName == 'DD' || el.closest('dd')) {
+        if (el.tagName === 'DD' || el.closest('dd')) {
             ev.preventDefault();
             // compare the focused elements parent component node (note-list-item) to the last item in the list.
             if (el.parentNode.host === this.shadowRoot.lastElementChild) {

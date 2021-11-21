@@ -79,19 +79,19 @@ class TableEditable extends HTMLElement {
      * this makes sure the value is retrieved and then reset so that the setter will get used.
      * @param {String} prop
      */
-    _upgradeProperty(prop) {
-        if (this.hasOwnProperty(prop)) {
-          let value = this[prop];
-          delete this[prop];
-          this[prop] = value;
+    _upgradeProperty (prop) {
+        if (Object.prototype.hasOwnProperty.call(this, prop)) {
+            const value = this[prop];
+            delete this[prop];
+            this[prop] = value;
         }
-      }
+    }
     /**
      * Setter: field name for data.
      */
-    set fieldName(value) {
+    set fieldName (value) {
         this.dataset.name = value;
-      }
+    }
     /**
      * Getter: field name for data.
      */

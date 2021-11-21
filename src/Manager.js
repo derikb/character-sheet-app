@@ -299,7 +299,22 @@ ${JSON.stringify(data)}`;
         this.dialog_unsaved.hidden = true;
     },
     /**
+     * Compare two properties to see if they are different
+     * For objects/arrays we need to account for them being different objects
+     * that have the same properties and values.
+     * @param {String|Number|Array|Object|Boolean} val1 Existing property value
+     * @param {String|Number|Array|Object|Boolean} val2 New property value
+     * @return {Boolean}
+     */
+    sameValues: function (val1, val2) {
+        // for efficiency we could do typeof checks
+        // and only use JSON for objects...
+        return JSON.stringify(val1) === JSON.stringify(val2);
+    },
+    /**
      * When a field is changed in the UI.
+     * Update the character and trigger save dialog
+     * Only if the value is actually different.
      * @param {CustomEvent} ev
      */
     handleFieldChange: function (ev) {
@@ -311,21 +326,31 @@ ${JSON.stringify(data)}`;
         if (typeof this.cur_character[field] === 'undefined') {
             return;
         }
+        const newValue = ev.detail.value;
         if (field === 'skills') {
-            this.cur_character.setSkill(subfield, ev.detail.value);
-            this.showUnsavedDialog();
+            const currentVal = this.cur_character.getSkill(subfield);
+            if (!this.sameValues(currentVal, newValue)) {
+                this.cur_character.setSkill(subfield, ev.detail.value);
+                this.showUnsavedDialog();
+            }
             return;
         }
         if (subfield) {
             if (typeof this.cur_character[field] !== 'object' || Array.isArray(this.cur_character[field])) {
                 return;
             }
-            this.cur_character[field][subfield] = ev.detail.value;
-            this.showUnsavedDialog();
+            const currentVal = this.cur_character[field][subfield];
+            if (!this.sameValues(currentVal, newValue)) {
+                this.cur_character[field][subfield] = ev.detail.value;
+                this.showUnsavedDialog();
+            }
             return;
         }
-        this.cur_character[field] = ev.detail.value;
-        this.showUnsavedDialog();
+        const currentVal = this.cur_character[field];
+        if (!this.sameValues(currentVal, newValue)) {
+            this.cur_character[field] = newValue;
+            this.showUnsavedDialog();
+        }
     },
     /**
      * When an attribute is changed in the UI.
