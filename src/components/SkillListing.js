@@ -32,14 +32,13 @@ template.innerHTML = `
 `;
 
 class SkillListing extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    connectedCallback() {
+    connectedCallback () {
         // set any default attributes
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'list-item');
@@ -52,7 +51,7 @@ class SkillListing extends HTMLElement {
         this.expertCheck.addEventListener('change', this._checkExpert);
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.profCheck.removeEventListener('change', this._checkSkills);
         this.expertCheck.removeEventListener('change', this._checkExpert);
@@ -61,28 +60,31 @@ class SkillListing extends HTMLElement {
      * Name of the skill based on the data-subfield attribute.
      * @returns {String}
      */
-    get skillName() {
+    get skillName () {
         return this.dataset.subfield || '';
     }
     /**
      * Set skill name.
      * @param {String} val
      */
-    set skillName(val) {
+    set skillName (val) {
         this.dataset.subfield = val;
+    }
+    get skillLabel () {
+        return this.shadowRoot.querySelector('.pc-skill-name').innerHTML;
     }
     /**
      * Set human readable label
      * @param {String} val
      */
-    set skillLabel(val) {
+    set skillLabel (val) {
         this.shadowRoot.querySelector('.pc-skill-name').innerHTML = val;
     }
     /**
      * Set skill proficiency/expert status.
      * @param {Number} val
      */
-    set skillValue(val) {
+    set skillValue (val) {
         this.profCheck.checked = false;
         this.expertCheck.checked = false;
         if (val > 0) {
@@ -93,18 +95,21 @@ class SkillListing extends HTMLElement {
             this.expertCheck.checked = true;
         }
     }
+    get skillMod () {
+        return this.shadowRoot.querySelector('.pc-skill-mod').innerHTML;
+    }
     /**
      * Set the skill modifiter.
      * @param {String} mod
      */
-    set skillMod(mod) {
+    set skillMod (mod) {
         this.shadowRoot.querySelector('.pc-skill-mod').innerHTML = mod;
     }
     /**
      * Handler when proficiency is (un)checked.
      * @param {Event} ev
      */
-    _checkSkills(ev) {
+    _checkSkills (ev) {
         console.log(ev.target);
         console.log(ev.currentTarget);
         const host = this.getRootNode().host;
@@ -129,7 +134,7 @@ class SkillListing extends HTMLElement {
      * Handler when expert is (un)checked.
      * @param {Event} ev
      */
-    _checkExpert(ev) {
+    _checkExpert (ev) {
         console.log(ev.target);
         console.log(ev.currentTarget);
         // change event for checkboxes
@@ -146,7 +151,7 @@ class SkillListing extends HTMLElement {
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('input').focus();
     }
 }

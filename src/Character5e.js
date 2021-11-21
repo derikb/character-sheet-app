@@ -2,7 +2,7 @@
  * Model for 5e character data
  */
 
-import { attributes, skillAttributes, skillLevels } from './CharacterConstants.js';
+import { skillAttributes, skillLevels } from './CharacterConstants.js';
 
 export default class Character5e {
     /**
@@ -53,12 +53,12 @@ export default class Character5e {
         wis = 10,
         cha = 10,
         saves = {
-            'str': 0,
-            'dex': 0,
-            'con': 0,
-            'intel': 0,
-            'wis': 0,
-            'cha': 0
+            str: 0,
+            dex: 0,
+            con: 0,
+            intel: 0,
+            wis: 0,
+            cha: 0
         },
         skills = {
             acrobatics: 0,
@@ -234,14 +234,14 @@ export default class Character5e {
      * Level getter.
      * @returns {Number}
      */
-    get level() {
+    get level () {
         return this._level;
     }
     /**
      * Set level and trigger proficiency update if necessary.
      * @param {Number}
      */
-    set level(newVal) {
+    set level (newVal) {
         const cur = this.level;
         if (newVal === cur) {
             return;
@@ -259,14 +259,14 @@ export default class Character5e {
     /**
      * A quick summary header for use in lists.
      */
-    get summaryHeader() {
+    get summaryHeader () {
         return `${this.charname} (${this.charclass} ${this.level})`;
     }
     /**
      * Proficiency modifier as string.
      * @returns {String}
      */
-    get proficiency() {
+    get proficiency () {
         const bonus = Math.ceil(this.level / 4) + 1;
         return `+${bonus}`;
     }
@@ -275,7 +275,7 @@ export default class Character5e {
      * @param {String} attribute
      * @param {Number} value
      */
-    setAttribute(attribute, value) {
+    setAttribute (attribute, value) {
         if (!this[attribute]) {
             return;
         }
@@ -286,6 +286,12 @@ export default class Character5e {
         this[attribute] = value;
         if (this.emitter) {
             this.emitter.trigger('character:attribute:update', attribute);
+            // Update any relevant skill mods.
+            for (const skill in skillAttributes) {
+                if (skillAttributes[skill] === attribute) {
+                    this.emitter.trigger('character:skill:update', skill, this.getSkillMod(skill));
+                }
+            }
         }
     }
     /**
@@ -293,8 +299,8 @@ export default class Character5e {
      * @param {String} attribute Attribute short code
      * @returns {String}
      */
-    attributeMod(attribute) {
-        let score = this[attribute];
+    attributeMod (attribute) {
+        const score = this[attribute];
         if (Number.isNaN(score)) {
             return '0';
         }
@@ -306,7 +312,7 @@ export default class Character5e {
      * @param {String} skill
      * @returns {Boolean}
      */
-    isProficient(skill) {
+    isProficient (skill) {
         return this.skills[skill] > skillLevels.UNSKILLED;
     }
     /**
@@ -314,7 +320,7 @@ export default class Character5e {
      * @param {String} skill
      * @returns {Boolean}
      */
-    isExpert(skill) {
+    isExpert (skill) {
         return this.skills[skill] === skillLevels.EXPERT;
     }
     /**
@@ -322,7 +328,7 @@ export default class Character5e {
      * @param {String} skill
      * @returns {String}
      */
-    getSkillMod(skill) {
+    getSkillMod (skill) {
         let raw = 0;
         const skillLevel = this.skills[skill];
         if (typeof skillLevel === 'undefined') {
@@ -346,8 +352,8 @@ export default class Character5e {
      * @param {String} skill
      * @returns {Number}
      */
-    getSkill(skill) {
-        let value = this.skills[skill];
+    getSkill (skill) {
+        const value = this.skills[skill];
         if (typeof value === 'undefined') {
             return null;
         }
@@ -358,8 +364,8 @@ export default class Character5e {
      * @param {String} skill
      * @param {Number} newValue
      */
-    setSkill(skill, newValue) {
-        let curValue = this.getSkill(skill);
+    setSkill (skill, newValue) {
+        const curValue = this.getSkill(skill);
         if (curValue === null || curValue === newValue) {
             return;
         }
@@ -373,7 +379,7 @@ export default class Character5e {
      * @param {String} attr
      * @returns {Number}
      */
-    isSaveProficient(attr) {
+    isSaveProficient (attr) {
         return (this.saves[attr] || 0);
     }
     /**
@@ -381,7 +387,7 @@ export default class Character5e {
      * @param {String} attr
      * @returns {String}
      */
-    saveMod(attr) {
+    saveMod (attr) {
         let profMod = 0;
         if (this.isSaveProficient(attr)) {
             profMod = parseInt(this.proficiency, 10);
@@ -394,7 +400,7 @@ export default class Character5e {
      * @param {String} attr
      * @param {Number} checked
      */
-    setSaveProficiency(attr, checked) {
+    setSaveProficiency (attr, checked) {
         const cur = this.saves[attr];
         if (typeof cur === 'undefined') {
             return;
@@ -411,7 +417,7 @@ export default class Character5e {
      * Converting _ props for saving.
      * @returns {Object}
      */
-    toJSON() {
+    toJSON () {
         const obj = {};
         const props = Object.getOwnPropertyNames(this);
         props.forEach((prop) => {
