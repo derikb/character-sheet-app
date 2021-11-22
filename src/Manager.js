@@ -3,7 +3,6 @@
  * Interface for save/backup/restore of data...
  */
 import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from './CharacterService.js';
-import Modal from './Modal.js';
 import ShortCutKeys from './ShortCutKeys.js';
 import SheetView from './views/SheetView.js';
 
@@ -209,11 +208,8 @@ ${JSON.stringify(data)}`;
             imported_chars.forEach((li) => {
                 ul.appendChild(li);
             });
-            const header = document.createElement('h2');
-            header.id = 'dialog-label';
-            header.setAttribute('tabindex', '-1');
-            header.textContent = 'Restored Characters';
-            this.alert.setContent([header, ul]);
+            this.alert.header = 'Restored Characters';
+            this.alert.setContent([ul]);
         } catch (e) {
             alert(`Error processing backup data: ${e.message}`);
         }
@@ -284,7 +280,7 @@ ${JSON.stringify(data)}`;
      */
     showIntroDialog: function () {
         const template = document.getElementById('introAlert');
-        this.alert.setContent(document.importNode(template.content, true));
+        this.alert.setContent([...document.importNode(template.content, true).children]);
     },
     /**
      * Show the unsaved data dialog.
@@ -393,7 +389,7 @@ ${JSON.stringify(data)}`;
         // set up storage
         setLocalStoragePrefix(settings.prefix);
         // set up default alert
-        this.alert = new Modal(document.getElementById('alert-main'));
+        this.alert = document.getElementById('alert-main');
 
         this.sheetView = new SheetView(this.emitter);
         this.sheetView.initialize();
@@ -425,7 +421,7 @@ ${JSON.stringify(data)}`;
             ev.preventDefault();
             const template = document.getElementById('helpDialog');
             const div = document.importNode(template.content, true);
-            this.alert.setContent(div);
+            this.alert.setContent([...div.children]);
         });
 
         // Event: Listen for hashchange and change the current character

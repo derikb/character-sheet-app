@@ -27,11 +27,11 @@
                 <span class="delete-timeout"></span>
             </div>
         </div>
-        <div id="alert-main" class="dialog" role="dialog" aria-labelledby="dialog-label" hidden></div>
-        <div id="dialog-load" class="dialog" role="dialog"  aria-labelledby="dialog-label-load" hidden></div>
-        <div id="dialog-backup" class="dialog" role="dialog"  aria-labelledby="dialog-label-backup" hidden></div>
-        <div id="dialog-restore" class="dialog" role="dialog"  aria-labelledby="dialog-label-restore" hidden></div>
-        <div id="dialog-delete" class="dialog" role="dialog"  aria-labelledby="dialog-label-delete" hidden></div>
+        <modal-mib id="alert-main"  hidden></modal-mib>
+        <modal-mib id="dialog-load" hidden></modal-mib>
+        <modal-mib id="dialog-backup" hidden></modal-mib>
+        <modal-mib id="dialog-restore" hidden></modal-mib>
+        <modal-mib id="dialog-delete" hidden></modal-mib>
 
         <div class="container">
             <div class="app-actions" roled="toolbar" aria-label="Character Actions">
@@ -370,18 +370,19 @@
         </div>
 
         <script type="module">
-            import { default as ActionMenu } from './src/ActionMenu.js';
-            import { default as EventEmitter } from './src/EventEmitter.js';
-            import { default as Manager } from './src/Manager.js';
+            import ActionMenu from './src/ActionMenu.js';
+            import EventEmitter from './src/EventEmitter.js';
+            import Manager from './src/Manager.js';
 
-            import { default as NoteListItem } from './src/components/NoteListItem.js';
-            import { default as NoteList } from './src/components/NoteList.js';
-            import { default as SimpleList } from './src/components/SimpleList.js';
-            import { default as TableEditable } from './src/components/TableEditable.js';
-            import { default as SkillListing } from './src/components/SkillListing.js';
-            import { default as AttributeListing } from './src/components/AttributeListing.js';
-            import { default as EditableField } from './src/components/EditableField.js';
+            import NoteListItem from './src/components/NoteListItem.js';
+            import NoteList from './src/components/NoteList.js';
+            import SimpleList from './src/components/SimpleList.js';
+            import TableEditable from './src/components/TableEditable.js';
+            import SkillListing from './src/components/SkillListing.js';
+            import AttributeListing from './src/components/AttributeListing.js';
+            import EditableField from './src/components/EditableField.js';
             import ConfirmButton from './src/components/ConfirmButton.js';
+            import Modal from './src/components/Modal.js';
             /**
             * Register service worker if it's supported
             */
@@ -405,14 +406,14 @@
         </script>
 
         <template id="introAlert">
-            <h2 id="dialog-label" tabindex="-1">Character Sheet. 5e.</h2>
+            <span slot="header">Character Sheet. 5e.</span>
             <p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p>
             <p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p>
             <p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p>
             <p>This message will only appear until you save your first character.</p>
         </template>
         <template id="helpDialog">
-            <h1 id="dialog-label" tabindex="-1">Help</h1>
+            <span slot="header">Help</span>
 
             <h2>Most importantly</h2>
             <ul>
@@ -461,7 +462,7 @@
         </template>
 
         <template id="backupModal">
-            <h2 id="dialog-label-backup" tabindex="-1">Backup Characters</h2>
+            <span slot="header">Backup Characters</span>
             <form id="form_backup_download" target="_self">
                 <fieldset>
                     <legend tabindex="-1">Pick characters to download.</legend>
@@ -479,7 +480,7 @@
         </template>
 
         <template id="restoreModal">
-            <h2 id="dialog-label-restore" tabindex="-1">Restore Characters</h2>
+            <span slot="header">Restore Characters</span>
             <form id="form_backup_restore" target="_self">
                 <label for="files">Restore from file</label>
                 <input type="file" id="files" name="files" />
@@ -492,13 +493,13 @@
         </template>
 
         <template id="deleteModal">
-            <h2 id="dialog-label-delete" tabindex="-1">Delete Characters</h2>
+            <span slot="header">Delete Characters</span>
             <ul id="delete_list">
             </ul>
         </template>
 
         <template id="loadModal">
-            <h2 id="dialog-label-load" tabindex="-1">Load Character</h2>
+            <span slot="header">Load Character</span>
             <ul id="character_list">
             </ul>
         </template>

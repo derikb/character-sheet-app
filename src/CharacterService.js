@@ -2,8 +2,8 @@
  * Service for retrieving, saving, deleting characters.
  * For now LocalStorage only, but potentially adaptable to different stores.
  */
-import { default as Character5e } from './Character5e.js';
-import { default as Storage } from './Storage.js';
+import Character5e from './Character5e.js';
+import Storage from './Storage.js';
 
 /**
  * Return UTC datetime string for right now
@@ -12,7 +12,7 @@ import { default as Storage } from './Storage.js';
 const currentTimestamp = function () {
     const d = new Date();
     return d.toUTCString();
-}
+};
 /**
  * Get a unique 7 character key to use for a new character.
  * @returns {String}

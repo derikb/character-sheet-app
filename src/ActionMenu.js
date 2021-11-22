@@ -1,9 +1,9 @@
 /**
  * Action Toolbar
  */
-import Modal from './Modal.js';
 import { getAllCharacters } from './CharacterService.js';
 import ConfirmButton from './components/ConfirmButton.js';
+import Modal from './components/Modal.js';
 
 /**
  * Buttons in the toolbar.
@@ -117,7 +117,7 @@ const ActionMenu = {
      * Else close it if its open.
      */
     openDownloadForm: function () {
-        this.downloadDialog = this.downloadDialog || new Modal(document.getElementById('dialog-backup'));
+        this.downloadDialog = this.downloadDialog || document.getElementById('dialog-backup');
         this.downloadDialog.clear();
         if (this.downloadDialog.isOpen) {
             this.downloadDialog.close();
@@ -132,8 +132,8 @@ const ActionMenu = {
             checkboxes.push(li);
         });
         form.querySelector('.character_downloads').innerHTML = checkboxes.join('');
-        this.downloadDialog.setContent([form], false);
-        this.downloadDialog.el.querySelector('form').addEventListener('submit', (ev) => {
+        this.downloadDialog.setContent([...form.children], false);
+        this.downloadDialog.querySelector('form').addEventListener('submit', (ev) => {
             ev.preventDefault();
             this.emitter.trigger('backup:download', ev.target);
         });
@@ -143,7 +143,7 @@ const ActionMenu = {
      * Else close it if its open.
      */
     openRestoreForm: function () {
-        this.restoreDialog = this.restoreDialog || new Modal(document.getElementById('dialog-restore'));
+        this.restoreDialog = this.restoreDialog || document.getElementById('dialog-restore');
         this.restoreDialog.clear();
         if (this.restoreDialog.isOpen) {
             this.restoreDialog.close();
@@ -151,8 +151,8 @@ const ActionMenu = {
         }
         const template = document.getElementById('restoreModal');
         const form = document.importNode(template.content, true);
-        this.restoreDialog.setContent([form], false);
-        this.restoreDialog.el.querySelector('form').addEventListener('submit', (ev) => {
+        this.restoreDialog.setContent([...form.children], false);
+        this.restoreDialog.querySelector('form').addEventListener('submit', (ev) => {
             ev.preventDefault();
             this.emitter.trigger('backup:restore', ev.target);
             this.restoreDialog.closeClear();
@@ -163,16 +163,14 @@ const ActionMenu = {
      * @param {String} data the backup data
      */
     altDownload: function (data) {
-        const h2 = document.createElement('h2');
-        h2.id = 'dialog-label';
-        h2.textContent = 'Alernate Download Option';
         const p = document.createElement('p');
         p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
         const text = document.createElement('textarea');
         text.classList.add('large');
         text.value = data;
         this.downloadDialog.clear();
-        this.downloadDialog.setContent([h2, p, text, this.downloadDialog.getCloseButton()], false);
+        this.downloadDialog.header = 'Alernate Download Option';
+        this.downloadDialog.setContent([p, text, this.downloadDialog.getCloseButton()], false);
         text.focus();
         text.select();
     },
@@ -224,7 +222,7 @@ const ActionMenu = {
      * Open the dialog to load a character.
      */
     openLoadModal: function () {
-        this.loadDialog = this.loadDialog || new Modal(document.getElementById('dialog-load'));
+        this.loadDialog = this.loadDialog || document.getElementById('dialog-load');
         this.loadDialog.clear();
         if (this.loadDialog.isOpen) {
             this.loadDialog.close();
@@ -258,7 +256,7 @@ const ActionMenu = {
             li.appendChild(cButton);
             list.appendChild(li);
         });
-        this.loadDialog.setContent([content]);
+        this.loadDialog.setContent([...content.children]);
     },
     /**
      * Close the load modal.
@@ -272,7 +270,7 @@ const ActionMenu = {
      * Modal for deleting characters.
      */
     openDeleteModal: function () {
-        const modal = new Modal(document.getElementById('dialog-delete'));
+        const modal = document.getElementById('dialog-delete');
         if (modal.isOpen) {
             modal.close();
             return;
@@ -290,8 +288,8 @@ const ActionMenu = {
         });
         content.querySelector('ul').innerHTML = items.join('');
 
-        modal.setContent([content]);
-        modal.el.querySelector('ul').addEventListener('click', (ev) => {
+        modal.setContent([...content.children]);
+        modal.querySelector('ul').addEventListener('click', (ev) => {
             const button = ev.target.tagName === 'CONFIRM-BUTTON' ? ev.target : ev.target.closest('confirm-button');
             if (button && button.classList.contains('btn-delete-char')) {
                 ev.preventDefault();
