@@ -291,29 +291,13 @@ h1 {
 /*
     Alerts and dialogs
 */
-/* All have this class */
-.dialog {
-    margin: 1rem auto;
-    padding: 1.5rem;
-    border: 2px solid rgb(207,0,15);
-    border-radius: 4px;
-    background-color: #fefefe;
-    box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
-    width: auto;
-    z-index: 100;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 80%;
-    top: 2rem;
-}
-/* Close button */
-.dialog button.close {
+/* Close button in modal */
+modal-mib button.close {
     float: right;
     margin: 1rem 0 0 1rem;
 }
-/* Close button in form so it sits next to submit button. */
-.dialog form button.close {
+/* Close button in modal in form so it sits next to submit button. */
+modal-mib form button.close {
     float: none;
     margin: 0 0 0 2rem;
 }
@@ -338,13 +322,6 @@ h1 {
     border-radius: 4px;
     background-color: #fefefe;
     box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
-}
-#dialog-backup {
-    position: absolute;
-}
-.dialog button.delete-conf {
-    float: left;
-    margin: 1rem 0 0 0;
 }
 
 .alert-delete {
@@ -374,14 +351,6 @@ h1 {
 }
 
 @media (min-width: 50.0rem) {
-    .dialog {
-        margin: 2rem auto;
-        padding: 1.5rem 3rem;
-        min-width: 40%;
-        max-width: 70rem;
-        left: 50%;
-        transform: translateX(-50%);
-    }
     .alertContainer {
         right: 2rem;
         left: auto;
