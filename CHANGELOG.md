@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/derikb/character-sheet-5e/compare/v2.2.4...v2.3.0) (2021-11-24)
+
+
+### Features
+
+* **actions:** Add confirm for loading when unsaved ([5a142bf](https://github.com/derikb/character-sheet-5e/commit/5a142bf56646729e7b19a38bd70f9f49d19804ea)), closes [#85](https://github.com/derikb/character-sheet-5e/issues/85)
+* **ui:** Add confirm before new character load ([3ca9f4d](https://github.com/derikb/character-sheet-5e/commit/3ca9f4d688956b1e69617ee04f6dd61535502c27)), closes [#85](https://github.com/derikb/character-sheet-5e/issues/85)
+
+
+### Bug Fixes
+
+* **skills:** Update skill mods on attribute change ([c8beebe](https://github.com/derikb/character-sheet-5e/commit/c8beebe4386a366309f23e75da3121719478163d)), closes [#81](https://github.com/derikb/character-sheet-5e/issues/81)
+* **ui:** Only trigger save on different field values ([7eee5fe](https://github.com/derikb/character-sheet-5e/commit/7eee5fe7cffb806d74862bdd044446e25e344841)), closes [#82](https://github.com/derikb/character-sheet-5e/issues/82)
+
 ### [2.2.4](https://github.com/derikb/character-sheet-5e/compare/v2.2.3...v2.2.4) (2021-10-08)
 
 

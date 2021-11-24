@@ -9,7 +9,7 @@
  * Caching all the files we use except the service worker itself
  */
 var config = {
-    cacheName: 'static-v2.2.4',
+    cacheName: 'static-v2.3.0',
     staticCacheItems: [
         '/index.html',
         '/styles.css',
