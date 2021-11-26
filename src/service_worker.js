@@ -1,42 +1,15 @@
 /**
  * Service worker for character sheet app
- * Currently disabled in favor of AppCache
  */
-
+import { manifest, version } from '@parcel/service-worker';
 /**
  * Config data
  * Update cacheName when we want to make sure to get new data in the cache
  * Caching all the files we use except the service worker itself
  */
-var config = {
-    cacheName: 'static-v2.3.0',
-    staticCacheItems: [
-        '/index.html',
-        '/styles.css',
-        '/images/shield.svg',
-        '/images/heart.svg',
-        '/images/heart_broken.svg',
-        '/src/components/AttributeListing.js',
-        '/src/components/ConfirmButton.js',
-        '/src/components/EditableField.js',
-        '/src/components/Modal.js',
-        '/src/components/NoteList.js',
-        '/src/components/NoteListItem.js',
-        '/src/components/SimpleList.js',
-        '/src/components/SkillListing.js',
-        '/src/components/TableEditable.js',
-        '/src/views/SheetView.js',
-        '/src/ActionMenu.js',
-        '/src/Character5e.js',
-        '/src/CharacterConstants.js',
-        '/src/CharacterService.js',
-        '/src/EventEmitter.js',
-        '/src/Manager.js',
-        '/src/ShortCutKeys.js',
-        '/src/Storage.js',
-        '/src/Tabs.js',
-        '/'
-    ]
+const config = {
+    cacheName: version,
+    staticCacheItems: manifest
 };
 
 /**
@@ -50,28 +23,28 @@ self.addEventListener('install', (e) => {
     }
     e.waitUntil(
         onInstall(e)
-            .then( () => self.skipWaiting() )
+            .then(() => self.skipWaiting())
     );
 });
 /**
  * Event: activate
  * This clears out any old caches
  */
-self.addEventListener('activate', function(event) {
-
-    var cacheWhitelist = [config.cacheName];
+self.addEventListener('activate', function (event) {
+    const cacheWhitelist = [config.cacheName];
 
     event.waitUntil(
-        caches.keys().then(function(cacheNames) {
+        caches.keys().then(function (cacheNames) {
             return Promise.all(
-                cacheNames.map(function(cacheName) {
+                cacheNames.map(function (cacheName) {
                     if (cacheWhitelist.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
+                    return undefined;
                 })
             );
         })
-        .then( () => self.clients.claim() )
+            .then(() => self.clients.claim())
     );
 });
 /**
@@ -81,11 +54,11 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
-            .then(function(resp) {
+            .then(function (resp) {
                 return resp || fetch(event.request)
-                    .then(function(response) {
+                    .then(function (response) {
                         return caches.open(config.cacheName)
-                            .then(function(cache) {
+                            .then(function (cache) {
                                 cache.put(event.request, response.clone());
                                 return response;
                             });

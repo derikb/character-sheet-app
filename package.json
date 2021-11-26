@@ -10,15 +10,10 @@
     "url": "https://github.com/derikb/character-sheet-5e/issues"
   },
   "homepage": "https://github.com/derikb/character-sheet-5e#readme",
-  "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "./node_modules/.bin/eslint ",
-    "eslint:js": "./node_modules/.bin/eslint src/main.js",
-    "concat:css": "cat ./node_modules/normalize.css/normalize.css src/styles.css | cleancss -o styles.css",
-    "versioncache": "node build/version_bump.js",
-    "build": "npm run concat:css",
-    "serve": "http-server ./ -a localhost --cors",
+    "start": "parcel",
+    "build": "parcel build",
     "release": "standard-version -a"
   },
   "keywords": [
@@ -28,27 +23,29 @@
   "author": "Derik A Badman",
   "license": "GPL-3.0",
   "devDependencies": {
-    "clean-css": "^5.2.1",
-    "clean-css-cli": "^5.4.1",
-    "eslint": "^7.32.0",
+    "@parcel/packager-raw-url": "^2.0.1",
+    "@parcel/packager-xml": "^2.0.1",
+    "@parcel/service-worker": "^2.0.1",
+    "@parcel/transformer-webmanifest": "^2.0.1",
+    "@parcel/transformer-xml": "^2.0.1",
+    "eslint": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-promise": "^5.1.1",
     "normalize.css": "^8.0.1",
-    "standard-version": "^9.3.1"
+    "parcel": "^2.0.1",
+    "standard-version": "^9.3.2"
   },
+  "source": "src/index.html",
+  "target": "dist/index.html",
   "standard-version": {
     "scripts": {
       "postbump": "npm run build"
     },
     "bumpFiles": [
       "package.json",
-      "package-lock.json",
-      {
-        "filename": "service_worker.js",
-        "updater": "build/version_bump.js"
-      }
+      "package-lock.json"
     ]
   }
 }

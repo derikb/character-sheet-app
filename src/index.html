@@ -9,15 +9,16 @@
         <meta name="application-name" content="Character Sheet. 5e.">
         <meta name="description" content="Online character sheet for 5e D&amp;D.">
 
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-        <link rel="manifest" href="/manifest.json">
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+        <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="./manifest.json">
+        <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
         <meta name="apple-mobile-web-app-title" content="CharSheet5e">
         <meta name="theme-color" content="#ffffff">
+        <meta name="msapplication-config" content="./browserconfig.xml" />
 
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="./styles.css">
     </head>
     <body>
         <div class="alertContainer">
@@ -369,42 +370,6 @@
             </nav>
         </div>
 
-        <script type="module">
-            import ActionMenu from './src/ActionMenu.js';
-            import EventEmitter from './src/EventEmitter.js';
-            import Manager from './src/Manager.js';
-
-            import NoteListItem from './src/components/NoteListItem.js';
-            import NoteList from './src/components/NoteList.js';
-            import SimpleList from './src/components/SimpleList.js';
-            import TableEditable from './src/components/TableEditable.js';
-            import SkillListing from './src/components/SkillListing.js';
-            import AttributeListing from './src/components/AttributeListing.js';
-            import EditableField from './src/components/EditableField.js';
-            import ConfirmButton from './src/components/ConfirmButton.js';
-            import Modal from './src/components/Modal.js';
-            /**
-            * Register service worker if it's supported
-            */
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service_worker.js', {
-                    scope: '/'
-                });
-            }
-
-            const emitter = new EventEmitter();
-            ActionMenu.initialize(emitter);
-
-            Manager.initialize({
-                emitter: emitter,
-                prefix: 'charsheet-5e-',
-                appname: 'character-sheet-5e'
-            });
-        </script>
-        <script nomodule>
-            alert('Sorry, you must use a modern browser for this to code to work.');
-        </script>
-
         <template id="introAlert">
             <span slot="header">Character Sheet. 5e.</span>
             <p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p>
@@ -503,5 +468,10 @@
             <ul id="character_list">
             </ul>
         </template>
+
+        <script type="module" src="./index.js"></script>
+        <script nomodule>
+            alert('Sorry, you must use a modern browser for this to code to work.');
+        </script>
     </body>
 </html>
