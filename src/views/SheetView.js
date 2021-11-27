@@ -1,16 +1,17 @@
-import { default as Tabs} from '../Tabs.js';
+/* eslint-disable no-case-declarations */
+import Tabs from './Tabs.js';
 
 class SheetView {
     /**
      * @param {EventEmitter} emitter
      */
-    constructor(emitter) {
+    constructor (emitter) {
         this.emitter = emitter;
     }
     /**
      * @param {Character5e}
      */
-    set character(character) {
+    set character (character) {
         this.cur_character = character;
         // render character.
         this.renderCharacter();
@@ -18,20 +19,20 @@ class SheetView {
     /**
      * @returns {Character5e}
      */
-    get character() {
+    get character () {
         return this.cur_character;
     }
     /**
      * Change the main tab pane.
      * @param {String} targetPane
      */
-    switchToPane(targetPane) {
+    switchToPane (targetPane) {
         this.mainTabs.switchToPane(targetPane);
     }
     /**
      * Take character data and fill it into the page
      */
-    renderCharacter() {
+    renderCharacter () {
         if (this.cur_character === null) {
             return;
         }
@@ -61,40 +62,40 @@ class SheetView {
                     break;
                 case 'SIMPLE-LIST':
                     el.clear();
-                    let listItems = charValue || [];
+                    const listItems = charValue || [];
                     if (listItems.length > 0) {
                         listItems.forEach((item) => {
                             if (item.length === 0) {
                                 return;
                             }
                             el.addItem(item);
-                        })
+                        });
                     }
                     el.addItem();
                     break;
                 case 'NOTE-LIST':
                     el.clear();
-                    let noteItems = charValue || [];
+                    const noteItems = charValue || [];
                     if (noteItems.length > 0) {
                         noteItems.forEach((item) => {
                             if (item.length === 0) {
                                 return;
                             }
                             el.addItem(item);
-                        })
+                        });
                     }
                     el.addItem([]);
                     break;
                 case 'TABLE-EDITABLE':
                     el.clear();
-                    let rowItems = charValue || [];
+                    const rowItems = charValue || [];
                     if (rowItems.length > 0) {
                         rowItems.forEach((item) => {
                             if (item.length === 0) {
                                 return;
                             }
                             el.addRow(item);
-                        })
+                        });
                     }
                     el.addRow();
                     break;
@@ -124,7 +125,7 @@ class SheetView {
      * @param {String} skill
      * @param {String} modifier
      */
-    updateSkillMod(skill, modifier) {
+    updateSkillMod (skill, modifier) {
         const el = this.el.querySelector(`skill-listing[data-subfield="${skill}"]`);
         if (!el) {
             return;
@@ -134,7 +135,7 @@ class SheetView {
     /**
      * Update the proficiency modifier in the UI.
      */
-    updateProficiency() {
+    updateProficiency () {
         const proficiency = this.cur_character.proficiency;
         this.el.querySelector('[data-name="proficiency"]').innerHTML = proficiency;
 
@@ -152,7 +153,7 @@ class SheetView {
      * Update an attribute's modifier in the UI.
      * @param {String} attribute
      */
-    updateAttributeMods(attribute) {
+    updateAttributeMods (attribute) {
         const el = this.el.querySelector(`attr-listing[data-name=${attribute}]`);
         if (!el) {
             return;
@@ -164,7 +165,7 @@ class SheetView {
      * Update a save modifier in the UI.
      * @param {String} attribute
      */
-    updateSaveMods(attribute) {
+    updateSaveMods (attribute) {
         const el = this.el.querySelector(`attr-listing[data-name=${attribute}]`);
         if (!el) {
             return;
@@ -175,7 +176,7 @@ class SheetView {
      * Handle input[name=number] changes.
      * @param {Event} ev
      */
-    numberInputChange(ev) {
+    numberInputChange (ev) {
         const field = ev.target.dataset.name;
         const subfield = ev.target.dataset.subfield;
         if (typeof this.cur_character[field][subfield] === 'undefined') {
@@ -197,7 +198,7 @@ class SheetView {
     /**
      * Initialize the view.
      */
-    initialize() {
+    initialize () {
         this.el = document.querySelector('main');
         this.mainTabs = new Tabs(this.el.querySelector('ul[role=tablist]'));
         Array.from(this.el.querySelectorAll('input[type=number]')).forEach((el) => {

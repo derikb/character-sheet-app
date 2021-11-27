@@ -2,9 +2,10 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from './CharacterService.js';
+import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
-import SheetView from './views/SheetView.js';
+import SheetView from './SheetView.js';
+import { monitorAuth } from '../services/AuthService.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -394,6 +395,8 @@ ${JSON.stringify(data)}`;
         this.sheetView = new SheetView(this.emitter);
         this.sheetView.initialize();
 
+        monitorAuth(this.emitter);
+
         if (getCharacterCount() === 0) {
             this.showIntroDialog();
         }
@@ -451,6 +454,9 @@ ${JSON.stringify(data)}`;
         this.emitter.on('tab:switch', this.sheetView.switchToPane, this.sheetView);
         this.emitter.on('dialog:save:show', this.showUnsavedDialog, this);
         this.emitter.on('dialog:save:hide', this.hideUnsavedDialog, this);
+
+        // this.emitter.on('auth:signin', (ev) => { console.log('auth:signin'); }, this);
+        // this.emitter.on('auth:signout', (ev) => { console.log('auth:signout'); }, this);
 
         document.addEventListener('fieldChange', this.handleFieldChange.bind(this));
         document.addEventListener('attributeChange', this.handleAttributeChange.bind(this));

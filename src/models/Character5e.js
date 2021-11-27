@@ -168,10 +168,10 @@ export default class Character5e {
         this.saves = saves;
         this.skills = skills;
         // @version < 2.2.0 Backwards compatibile convert sleight_of_Hand to sleight_of_hand
-        if (typeof this.skills['sleight_of_Hand'] !== 'undefined') {
-            const sleight = this.skills['sleight_of_Hand'];
-            delete this.skills['sleight_of_Hand'];
-            this.skills['sleight_of_hand'] = sleight;
+        if (typeof this.skills.sleight_of_Hand !== 'undefined') {
+            const sleight = this.skills.sleight_of_Hand;
+            delete this.skills.sleight_of_Hand;
+            this.skills.sleight_of_hand = sleight;
         }
 
         // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.

@@ -2,7 +2,7 @@
  * Service for retrieving, saving, deleting characters.
  * For now LocalStorage only, but potentially adaptable to different stores.
  */
-import Character5e from './Character5e.js';
+import Character5e from '../models/Character5e.js';
 import Storage from './Storage.js';
 
 /**
@@ -17,7 +17,7 @@ const currentTimestamp = function () {
  * Get a unique 7 character key to use for a new character.
  * @returns {String}
  */
-const generateCharacterKey = function() {
+const generateCharacterKey = function () {
     let key = (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
     while (getCharacter(key) !== null) {
         key = (`${Math.random().toString(36)}00000000000000000`).slice(2, 9);
@@ -28,8 +28,8 @@ const generateCharacterKey = function() {
  * Return a new character for a key.
  * @param {String} key
  */
-const newCharacter = function(key) {
-    return new Character5e({key: key});
+const newCharacter = function (key) {
+    return new Character5e({ key: key });
 };
 /**
  * Get a single character model.
@@ -70,7 +70,7 @@ const removeCharacter = function (key) {
  * Get all characters saved.
  * @returns {Character5e[]}
  */
-const getAllCharacters = function() {
+const getAllCharacters = function () {
     const characters = [];
     Storage.getAllKeys().forEach((key) => {
         const char_obj = Storage.get(key);
@@ -84,7 +84,7 @@ const getAllCharacters = function() {
 /**
  * Count the number of characters in storage.
  */
-const getCharacterCount = function() {
+const getCharacterCount = function () {
     return getAllCharacters().length;
 };
 /**
@@ -94,7 +94,7 @@ const getCharacterCount = function() {
  * @returns {Character5e}
  * @throws {Error}
  */
-const importCharacter = function(char_obj, appname) {
+const importCharacter = function (char_obj, appname) {
     if (typeof char_obj !== 'object' || !char_obj.key || char_obj.app !== appname) {
         throw new Error(`Data appears to be invalid. Try removing any text that isn't part of the backup (i.e. email introduction).`);
     }
@@ -119,7 +119,7 @@ const importCharacter = function(char_obj, appname) {
  * Set prefix for LocalStorage keys.
  * @param {String} prefix
  */
-const setLocalStoragePrefix = function(prefix) {
+const setLocalStoragePrefix = function (prefix) {
     if (!prefix) {
         throw Error('LocalStorage prefix is empty.');
     }

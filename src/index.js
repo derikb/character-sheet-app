@@ -1,7 +1,9 @@
-import ActionMenu from './ActionMenu.js';
-import EventEmitter from './EventEmitter.js';
-import Manager from './Manager.js';
+/* eslint-disable no-unused-vars */
+import ActionMenu from './views/ActionMenu.js';
+import EventEmitter from './services/EventEmitter.js';
+import Manager from './views/Manager.js';
 
+// All the web components we need in the app.
 import NoteListItem from './components/NoteListItem.js';
 import NoteList from './components/NoteList.js';
 import SimpleList from './components/SimpleList.js';
@@ -15,15 +17,12 @@ import Modal from './components/Modal.js';
 * Register service worker if it's supported
 */
 if ('serviceWorker' in navigator) {
-    // navigator.serviceWorker.register('service_worker.js', {
-    //     scope: '/'
-    // });
-    navigator.serviceWorker.register(
-        new URL('service_worker.js', import.meta.url),
-        {
-            type: 'module'
-        }
-    );
+    // navigator.serviceWorker.register(
+    //     new URL('service_worker.js', import.meta.url),
+    //     {
+    //         type: 'module'
+    //     }
+    // );
 }
 
 const emitter = new EventEmitter();

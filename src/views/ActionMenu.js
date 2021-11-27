@@ -1,9 +1,10 @@
 /**
  * Action Toolbar
+ * Also requires the Modal component.
  */
-import { getAllCharacters } from './CharacterService.js';
-import ConfirmButton from './components/ConfirmButton.js';
-import Modal from './components/Modal.js';
+import { getAllCharacters } from '../services/CharacterService.js';
+import ConfirmButton from '../components/ConfirmButton.js';
+import { isAuthed, signIn, signOut } from '../services/AuthService.js';
 
 /**
  * Buttons in the toolbar.
@@ -90,8 +91,13 @@ const ActionMenu = {
         new: 'newCharacter',
         backup: 'openDownloadForm',
         restore: 'openRestoreForm',
-        delete: 'openDeleteModal'
+        delete: 'openDeleteModal',
+        auth: 'openAuthDialog'
     },
+    /**
+     * @prop {ActionButton[]}
+     */
+    buttons: [],
     /**
      * @prop {HTMLELement} Menu element
      */
@@ -112,6 +118,36 @@ const ActionMenu = {
      * @prop {Modal} Modal for Backup restore.
      */
     restoreDialog: null,
+    /**
+     * @prop {Modal} authDialog
+     */
+    authDialog: null,
+
+    openAuthDialog: function () {
+        this.authDialog = this.authDialog || document.getElementById('dialog-auth');
+        this.authDialog.clear();
+        if (this.authDialog.isOpen) {
+            this.authDialog.close();
+            return;
+        }
+        let template = null;
+
+        if (isAuthed()) {
+            template = document.getElementById('authSignOutModal');
+        } else {
+            template = document.getElementById('authSignInModal');
+        }
+        this.authDialog.setContent([...document.importNode(template.content, true).children]);
+        if (isAuthed()) {
+            this.authDialog.querySelector('#signOut').addEventListener('click', (ev) => {
+                signOut();
+            });
+        } else {
+            this.authDialog.querySelector('#googleSignIn').addEventListener('click', (ev) => {
+                signIn();
+            });
+        }
+    },
     /**
      * Show the dialog for backing up characters.
      * Else close it if its open.
@@ -298,6 +334,25 @@ const ActionMenu = {
             }
         });
     },
+    signedIn: function () {
+        const button = this.buttons.find((b) => {
+            return b.action === 'auth';
+        });
+        if (button) {
+            button.el.innerHTML = 'Logout';
+        }
+    },
+    signedOut: function () {
+        const button = this.buttons.find((b) => {
+            return b.action === 'auth';
+        });
+        if (button) {
+            button.el.innerHTML = 'Login';
+        }
+        if (this.authDialog && this.authDialog.isOpen) {
+            this.authDialog.close();
+        }
+    },
     /**
      * Set focus to next button (or wrap around).
      * @param {ActionButton} currentBtn
@@ -353,7 +408,6 @@ const ActionMenu = {
     initialize: function (emitter) {
         this.emitter = emitter;
         this.el = document.querySelector('.app-actions');
-        this.buttons = [];
         const buttons = this.el.querySelectorAll('button, confirm-button');
         Array.prototype.forEach.call(buttons, (btn) => {
             this.buttons.push(new ActionButton(btn, this));
@@ -383,6 +437,8 @@ const ActionMenu = {
         this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
         this.emitter.on('backup:email', this.emailDownload, this);
         this.emitter.on('backup:textpaste', this.altDownload, this);
+        this.emitter.on('auth:signin', this.signedIn, this);
+        this.emitter.on('auth:signout', this.signedOut, this);
     }
 };
 

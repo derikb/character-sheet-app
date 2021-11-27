@@ -50,8 +50,14 @@ self.addEventListener('activate', function (event) {
 /**
  * Event: fetch
  * Just fetches from the cache if it can, since the whole app is static
+ * @param {FetchEvent} event
  */
 self.addEventListener('fetch', (event) => {
+    // Ignore POSTs (mostly to external DBs, etc.)
+    if (event.request.method === 'POST') {
+        fetch(event.request);
+        return;
+    }
     event.respondWith(
         caches.match(event.request)
             .then(function (resp) {

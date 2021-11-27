@@ -47,5 +47,8 @@
       "package.json",
       "package-lock.json"
     ]
+  },
+  "dependencies": {
+    "firebase": "^9.5.0"
   }
 }

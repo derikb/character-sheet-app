@@ -33,6 +33,7 @@
         <modal-mib id="dialog-backup" hidden></modal-mib>
         <modal-mib id="dialog-restore" hidden></modal-mib>
         <modal-mib id="dialog-delete" hidden></modal-mib>
+        <modal-mib id="dialog-auth" hidden></modal-mib>
 
         <div class="container">
             <div class="app-actions" roled="toolbar" aria-label="Character Actions">
@@ -44,6 +45,7 @@
                 <button type="button" class="btn-backup btn-dialog" data-action="backup" tabindex="-1">Backup</button>
                 <button type="button" class="btn-restore-backup btn-dialog" data-action="restore" tabindex="-1">Restore</button>
                 <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
+                <button type="button" class="btn-auth btn-dialog" data-action="auth" tabindex="-1">Login</button>
             </div>
             <header id="page-top" class="page-header">
                 <h1 class="pc-charname" aria-label="Character Name"><field-editable data-name="charname" placeholder="Character Name"></field-editable></h1>
@@ -467,6 +469,23 @@
             <span slot="header">Load Character</span>
             <ul id="character_list">
             </ul>
+        </template>
+
+        <template id="authSignInModal">
+            <span slot="header">Sign-in</span>
+            <div>
+                <p>By signing in, you can save data remotely, and then access your characters from any browser/device.</p>
+                <p>You're auth credentials are saved for use with Google's Firebase Firestore. I get access to very little information about you, other than email.</p>
+                <p><button type="button" id="googleSignIn">Sign in with Google</button></p>
+            </div>
+        </template>
+
+        <template id="authSignOutModal">
+            <span slot="header">Sign-out</span>
+            <div>
+                <p>By signing out you may lose any unsaved data.</p>
+                <p><button type="button" id="signOut">Sign Out</button></p>
+            </div>
         </template>
 
         <script type="module" src="./index.js"></script>
