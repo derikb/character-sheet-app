@@ -78,6 +78,7 @@ class SyncInfo extends HTMLElement {
         this.localDiv = this.shadowRoot.querySelector('.local');
         this.remoteDiv = this.shadowRoot.querySelector('.remote');
         this.syncDiv = this.shadowRoot.querySelector('.syncaction');
+        this.isCurrentCharacter = false;
     }
 
     connectedCallback () {
@@ -86,6 +87,10 @@ class SyncInfo extends HTMLElement {
 
     disconnectedCallback () {
         this.shadowRoot.removeEventListener('click', this.handleButtonClick.bind(this));
+    }
+
+    get key () {
+        return this._key;
     }
 
     _showError (message) {
@@ -151,6 +156,10 @@ class SyncInfo extends HTMLElement {
                     });
                 break;
             case 'removelocal':
+                if (this.isCurrentCharacter) {
+                    this._showError('You cannot remove the currently displayed character.');
+                    return;
+                }
                 deleteLocal(this._key)
                     .then((success) => {
                         this.localDiv.querySelector('.summary').innerHTML = 'No local copy.';
@@ -180,7 +189,10 @@ class SyncInfo extends HTMLElement {
                     });
                 break;
             case 'syncdown':
-                // @todo what if this character _is_ the current character?
+                if (this.isCurrentCharacter) {
+                    this._showError('You cannot sync to local the currently displayed character.');
+                    return;
+                }
                 syncToLocal(this._key)
                     .then((success) => {
                         this.localDiv.querySelector('.summary').innerHTML = this.remoteDiv.querySelector('.summary').innerHTML;
@@ -257,7 +269,7 @@ class SyncInfo extends HTMLElement {
             this.syncDiv.appendChild(
                 this._getButton('syncup', 'Update on Remote')
             );
-        } else if (latest === 'remove') {
+        } else if (latest === 'remote') {
             this.syncDiv.appendChild(
                 this._getButton('syncdown', 'Update on Local')
             );

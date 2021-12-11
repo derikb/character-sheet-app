@@ -199,6 +199,9 @@ p {
 p + p {
     margin-top: 1rem;
 }
+p + ul {
+    margin-top: 1rem;
+}
 
 h1,
 h2,

@@ -2,7 +2,7 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix } from '../services/CharacterService.js';
+import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, getCurrentCharacter, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
 import SheetView from './SheetView.js';
 import { monitorAuth } from '../services/AuthService.js';
@@ -10,11 +10,6 @@ import { monitorAuth } from '../services/AuthService.js';
 const Manager = {
     /** @prop {EventEmitter} */
     emitter: null,
-    /**
-     * Currently loaded character data is here
-     * @prop {Character5e}
-     */
-    cur_character: null,
     /**
      * App name used in character model app property
      */
@@ -48,34 +43,28 @@ const Manager = {
      */
     loadCharacter: async function (key) {
         this.hideUnsavedDialog();
-        this.cur_character = getCharacter(key);
-        if (!this.cur_character) {
-            this.cur_character = newCharacter(key);
-        }
-        this.cur_character.emitter = this.emitter;
-        this.sheetView.character = this.cur_character;
+        // Set character or creates one.
+        const cur_character = setCurrentCharacter(key, true);
+        cur_character.emitter = this.emitter;
+        this.sheetView.character = cur_character;
         this.emitter.trigger('loaddialog:close');
     },
     /**
      * Save character data
      */
     saveCharacter: function () {
-        if (this.cur_character === null) {
-            alert('No character to save.');
-            return;
-        }
-        if (this.cur_character.charname === '') {
-            alert('Your character must have name to save!');
-            return;
-        }
         // For fields saved on blur we need to trigger it on the active field.
         // Fields that save on change will already have saved.
         if (document.activeElement) {
             const event = new Event('blur');
             document.activeElement.dispatchEvent(event);
         }
-
-        saveCharacter(this.cur_character, this.appname);
+        try {
+            saveCurrentCharacter();
+        } catch (e) {
+            this.emitter.trigger('error:display', e.message);
+            return;
+        }
         this.hideUnsavedDialog();
     },
     /**
@@ -188,10 +177,11 @@ ${JSON.stringify(data)}`;
             }
             const imported_chars = [];
             let reloadCurrentChar = false;
+            const currentCharKey = getCurrentCharacterKey();
             backups.forEach((char_obj) => {
                 const newCharacter = importCharacter(char_obj, this.appname);
                 // if its the current character we should reload them
-                if (newCharacter.key === this.cur_character.key) {
+                if (newCharacter.key === currentCharKey) {
                     reloadCurrentChar = true;
                 }
                 const li = document.createElement('li');
@@ -215,7 +205,7 @@ ${JSON.stringify(data)}`;
             this.alert.open();
 
             if (reloadCurrentChar) {
-                this.loadCharacter(this.cur_character.key).catch((error) => {
+                this.loadCharacter(currentCharKey).catch((error) => {
                     console.log(error);
                 });
             }
@@ -232,7 +222,7 @@ ${JSON.stringify(data)}`;
             return;
         }
         // if its the current character we should trigger "new character" action
-        if (this.cur_character !== null && this.cur_character.key === key) {
+        if (getCurrentCharacterKey() === key) {
             this.triggerNewCharacter();
         }
         this.dialog_undo.querySelector('button').dataset.key = key;
@@ -255,8 +245,6 @@ ${JSON.stringify(data)}`;
         if (key === '' || key === 'settings') {
             return;
         }
-        // @todo some kind of confirm/check/error handling here.
-        // @todo ask to remove from remote too if logged in.
         removeCharacterLocal(key);
         this.dialog_undo.querySelector('button').dataset.key = '';
         this.dialog_undo.hidden = true;
@@ -327,32 +315,33 @@ ${JSON.stringify(data)}`;
         if (!field) {
             return;
         }
-        if (typeof this.cur_character[field] === 'undefined') {
+        const cur_character = getCurrentCharacter();
+        if (typeof cur_character[field] === 'undefined') {
             return;
         }
         const newValue = ev.detail.value;
         if (field === 'skills') {
-            const currentVal = this.cur_character.getSkill(subfield);
+            const currentVal = cur_character.getSkill(subfield);
             if (!this.sameValues(currentVal, newValue)) {
-                this.cur_character.setSkill(subfield, ev.detail.value);
+                cur_character.setSkill(subfield, ev.detail.value);
                 this.showUnsavedDialog();
             }
             return;
         }
         if (subfield) {
-            if (typeof this.cur_character[field] !== 'object' || Array.isArray(this.cur_character[field])) {
+            if (typeof cur_character[field] !== 'object' || Array.isArray(cur_character[field])) {
                 return;
             }
-            const currentVal = this.cur_character[field][subfield];
+            const currentVal = cur_character[field][subfield];
             if (!this.sameValues(currentVal, newValue)) {
-                this.cur_character[field][subfield] = ev.detail.value;
+                cur_character[field][subfield] = ev.detail.value;
                 this.showUnsavedDialog();
             }
             return;
         }
-        const currentVal = this.cur_character[field];
+        const currentVal = cur_character[field];
         if (!this.sameValues(currentVal, newValue)) {
-            this.cur_character[field] = newValue;
+            cur_character[field] = newValue;
             this.showUnsavedDialog();
         }
     },
@@ -365,7 +354,8 @@ ${JSON.stringify(data)}`;
         if (!field) {
             return;
         }
-        this.cur_character.setAttribute(field, ev.detail.value);
+        const cur_character = getCurrentCharacter();
+        cur_character.setAttribute(field, ev.detail.value);
         this.showUnsavedDialog();
     },
     /**
@@ -377,8 +367,17 @@ ${JSON.stringify(data)}`;
         if (!field) {
             return;
         }
-        this.cur_character.setSaveProficiency(field, ev.detail.value);
+        const cur_character = getCurrentCharacter();
+        cur_character.setSaveProficiency(field, ev.detail.value);
         this.showUnsavedDialog();
+    },
+    /**
+     * Show an error message.
+     * @param {String} error
+     */
+    showErrorMessage: function (error) {
+        // Blah, for now just keep it simple and obvious.
+        alert(error);
     },
     /**
      * Start up the app with some events and such
@@ -450,9 +449,7 @@ ${JSON.stringify(data)}`;
         this.emitter.on('tab:switch', this.sheetView.switchToPane, this.sheetView);
         this.emitter.on('dialog:save:show', this.showUnsavedDialog, this);
         this.emitter.on('dialog:save:hide', this.hideUnsavedDialog, this);
-
-        // this.emitter.on('auth:signin', (ev) => { console.log('auth:signin'); }, this);
-        // this.emitter.on('auth:signout', (ev) => { console.log('auth:signout'); }, this);
+        this.emitter.on('error:display', this.showErrorMessage, this);
 
         // @todo I think all these could be moved to the SheetView
         document.addEventListener('fieldChange', this.handleFieldChange.bind(this));

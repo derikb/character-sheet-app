@@ -28,7 +28,7 @@ const getRefForKey = function (userId, key) {
  * @param {String} userId Firebase user id
  * @returns {CollectionReference}
  */
-const getRefForCollection = function (userId, key) {
+const getRefForCollection = function (userId) {
     const db = getFirestore();
     return collection(db, `/users/${userId}/characters`);
 };

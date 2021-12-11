@@ -3,7 +3,6 @@
  * @prop {Boolean} debug So you can more easily in dev see when events are triggered.
  */
 export default class EventEmitter {
-
     constructor () {
         this.events = {};
         this.debug = false;
@@ -33,7 +32,7 @@ export default class EventEmitter {
         }
         this.events[event] = this.events[event] || [];
         if (this.events[event].length > 0) {
-            var index = this.listenerIndex(event, listener);
+            const index = this.listenerIndex(event, listener);
             // Replace the listener if it already exists.
             if (index > -1) {
                 this.events[event].splice(index, 1);
@@ -50,7 +49,7 @@ export default class EventEmitter {
      */
     off (event, listener) {
         if (Array.isArray(this.events[event])) {
-            var index = this.listenerIndex(event, listener);
+            const index = this.listenerIndex(event, listener);
             if (index === -1) {
                 return;
             }
@@ -69,7 +68,7 @@ export default class EventEmitter {
     once (event, listener, boundObj) {
         this.on(event, function wrap () {
             this.off(event, wrap);
-            var binder = typeof boundObj === 'undefined' ? this : boundObj;
+            const binder = typeof boundObj === 'undefined' ? this : boundObj;
             listener.apply(binder, arguments);
         });
     }
@@ -82,11 +81,11 @@ export default class EventEmitter {
         if (this.debug && console) {
             console.log(`EventEmitter triggered: ${event}`);
         }
-        var args = [].slice.call(arguments, 1);
+        const args = [].slice.call(arguments, 1);
 
         if (Array.isArray(this.events[event])) {
             this.events[event].forEach((listenObj) => {
-                var binder = listenObj.boundObj === null ? this : listenObj.boundObj;
+                const binder = listenObj.boundObj === null ? this : listenObj.boundObj;
                 listenObj.listener.apply(binder, args);
             });
         }

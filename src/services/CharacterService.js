@@ -8,6 +8,11 @@ import Database from './Database.js';
 import { isAuthed } from './AuthService.js';
 
 /**
+ * Currently loaded character data is here
+ * @prop {Character5e|null}
+ */
+let cur_character = null;
+/**
  * Return UTC datetime string for right now
  * @return {String}
  */
@@ -168,9 +173,54 @@ const setLocalStoragePrefix = function (prefix) {
     Storage.setPrefix(prefix);
 };
 
+/**
+ * Set current character based on key.
+ * Returns null if key is not locally set.
+ * @param {String} key
+ * @param {Boolean} createOnEmpty Create new character if the key isn't found.
+ * @returns {Character5e|null}
+ */
+const setCurrentCharacter = function (key, createOnEmpty = false) {
+    let char = getCharacter(key);
+    if (!char) {
+        if (!createOnEmpty) {
+            return null;
+        }
+        char = newCharacter(key);
+    }
+    cur_character = char;
+    return cur_character;
+};
+
+/**
+ * Get character currently displayed.
+ * @returns {Character5e|null}
+ */
+const getCurrentCharacter = function () {
+    return cur_character;
+};
+/**
+ * Just the key for the current character.
+ * @returns {String}
+ */
+const getCurrentCharacterKey = function () {
+    return !cur_character ? '' : cur_character.key;
+};
+/**
+ * Save the current character locally.
+ */
+const saveCurrentCharacter = function () {
+    if (!cur_character) {
+        throw new Error('No character is set.');
+    }
+    if (cur_character.charname === '') {
+        throw new Error('Your character must have name to save!');
+    }
+    saveCharacter(cur_character);
+};
+
 export {
     generateCharacterKey,
-    newCharacter,
     getCharacter,
     getCharacterRemote,
     saveCharacter,
@@ -180,5 +230,9 @@ export {
     getAllCharactersLocal,
     getAllCharactersRemote,
     importCharacter,
-    setLocalStoragePrefix
+    setLocalStoragePrefix,
+    getCurrentCharacter,
+    setCurrentCharacter,
+    getCurrentCharacterKey,
+    saveCurrentCharacter
 };

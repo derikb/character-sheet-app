@@ -2,7 +2,7 @@
  * Action Toolbar
  * Also requires the Modal component.
  */
-import { getAllCharactersLocal } from '../services/CharacterService.js';
+import { getAllCharactersLocal, getCurrentCharacterKey } from '../services/CharacterService.js';
 import ConfirmButton from '../components/ConfirmButton.js';
 import SyncInfo from '../components/SyncInfo.js';
 import { isAuthed, signIn, signOut } from '../services/AuthService.js';
@@ -172,12 +172,18 @@ const ActionMenu = {
         const template = document.getElementById('syncModal');
         this.syncDialog.setContent([...document.importNode(template.content, true).children]);
 
+        const currentCharKey = getCurrentCharacterKey();
+
         getCharacterMatchings().then((matches) => {
             console.log(matches);
             const frag = document.createDocumentFragment();
             matches.forEach((match) => {
                 const info = new SyncInfo();
                 info.setData(match);
+                // Not all actions are allowed for the current character.
+                if (info.key === currentCharKey) {
+                    info.isCurrentCharacter = true;
+                }
                 frag.appendChild(info);
             });
             this.syncDialog.querySelector('#characterSyncList').appendChild(frag);
