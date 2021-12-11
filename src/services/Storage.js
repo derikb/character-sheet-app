@@ -19,17 +19,10 @@ const Storage = {
      * @return {Object|Null} object or null
      */
     get: function (key) {
-        let txt = localStorage.getItem(`${this.prefix}${key}`);
-        // backward compatibile cleanup later @todo
-        if (txt === null) {
-            txt = localStorage.getItem(key);
-            if (txt !== null) {
-                this.set(key, txt);
-            }
-        }
         try {
+            const txt = localStorage.getItem(`${this.prefix}${key}`);
             return (txt !== null) ? JSON.parse(txt) : null;
-        } catch(e) {
+        } catch (e) {
             return null;
         }
     },
@@ -43,10 +36,6 @@ const Storage = {
     set: function (key, object) {
         try {
             localStorage.setItem(`${this.prefix}${key}`, JSON.stringify(object));
-            // backwards compatible cleanup for non prefixed saved characters @todo remove
-            if (localStorage.getItem(key) !== null) {
-                localStorage.removeItem(key);
-            }
         } catch (e) {
             // Should only happen when over quota
             console.log(e.message);
@@ -72,18 +61,27 @@ const Storage = {
             const key_regex = new RegExp(`^(${this.prefix})+`, 'i');
             for (let i = 0; i < localStorage.length; i++) {
                 let key = localStorage.key(i);
-                // check for prefix
-                if (key.indexOf(this.prefix) !== 0) {
-                    // backwards compatibility for a little while @todo remove
-                    if (!key.match(/^[a-z0-9]{7}$/)) {
-                        continue;
-                    }
-                }
                 key = key.replace(key_regex, '');
                 keys.push(key);
             }
         }
         return keys;
+    },
+    /**
+     * Get all objects from the store.
+     * @returns Object[]
+     */
+    getAll: function () {
+        const keys = this.getAllKeys();
+        const objects = [];
+        keys.forEach((key) => {
+            const char_obj = Storage.get(key);
+            if (!char_obj || !char_obj.key) {
+                return;
+            }
+            objects.push(char_obj);
+        });
+        return objects;
     }
 };
 

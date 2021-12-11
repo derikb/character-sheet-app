@@ -357,7 +357,7 @@ class Modal extends HTMLElement {
         }
     }
     /**
-     * Add content to modal, open it, focus on it.
+     * Add content to modal.
      * This adds the content slotted item to the light DOM.
      * @param {HTMLElement[]|HTMLElement} content single element or Array of elements
      * @param {Boolean} includeCloseButton Include a close button at the bottom.
@@ -379,7 +379,6 @@ class Modal extends HTMLElement {
             f.appendChild(this.getCloseButton());
         }
         this.appendChild(f);
-        this.open();
     }
 }
 

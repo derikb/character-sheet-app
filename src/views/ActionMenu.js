@@ -2,9 +2,11 @@
  * Action Toolbar
  * Also requires the Modal component.
  */
-import { getAllCharacters } from '../services/CharacterService.js';
+import { getAllCharactersLocal } from '../services/CharacterService.js';
 import ConfirmButton from '../components/ConfirmButton.js';
+import SyncInfo from '../components/SyncInfo.js';
 import { isAuthed, signIn, signOut } from '../services/AuthService.js';
+import { getCharacterMatchings } from '../services/syncService.js';
 
 /**
  * Buttons in the toolbar.
@@ -122,6 +124,10 @@ const ActionMenu = {
      * @prop {Modal} authDialog
      */
     authDialog: null,
+    /**
+     * @prop {Modal} syncDialog
+     */
+    syncDialog: null,
 
     openAuthDialog: function () {
         this.authDialog = this.authDialog || document.getElementById('dialog-auth');
@@ -142,11 +148,44 @@ const ActionMenu = {
             this.authDialog.querySelector('#signOut').addEventListener('click', (ev) => {
                 signOut();
             });
+            this.authDialog.querySelector('#syncData').addEventListener('click', (ev) => {
+                this.openSyncModal();
+                this.authDialog.close();
+            });
         } else {
             this.authDialog.querySelector('#googleSignIn').addEventListener('click', (ev) => {
                 signIn();
             });
         }
+        this.authDialog.open();
+    },
+    /**
+     * Open the character sync modal.
+     */
+    openSyncModal: function () {
+        this.syncDialog = this.syncDialog || document.getElementById('dialog-sync');
+        this.syncDialog.clear();
+        if (this.syncDialog.isOpen) {
+            this.syncDialog.close();
+            return;
+        }
+        const template = document.getElementById('syncModal');
+        this.syncDialog.setContent([...document.importNode(template.content, true).children]);
+
+        getCharacterMatchings().then((matches) => {
+            console.log(matches);
+            const frag = document.createDocumentFragment();
+            matches.forEach((match) => {
+                const info = new SyncInfo();
+                info.setData(match);
+                frag.appendChild(info);
+            });
+            this.syncDialog.querySelector('#characterSyncList').appendChild(frag);
+            this.syncDialog.open();
+        })
+            .catch((error) => {
+                console.log(error);
+            });
     },
     /**
      * Show the dialog for backing up characters.
@@ -163,7 +202,7 @@ const ActionMenu = {
         const form = document.importNode(template.content, true);
 
         const checkboxes = [];
-        getAllCharacters().forEach((char) => {
+        getAllCharactersLocal().forEach((char) => {
             const li = `<li><label><input type="checkbox" name="${char.key}" value="${char.key}" /> ${char.summaryHeader}</label></li>`;
             checkboxes.push(li);
         });
@@ -173,6 +212,7 @@ const ActionMenu = {
             ev.preventDefault();
             this.emitter.trigger('backup:download', ev.target);
         });
+        this.downloadDialog.open();
     },
     /**
      * Show the back up restore form.
@@ -193,6 +233,7 @@ const ActionMenu = {
             this.emitter.trigger('backup:restore', ev.target);
             this.restoreDialog.closeClear();
         });
+        this.restoreDialog.open();
     },
     /**
      * If file download is unavailable show the data to copy/paste
@@ -207,8 +248,7 @@ const ActionMenu = {
         this.downloadDialog.clear();
         this.downloadDialog.header = 'Alernate Download Option';
         this.downloadDialog.setContent([p, text, this.downloadDialog.getCloseButton()], false);
-        text.focus();
-        text.select();
+        this.downloadDialog.open();
     },
     /**
      * Show email download link.
@@ -226,7 +266,7 @@ const ActionMenu = {
         p.appendChild(a);
         this.downloadDialog.clear();
         this.downloadDialog.setContent([p, this.downloadDialog.getCloseButton()], false);
-        this.downloadDialog.focusFirst();
+        this.downloadDialog.open();
     },
     /**
      * Trigger a save character event.
@@ -277,7 +317,7 @@ const ActionMenu = {
         const template = document.getElementById('loadModal');
         const content = document.importNode(template.content, true);
         const list = content.querySelector('ul');
-        getAllCharacters().forEach((char) => {
+        getAllCharactersLocal().forEach((char) => {
             const li = document.createElement('li');
             const cButton = new ConfirmButton();
             cButton.dataset.key = char.key;
@@ -293,6 +333,7 @@ const ActionMenu = {
             list.appendChild(li);
         });
         this.loadDialog.setContent([...content.children]);
+        this.loadDialog.open();
     },
     /**
      * Close the load modal.
@@ -315,7 +356,7 @@ const ActionMenu = {
         const content = document.importNode(template.content, true);
 
         const items = [];
-        getAllCharacters().forEach((char) => {
+        getAllCharactersLocal().forEach((char) => {
             const li = `<li><confirm-button data-key="${char.key}" class="btn btn-plain btn-delete-char">
                 <span slot="default">${char.summaryHeader}</span>
                 <span slot="confirm" hidden>Are you sure you want to delete: ${(char.charname) ? char.charname : '[Unnamed]'}</span>
@@ -333,15 +374,24 @@ const ActionMenu = {
                 modal.closeClear();
             }
         });
+        modal.open();
     },
+    /**
+     * When user switches to being logged in.
+     */
     signedIn: function () {
         const button = this.buttons.find((b) => {
             return b.action === 'auth';
         });
         if (button) {
-            button.el.innerHTML = 'Logout';
+            button.el.innerHTML = 'Sync/Logout';
         }
+        // Trigger the dialog so user can sync data.
+        this.openAuthDialog();
     },
+    /**
+     * When user switches to being logged ou.
+     */
     signedOut: function () {
         const button = this.buttons.find((b) => {
             return b.action === 'auth';

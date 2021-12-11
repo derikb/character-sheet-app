@@ -1,4 +1,4 @@
-@import 'npm:normalize.css/normalize.css';
+@import '../node_modules/normalize.css/normalize.css';
 
 /**
  * Start app specific CSS
@@ -196,6 +196,9 @@ p {
     margin-top: 0;
     margin-bottom: 0;
 }
+p + p {
+    margin-top: 1rem;
+}
 
 h1,
 h2,
@@ -246,6 +249,10 @@ table.table-editable {
 table.table-editable tbody tr {
     border-bottom: 1px solid rgb(207,0,15);
     margin-bottom: .25rem;
+}
+
+.mg-top {
+    margin-top: 1rem;
 }
 
 
@@ -428,7 +435,7 @@ dl.field dt {
 }
 dl.field dd {
     display: inline-block;
-     margin: 0 0 0 2rem;
+    margin: 0 0 0 2rem;
     flex: 2 1 auto;
 }
 

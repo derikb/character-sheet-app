@@ -2,7 +2,7 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacter, getCharacterCount, importCharacter, setLocalStoragePrefix } from '../services/CharacterService.js';
+import { generateCharacterKey, newCharacter, getCharacter, saveCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
 import SheetView from './SheetView.js';
 import { monitorAuth } from '../services/AuthService.js';
@@ -46,7 +46,7 @@ const Manager = {
      * Load character data based on a key
      * @param {String} key Character identifier
      */
-    loadCharacter: function (key) {
+    loadCharacter: async function (key) {
         this.hideUnsavedDialog();
         this.cur_character = getCharacter(key);
         if (!this.cur_character) {
@@ -187,11 +187,12 @@ ${JSON.stringify(data)}`;
                 backups = [backups];
             }
             const imported_chars = [];
+            let reloadCurrentChar = false;
             backups.forEach((char_obj) => {
                 const newCharacter = importCharacter(char_obj, this.appname);
                 // if its the current character we should reload them
                 if (newCharacter.key === this.cur_character.key) {
-                    this.loadCharacter(newCharacter.key);
+                    reloadCurrentChar = true;
                 }
                 const li = document.createElement('li');
                 li.textContent = `${newCharacter.charname} has been added. `;
@@ -211,6 +212,13 @@ ${JSON.stringify(data)}`;
             });
             this.alert.header = 'Restored Characters';
             this.alert.setContent([ul]);
+            this.alert.open();
+
+            if (reloadCurrentChar) {
+                this.loadCharacter(this.cur_character.key).catch((error) => {
+                    console.log(error);
+                });
+            }
         } catch (e) {
             alert(`Error processing backup data: ${e.message}`);
         }
@@ -247,16 +255,14 @@ ${JSON.stringify(data)}`;
         if (key === '' || key === 'settings') {
             return;
         }
-        removeCharacter(key);
+        // @todo some kind of confirm/check/error handling here.
+        // @todo ask to remove from remote too if logged in.
+        removeCharacterLocal(key);
         this.dialog_undo.querySelector('button').dataset.key = '';
         this.dialog_undo.hidden = true;
         // This will reset the transition bar.
         const timeoutIndicator = this.dialog_undo.querySelector('.delete-timeout');
         timeoutIndicator.classList.remove('transition', 'timeout');
-        if (getCharacter(key)) {
-            // Character is still around, so error, I guess.
-            alert(`Error deleting the character with key: ${key}`);
-        }
     },
     /**
      * Remove the timeout and stop the delete from happening.
@@ -282,6 +288,7 @@ ${JSON.stringify(data)}`;
     showIntroDialog: function () {
         const template = document.getElementById('introAlert');
         this.alert.setContent([...document.importNode(template.content, true).children]);
+        this.alert.open();
     },
     /**
      * Show the unsaved data dialog.
@@ -397,10 +404,6 @@ ${JSON.stringify(data)}`;
 
         monitorAuth(this.emitter);
 
-        if (getCharacterCount() === 0) {
-            this.showIntroDialog();
-        }
-
         const shortCuts = new ShortCutKeys(this.emitter);
         shortCuts.addShortCut('Ctrl+Shift+ArrowDown', 'character:save');
         shortCuts.addShortCut('Ctrl+Shift+ArrowRight', 'tab:switch');
@@ -425,18 +428,11 @@ ${JSON.stringify(data)}`;
             const template = document.getElementById('helpDialog');
             const div = document.importNode(template.content, true);
             this.alert.setContent([...div.children]);
+            this.alert.open();
         });
 
         // Event: Listen for hashchange and change the current character
         window.addEventListener('hashchange', (e) => { this.changeCharacter(); }, false);
-
-        // Check the hash to see if we need to load a specific character
-        const urlhash = window.location.hash.substr(1);
-        if (urlhash !== '') {
-            this.loadCharacter(urlhash);
-        } else {
-            this.triggerNewCharacter();
-        }
 
         this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => {
             this.emitter.trigger('character:save');
@@ -458,9 +454,22 @@ ${JSON.stringify(data)}`;
         // this.emitter.on('auth:signin', (ev) => { console.log('auth:signin'); }, this);
         // this.emitter.on('auth:signout', (ev) => { console.log('auth:signout'); }, this);
 
+        // @todo I think all these could be moved to the SheetView
         document.addEventListener('fieldChange', this.handleFieldChange.bind(this));
         document.addEventListener('attributeChange', this.handleAttributeChange.bind(this));
         document.addEventListener('saveChange', this.handleSaveChange.bind(this));
+
+        // Check the hash to see if we need to load a specific character
+        const urlhash = window.location.hash.substr(1);
+        if (urlhash !== '') {
+            this.loadCharacter(urlhash).catch((error) => {
+                console.log(error);
+            });
+        } else {
+            this.triggerNewCharacter();
+            // Show intro, since they might be new to this...
+            this.showIntroDialog();
+        }
     }
 };
 

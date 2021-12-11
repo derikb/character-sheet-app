@@ -34,6 +34,7 @@
         <modal-mib id="dialog-restore" hidden></modal-mib>
         <modal-mib id="dialog-delete" hidden></modal-mib>
         <modal-mib id="dialog-auth" hidden></modal-mib>
+        <modal-mib id="dialog-sync" hidden></modal-mib>
 
         <div class="container">
             <div class="app-actions" roled="toolbar" aria-label="Character Actions">
@@ -475,16 +476,31 @@
             <span slot="header">Sign-in</span>
             <div>
                 <p>By signing in, you can save data remotely, and then access your characters from any browser/device.</p>
-                <p>You're auth credentials are saved for use with Google's Firebase Firestore. I get access to very little information about you, other than email.</p>
+                <p>Your auth credentials are saved for use with Google's Firebase Firestore. I get access to very little information about you, other than email and some other publicly available profile data.</p>
                 <p><button type="button" id="googleSignIn">Sign in with Google</button></p>
             </div>
         </template>
 
         <template id="authSignOutModal">
-            <span slot="header">Sign-out</span>
+            <span slot="header">You are signed in...</span>
             <div>
+                <p>Sync data between the remote database and your local browser. If you are using multiple devices make sure to save and sync before switching between them. <strong>Don't forget to backup.</strong></p>
+                <p><button type="button" id="syncData">Sync with Remote</button></p>
+            </div>
+            <hr/>
+            <div class="mg-top">
                 <p>By signing out you may lose any unsaved data.</p>
                 <p><button type="button" id="signOut">Sign Out</button></p>
+            </div>
+        </template>
+
+        <template id="syncModal">
+            <span slot="header">Sync Characters with Remote</span>
+            <div>
+                <p><strong>WARNING:</strong> There is currently no merge conflict resolution on the syncing. You can either download or upload but both operations will overwrite data <em>NOT</em> merge it. (I still need to figure out how to handle that well.)</p>
+                <p>If you are working with multiple devices/browsers, please be aware of this. Don't edit in both places without first saving and up/downloading.</p>
+                <ul id="characterSyncList">
+                </ul>
             </div>
         </template>
 

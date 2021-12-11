@@ -38,6 +38,7 @@ const monitorAuth = function (em) {
             console.log(user.toJSON());
             currentUser = user;
             emitter.trigger('auth:signin');
+            // probably need to deal with... Storage vs. Db.
         } else {
             console.log('Auth state changed to no user.');
             currentUser = null;
@@ -87,7 +88,6 @@ const signOut = function () {
         console.log('sign out promise completed');
         // don't really need to do anything here
         // the observer catches the change the triggers any events.
-
     }).catch((error) => {
         // An error happened.
         const errorCode = error.code || '';

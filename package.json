@@ -28,6 +28,7 @@
     "@parcel/service-worker": "^2.0.1",
     "@parcel/transformer-webmanifest": "^2.0.1",
     "@parcel/transformer-xml": "^2.0.1",
+    "esbuild": "^0.14.2",
     "eslint": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.3",

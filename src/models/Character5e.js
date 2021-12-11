@@ -176,7 +176,7 @@ export default class Character5e {
 
         // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
         if (!Array.isArray(weapons)) {
-            const lines = weapons.split(new RegExp('<br/?>', 'i'));
+            const lines = weapons.split(/<br\/?>/i);
             weapons = lines.map((el) => { return [el]; });
         }
         this.weapons = weapons;
@@ -189,7 +189,7 @@ export default class Character5e {
         this.appearance = appearance;
         // @version < 1.8.0 Backwards compatible convert string to array
         if (!Array.isArray(equipment)) {
-            equipment = equipment.split(new RegExp('<br/?>', 'i'));
+            equipment = equipment.split(/<br\/?>/i);
         }
         this.equipment = equipment;
         this.cp = cp;
@@ -198,7 +198,7 @@ export default class Character5e {
         this.pp = pp;
         // @version < 1.8.0 Backwards compatible convert string to array
         if (!Array.isArray(features)) {
-            features = features.split(new RegExp('<br/?>', 'i'));
+            features = features.split(/<br\/?>/i);
         }
         this.features = features;
         this.notes = notes;
@@ -261,6 +261,13 @@ export default class Character5e {
      */
     get summaryHeader () {
         return `${this.charname} (${this.charclass} ${this.level})`;
+    }
+    /**
+     * Localized last updated string.
+     */
+    get updatedTime () {
+        const date = new Date(this.updated);
+        return date.toLocaleString();
     }
     /**
      * Proficiency modifier as string.

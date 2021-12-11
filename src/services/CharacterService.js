@@ -4,6 +4,8 @@
  */
 import Character5e from '../models/Character5e.js';
 import Storage from './Storage.js';
+import Database from './Database.js';
+import { isAuthed } from './AuthService.js';
 
 /**
  * Return UTC datetime string for right now
@@ -47,45 +49,85 @@ const getCharacter = function (key) {
     return new Character5e(char_obj);
 };
 /**
+ * Get a single character model.
+ * @param {String} key Character's key.
+ * @returns {Character5e|null}
+ */
+const getCharacterRemote = async function (key) {
+    if (!key) {
+        return null;
+    }
+    const char_obj = await Database.get(key);
+    if (!char_obj || !char_obj.key) {
+        return null;
+    }
+    return new Character5e(char_obj);
+};
+/**
  * Save a single character.
  * @param {Character5e} character
  * @param {String} appname
  * @returns {Boolean}
  */
-const saveCharacter = function (character, appname) {
+const saveCharacter = function (character, appname = '') {
     // Update saved timestamp
     character.updated = currentTimestamp();
     // Make sure app name is set
-    character.app = appname;
+    if (appname !== '') {
+        character.app = appname;
+    }
     return Storage.set(character.key, character);
+};
+/**
+ * Save a single character to the remote.
+ * @param {Character5e} character
+ * @returns {Boolean}
+ */
+const saveCharacterRemote = async function (character) {
+    // Update saved timestamp
+    // character.updated = currentTimestamp();
+    return await Database.set(character.key, character.toJSON());
 };
 /**
  * Remove a character from the store.
  * @param {String} key
  */
-const removeCharacter = function (key) {
+const removeCharacterLocal = function (key) {
     Storage.remove(key);
 };
 /**
- * Get all characters saved.
+ * Remove a character from the remote.
+ * @param {String} key
+ */
+const removeCharacterRemote = async function (key) {
+    return Database.remove(key);
+};
+/**
+ * Get all characters saved locally.
  * @returns {Character5e[]}
  */
-const getAllCharacters = function () {
+const getAllCharactersLocal = function () {
     const characters = [];
-    Storage.getAllKeys().forEach((key) => {
-        const char_obj = Storage.get(key);
-        if (!char_obj || !char_obj.key) {
-            return;
-        }
+    Storage.getAll().forEach((char_obj) => {
         characters.push(new Character5e(char_obj));
     });
     return characters;
 };
 /**
- * Count the number of characters in storage.
+ * Get all characters saved to the remote database.
+ * @returns {Map} entries are Character5e keyed to the key property.
  */
-const getCharacterCount = function () {
-    return getAllCharacters().length;
+const getAllCharactersRemote = async function () {
+    const characters = new Map();
+    if (!isAuthed()) {
+        return [];
+    }
+    const char_objects = await Database.getAll();
+    char_objects.forEach((char_obj) => {
+        const char = new Character5e(char_obj);
+        characters.set(char.key, char);
+    });
+    return characters;
 };
 /**
  * Import/save a character from an obj and return the model.
@@ -130,10 +172,13 @@ export {
     generateCharacterKey,
     newCharacter,
     getCharacter,
+    getCharacterRemote,
     saveCharacter,
-    removeCharacter,
-    getAllCharacters,
-    getCharacterCount,
+    saveCharacterRemote,
+    removeCharacterLocal,
+    removeCharacterRemote,
+    getAllCharactersLocal,
+    getAllCharactersRemote,
     importCharacter,
     setLocalStoragePrefix
 };
