@@ -447,7 +447,7 @@ dl.field dd:last-of-type {
 }
 
 [data-name=armor_class] {
-    background-image: url(/images/shield.svg);
+    background-image: url(../images/shield.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 2rem;
@@ -456,7 +456,7 @@ dl.field dd:last-of-type {
     line-height: 2.5rem;
 }
 [data-name=hp_max] {
-    background-image: url(/images/heart.svg);
+    background-image: url(../images/heart.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 4rem;
@@ -466,7 +466,7 @@ dl.field dd:last-of-type {
     line-height: 2.5rem;
 }
 [data-name=hp_cur] {
-    background-image: url(/images/heart_broken.svg);
+    background-image: url(../images/heart_broken.svg);
     background-repeat: no-repeat;
     height: 3rem;
     width: 4rem;

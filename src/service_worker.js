@@ -1,7 +1,7 @@
 /**
  * Service worker for character sheet app
  */
-import { manifest, version } from '@parcel/service-worker';
+import { version } from '../package.json';
 /**
  * Config data
  * Update cacheName when we want to make sure to get new data in the cache
@@ -9,7 +9,12 @@ import { manifest, version } from '@parcel/service-worker';
  */
 const config = {
     cacheName: version,
-    staticCacheItems: manifest
+    staticCacheItems: [
+        '/index.html',
+        '/index.js',
+        '/styles.css',
+        '/'
+    ]
 };
 
 /**

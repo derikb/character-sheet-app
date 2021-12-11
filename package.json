@@ -12,8 +12,8 @@
   "homepage": "https://github.com/derikb/character-sheet-5e#readme",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel",
-    "build": "parcel build",
+    "start": "esbuild --serve=8080 --servedir=./dist ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --bundle",
+    "build": "esbuild ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --minify --sourcemap --bundle",
     "release": "standard-version -a"
   },
   "keywords": [
@@ -23,11 +23,6 @@
   "author": "Derik A Badman",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@parcel/packager-raw-url": "^2.0.1",
-    "@parcel/packager-xml": "^2.0.1",
-    "@parcel/service-worker": "^2.0.1",
-    "@parcel/transformer-webmanifest": "^2.0.1",
-    "@parcel/transformer-xml": "^2.0.1",
     "esbuild": "^0.14.2",
     "eslint": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
@@ -35,7 +30,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
     "normalize.css": "^8.0.1",
-    "parcel": "^2.0.1",
     "standard-version": "^9.3.2"
   },
   "source": "src/index.html",
