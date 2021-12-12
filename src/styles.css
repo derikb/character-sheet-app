@@ -512,7 +512,7 @@ input[type='number'].small {
     Areas for attributes and skills
 */
 .pc-attributes, .pc-skills {
-    list-style-type: none;
+    /* list-style-type: none; */
     font-size: 1rem;
     line-height: 1.75rem;
     margin: 0 0 1.5rem 0;
@@ -633,9 +633,6 @@ ul[role=tablist] a[aria-selected=true] {
    .pc-attributes, .pc-skills {
        font-size: inherit;
        line-height: inherit;
-   }
-   .pc-attributes li, .pc-skills li {
-       margin: 0 0 0 0;
    }
    field-editable.smallarea, field-editable.largearea {
        margin-bottom: .5rem;

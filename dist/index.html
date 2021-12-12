@@ -37,7 +37,7 @@
         <modal-mib id="dialog-sync" hidden></modal-mib>
 
         <div class="container">
-            <div class="app-actions" roled="toolbar" aria-label="Character Actions">
+            <div class="app-actions" role="toolbar" aria-label="Character Actions">
                 <button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
                 <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>
                 <confirm-button class="btn btn-new-character" data-action="new" tabindex="-1">
@@ -48,14 +48,15 @@
                 <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
                 <button type="button" class="btn-auth btn-dialog" data-action="auth" tabindex="-1">Login</button>
             </div>
-            <header id="page-top" class="page-header">
-                <h1 class="pc-charname" aria-label="Character Name"><field-editable data-name="charname" placeholder="Character Name"></field-editable></h1>
-                <div class="menu-open">
-                    <button type="button" class="btn-open-actions">Menu</button>
-                </div>
-            </header>
 
             <main>
+                <header id="page-top" class="page-header">
+                    <h1 class="pc-charname" aria-label="Character Name"><field-editable data-name="charname" placeholder="Character Name"></field-editable></h1>
+                    <div class="menu-open">
+                        <button type="button" class="btn-open-actions">Menu</button>
+                    </div>
+                </header>
+
                 <ul id="toptabs" role="tablist">
                     <li role="presentation"><a role="tab" id="tab-stats" href="#pane-stats" aria-selected="true">Statistics, Abilities, Equipment, etc.</a></li>
                     <li role="presentation"><a role="tab" id="tab-notes" href="#pane-notes" aria-selected="false">Notes, Personality, NPCs, etc.</a></li>
@@ -125,17 +126,17 @@
 
                     <section>
                         <h2 id="page-attributes">Attributes</h2>
-                        <ul class="pc-attributes">
+                        <section class="pc-attributes" aria-labelledby="page-attributes" role="list">
                             <attr-listing data-name="str">Str</attr-listing>
                             <attr-listing data-name="dex">Dex</attr-listing>
                             <attr-listing data-name="con">Con</attr-listing>
                             <attr-listing data-name="intel">Int</attr-listing>
                             <attr-listing data-name="wis">Wis</attr-listing>
                             <attr-listing data-name="cha">Cha</attr-listing>
-                        </ul>
+                        </section>
 
                         <h2 id="page-skills">Skills</h2>
-                        <ul class="pc-skills">
+                        <section class="pc-skills" aria-labelledby="ppage-skills" role="list">
                             <skill-listing data-name="skills" data-subfield="acrobatics">Acrobatics (Dex)</skill-listing>
                             <skill-listing data-name="skills" data-subfield="animal_handling">Animal Handling (Wis)</skill-listing>
                             <skill-listing data-name="skills" data-subfield="arcana">Arcana (Int)</skill-listing>
@@ -154,7 +155,7 @@
                             <skill-listing data-name="skills" data-subfield="sleight_of_hand">Sleight of Hand (Dex)</skill-listing>
                             <skill-listing data-name="skills" data-subfield="stealth">Stealth (Dex)</skill-listing>
                             <skill-listing data-name="skills" data-subfield="survival">Survival (Wis)</skill-listing>
-                        </ul>
+                        </section>
                     </section>
 
                     <section class="grid-span-col-2">
