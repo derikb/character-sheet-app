@@ -2,7 +2,7 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, getCurrentCharacter, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey } from '../services/CharacterService.js';
+import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
 import SheetView from './SheetView.js';
 import { monitorAuth } from '../services/AuthService.js';
@@ -291,87 +291,6 @@ ${JSON.stringify(data)}`;
         this.dialog_unsaved.hidden = true;
     },
     /**
-     * Compare two properties to see if they are different
-     * For objects/arrays we need to account for them being different objects
-     * that have the same properties and values.
-     * @param {String|Number|Array|Object|Boolean} val1 Existing property value
-     * @param {String|Number|Array|Object|Boolean} val2 New property value
-     * @return {Boolean}
-     */
-    sameValues: function (val1, val2) {
-        // for efficiency we could do typeof checks
-        // and only use JSON for objects...
-        return JSON.stringify(val1) === JSON.stringify(val2);
-    },
-    /**
-     * When a field is changed in the UI.
-     * Update the character and trigger save dialog
-     * Only if the value is actually different.
-     * @param {CustomEvent} ev
-     */
-    handleFieldChange: function (ev) {
-        const field = ev.detail.field || '';
-        const subfield = ev.detail.subfield || '';
-        if (!field) {
-            return;
-        }
-        const cur_character = getCurrentCharacter();
-        if (typeof cur_character[field] === 'undefined') {
-            return;
-        }
-        const newValue = ev.detail.value;
-        if (field === 'skills') {
-            const currentVal = cur_character.getSkill(subfield);
-            if (!this.sameValues(currentVal, newValue)) {
-                cur_character.setSkill(subfield, ev.detail.value);
-                this.showUnsavedDialog();
-            }
-            return;
-        }
-        if (subfield) {
-            if (typeof cur_character[field] !== 'object' || Array.isArray(cur_character[field])) {
-                return;
-            }
-            const currentVal = cur_character[field][subfield];
-            if (!this.sameValues(currentVal, newValue)) {
-                cur_character[field][subfield] = ev.detail.value;
-                this.showUnsavedDialog();
-            }
-            return;
-        }
-        const currentVal = cur_character[field];
-        if (!this.sameValues(currentVal, newValue)) {
-            cur_character[field] = newValue;
-            this.showUnsavedDialog();
-        }
-    },
-    /**
-     * When an attribute is changed in the UI.
-     * @param {CustomEvent} ev
-     */
-    handleAttributeChange: function (ev) {
-        const field = ev.detail.field || '';
-        if (!field) {
-            return;
-        }
-        const cur_character = getCurrentCharacter();
-        cur_character.setAttribute(field, ev.detail.value);
-        this.showUnsavedDialog();
-    },
-    /**
-     * When a save is (un)checked in the UI.
-     * @param {CustomEvent} ev
-     */
-    handleSaveChange: function (ev) {
-        const field = ev.detail.field || '';
-        if (!field) {
-            return;
-        }
-        const cur_character = getCurrentCharacter();
-        cur_character.setSaveProficiency(field, ev.detail.value);
-        this.showUnsavedDialog();
-    },
-    /**
      * Show an error message.
      * @param {String} error
      */
@@ -446,15 +365,9 @@ ${JSON.stringify(data)}`;
         this.emitter.on('character:delete', this.deleteCharacterTemp, this);
         this.emitter.on('backup:download', this.downloadBackup, this);
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
-        this.emitter.on('tab:switch', this.sheetView.switchToPane, this.sheetView);
         this.emitter.on('dialog:save:show', this.showUnsavedDialog, this);
         this.emitter.on('dialog:save:hide', this.hideUnsavedDialog, this);
         this.emitter.on('error:display', this.showErrorMessage, this);
-
-        // @todo I think all these could be moved to the SheetView
-        document.addEventListener('fieldChange', this.handleFieldChange.bind(this));
-        document.addEventListener('attributeChange', this.handleAttributeChange.bind(this));
-        document.addEventListener('saveChange', this.handleSaveChange.bind(this));
 
         // Check the hash to see if we need to load a specific character
         const urlhash = window.location.hash.substr(1);

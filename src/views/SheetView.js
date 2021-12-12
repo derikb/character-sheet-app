@@ -196,6 +196,91 @@ class SheetView {
         }
     }
     /**
+     * Trigger the event to show there are unsaved changes.
+     */
+    showUnsavedDialog () {
+        this.emitter.trigger('dialog:save:show');
+    }
+    /**
+     * Compare two properties to see if they are different
+     * For objects/arrays we need to account for them being different objects
+     * that have the same properties and values.
+     * @param {String|Number|Array|Object|Boolean} valold Existing property value
+     * @param {String|Number|Array|Object|Boolean} valnew New property value
+     * @return {Boolean}
+     */
+    sameValues (valold, valnew) {
+        // for efficiency we could do typeof checks
+        // and only use JSON for objects...
+        return JSON.stringify(valold) === JSON.stringify(valnew);
+    }
+    /**
+     * When a field is changed in the UI.
+     * Update the character and trigger save dialog
+     * Only if the value is actually different.
+     * @param {CustomEvent} ev
+     */
+    handleFieldChange (ev) {
+        const field = ev.detail.field || '';
+        const subfield = ev.detail.subfield || '';
+        if (!field) {
+            return;
+        }
+        const cur_character = this.cur_character;
+        if (typeof cur_character[field] === 'undefined') {
+            return;
+        }
+        const newValue = ev.detail.value;
+        if (field === 'skills') {
+            const currentVal = cur_character.getSkill(subfield);
+            if (!this.sameValues(currentVal, newValue)) {
+                cur_character.setSkill(subfield, ev.detail.value);
+                this.showUnsavedDialog();
+            }
+            return;
+        }
+        if (subfield) {
+            if (typeof cur_character[field] !== 'object' || Array.isArray(cur_character[field])) {
+                return;
+            }
+            const currentVal = cur_character[field][subfield];
+            if (!this.sameValues(currentVal, newValue)) {
+                cur_character[field][subfield] = ev.detail.value;
+                this.showUnsavedDialog();
+            }
+            return;
+        }
+        const currentVal = cur_character[field];
+        if (!this.sameValues(currentVal, newValue)) {
+            cur_character[field] = newValue;
+            this.showUnsavedDialog();
+        }
+    }
+    /**
+     * When an attribute is changed in the UI.
+     * @param {CustomEvent} ev
+     */
+    handleAttributeChange (ev) {
+        const field = ev.detail.field || '';
+        if (!field) {
+            return;
+        }
+        this.cur_character.setAttribute(field, ev.detail.value);
+        this.showUnsavedDialog();
+    }
+    /**
+     * When a save is (un)checked in the UI.
+     * @param {CustomEvent} ev
+     */
+    handleSaveChange (ev) {
+        const field = ev.detail.field || '';
+        if (!field) {
+            return;
+        }
+        this.cur_character.setSaveProficiency(field, ev.detail.value);
+        this.showUnsavedDialog();
+    }
+    /**
      * Initialize the view.
      */
     initialize () {
@@ -204,11 +289,16 @@ class SheetView {
         Array.from(this.el.querySelectorAll('input[type=number]')).forEach((el) => {
             el.addEventListener('change', this.numberInputChange.bind(this));
         });
+        // Listen for events emitted from the components
+        this.el.addEventListener('fieldChange', this.handleFieldChange.bind(this));
+        this.el.addEventListener('attributeChange', this.handleAttributeChange.bind(this));
+        this.el.addEventListener('saveChange', this.handleSaveChange.bind(this));
 
         this.emitter.on('character:skill:update', this.updateSkillMod, this);
         this.emitter.on('character:proficiency:update', this.updateProficiency, this);
         this.emitter.on('character:attribute:update', this.updateAttributeMods, this);
         this.emitter.on('character:save:update', this.updateSaveMods, this);
+        this.emitter.on('tab:switch', this.switchToPane, this);
     }
 }
 

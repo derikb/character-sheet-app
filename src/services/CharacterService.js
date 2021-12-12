@@ -57,6 +57,7 @@ const getCharacter = function (key) {
  * Get a single character model.
  * @param {String} key Character's key.
  * @returns {Character5e|null}
+ * @throws Error
  */
 const getCharacterRemote = async function (key) {
     if (!key) {
@@ -87,6 +88,7 @@ const saveCharacter = function (character, appname = '') {
  * Save a single character to the remote.
  * @param {Character5e} character
  * @returns {Boolean}
+ * @throws Error
  */
 const saveCharacterRemote = async function (character) {
     // Update saved timestamp
@@ -103,6 +105,7 @@ const removeCharacterLocal = function (key) {
 /**
  * Remove a character from the remote.
  * @param {String} key
+ * @throws Error
  */
 const removeCharacterRemote = async function (key) {
     return Database.remove(key);
@@ -121,6 +124,7 @@ const getAllCharactersLocal = function () {
 /**
  * Get all characters saved to the remote database.
  * @returns {Map} entries are Character5e keyed to the key property.
+ * @throws Error
  */
 const getAllCharactersRemote = async function () {
     const characters = new Map();

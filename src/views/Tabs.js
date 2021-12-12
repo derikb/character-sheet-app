@@ -15,7 +15,7 @@ class Tabs {
      * Switch to a specific pane.
      * @param {String} paneId Html id of pane to switch to.
      */
-    switchToPane(paneId) {
+    switchToPane (paneId) {
         let newIndex = -1;
         if (paneId) {
             newIndex = Array.prototype.findIndex.call(this.panes, (el) => {
@@ -38,22 +38,22 @@ class Tabs {
      * Handler: Change tabs on tab click.
      * @param {Event} ev Click event.
      */
-    changeTab(ev) {
+    changeTab (ev) {
         ev.preventDefault();
-        var oldTab = this.tablist.querySelector('[aria-selected=true]');
-        var oldIndex = Array.prototype.indexOf.call(this.tabs, oldTab);
-        var newTab = ev.currentTarget;
-        var newIndex = Array.prototype.indexOf.call(this.tabs, newTab);
+        const oldTab = this.tablist.querySelector('[aria-selected=true]');
+        const oldIndex = Array.prototype.indexOf.call(this.tabs, oldTab);
+        const newTab = ev.currentTarget;
+        const newIndex = Array.prototype.indexOf.call(this.tabs, newTab);
         if (oldIndex === newIndex) {
             return;
         }
         oldTab.setAttribute('aria-selected', false);
         newTab.setAttribute('aria-selected', true);
-        var oldPane = this.panes[oldIndex];
+        const oldPane = this.panes[oldIndex];
         if (oldPane) {
             oldPane.hidden = true;
         }
-        var newPane = this.panes[newIndex];
+        const newPane = this.panes[newIndex];
         if (!newPane) {
             return;
         }
@@ -62,6 +62,5 @@ class Tabs {
         newPane.querySelector('[data-name]').focus();
     }
 }
-
 
 export default Tabs;

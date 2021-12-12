@@ -55,14 +55,13 @@ template.innerHTML = `
 `;
 
 class AttributeListing extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    connectedCallback() {
+    connectedCallback () {
         // set any default attributes
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'list-item');
@@ -76,7 +75,7 @@ class AttributeListing extends HTMLElement {
         this.scoreInput.addEventListener('change', this._scoreUpdate);
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.saveCheck.removeEventListener('change', this._checkSave);
         this.scoreInput.removeEventListener('change', this._scoreUpdate);
@@ -85,65 +84,63 @@ class AttributeListing extends HTMLElement {
      * Name of the skill based on the data-name attribute.
      * @returns {String}
      */
-    get attributeName() {
+    get attributeName () {
         return this.dataset.name || '';
     }
     /**
      * Set attribute name.
      * @param {String} val
      */
-    set attributeName(val) {
+    set attributeName (val) {
         this.dataset.name = val;
     }
     /**
      * Get current attribute score.
      * @returns {Number}
      */
-    get attributeScore() {
+    get attributeScore () {
         return parseInt(this.scoreInput.value, 10);
     }
     /**
      * Set the attribute score.
      * @param {Number} val
      */
-    set attributeScore(val) {
+    set attributeScore (val) {
         this.scoreInput.value = val;
     }
     /**
      * Get if the save is proficient.
      * @returns {Number}
      */
-    get saveProficiency() {
+    get saveProficiency () {
         return this.saveCheck.checked ? 1 : 0;
     }
     /**
      * Check (or not) the save proficiency.
      * @param {Number} val
      */
-    set saveProficiency(val) {
+    set saveProficiency (val) {
         this.saveCheck.checked = (val);
     }
     /**
      * Set the attribute modifier.
      * @param {String} val
      */
-    set attributeMod(val) {
+    set attributeMod (val) {
         this.shadowRoot.querySelector('.pc-attribute-mod').innerHTML = val;
     }
     /**
      * Set the save modifier.
      * @param {String} mod
      */
-    set saveMod(mod) {
+    set saveMod (mod) {
         this.shadowRoot.querySelector('.pc-save-mod').innerHTML = mod;
     }
     /**
      * Handler: Change event on saves.
      * @param {Event} ev
      */
-    _checkSave(ev) {
-        console.log(ev.target);
-        console.log(ev.currentTarget);
+    _checkSave (ev) {
         const host = this.getRootNode().host;
 
         const detail = {
@@ -156,7 +153,7 @@ class AttributeListing extends HTMLElement {
      * Handler: Change event on number input.
      * @param {Event} ev
      */
-    _scoreUpdate(ev) {
+    _scoreUpdate (ev) {
         const host = this.getRootNode().host;
         const detail = {
             field: host.attributeName,
@@ -167,7 +164,7 @@ class AttributeListing extends HTMLElement {
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('input').focus();
     }
 }
