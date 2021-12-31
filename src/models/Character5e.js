@@ -3,6 +3,7 @@
  */
 
 import { skillAttributes, skillLevels } from './CharacterConstants.js';
+import Weapon from './Weapon.js';
 
 export default class Character5e {
     /**
@@ -12,7 +13,7 @@ export default class Character5e {
      * @prop {Object} class_points Class point like ki, sorcerer points, etc.
      * @prop {Number} class_points.cur
      * @prop {Number} class_points.max
-     * @prop {Array[]} weapons Weapon data (name, att, dam, notes).
+     * @prop {Weapon[]} weapons Weapon data (name, att, dam, notes).
      * @prop {String[]} features Special features and abilities.
      * @prop {String[]} equipment Stuff the character carries.
      * @prop {Array[]} notes_adv Adventure notes [header, text]
@@ -173,7 +174,27 @@ export default class Character5e {
             delete this.skills.sleight_of_Hand;
             this.skills.sleight_of_hand = sleight;
         }
-        this.weapons = weapons;
+
+        this.weapons = [];
+        // @version < 3.0.0 backwards compat
+        weapons.forEach((item) => {
+            // Remove null and non-objects
+            if (item && typeof item !== 'object') {
+                return;
+            }
+            if (Array.isArray(item)) {
+                // convert
+                this.weapons.push(new Weapon({
+                    name: item[0] || '',
+                    attack: item[1] || '',
+                    damage: item[2] || '',
+                    notes: item[3] || ''
+                }));
+                return;
+            }
+            this.weapons.push(new Weapon(item));
+        });
+
         this.proficiencies_other = proficiencies_other;
         this.languages = languages;
         this.traits = traits;
@@ -405,10 +426,19 @@ export default class Character5e {
             if (prop === 'emitter') {
                 return;
             }
+            let value = this[prop];
+            if (Array.isArray(value)) {
+                value = value.map((el) => {
+                    if (typeof el.toJSON === 'function') {
+                        return el.toJSON();
+                    }
+                    return el;
+                });
+            }
             if (prop.substring(0, 1) === '_') {
-                obj[prop.substring(1)] = this[prop];
+                obj[prop.substring(1)] = value;
             } else {
-                obj[prop] = this[prop];
+                obj[prop] = value;
             }
         });
         return obj;

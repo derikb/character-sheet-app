@@ -41,15 +41,14 @@ template.innerHTML = `
 `;
 
 class TableEditable extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
         this.columns = 0;
     }
 
-    connectedCallback() {
+    connectedCallback () {
         // set any default attributes?
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'table');
@@ -58,6 +57,7 @@ class TableEditable extends HTMLElement {
         this.addEventListener('keypress', this._keyPress);
         this.addEventListener('blur', this._blur);
         this._upgradeProperty('fieldName');
+        // for now the column names are also the keys of the data.
         this.columnNames = this.getAttribute('columns').split('||');
         this.columns = this.columnNames.length;
 
@@ -69,7 +69,7 @@ class TableEditable extends HTMLElement {
         });
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.removeEventListener('keypress', this._keyPress);
         this.removeEventListener('blur', this._blur);
@@ -95,13 +95,13 @@ class TableEditable extends HTMLElement {
     /**
      * Getter: field name for data.
      */
-    get fieldName() {
+    get fieldName () {
         return this.dataset.name || '';
     }
     /**
      * Getter: Content of list items.
      */
-    get contentArray() {
+    get contentArray () {
         const entries = [];
         const rows = Array.from(this.shadowRoot.querySelectorAll('tbody > tr'));
 
@@ -110,13 +110,17 @@ class TableEditable extends HTMLElement {
             if (cells.length === 0) {
                 return;
             }
-            const rowData = [];
-            cells.forEach((cell) => {
-                const text = cell.innerHTML;
-                rowData.push(text);
+            const rowData = {};
+            let isEmpty = true;
+            cells.forEach((cell, i) => {
+                const key = this.columnNames[i].toLowerCase();
+                const text = cell.innerHTML.trim();
+                if (text !== '') {
+                    isEmpty = false;
+                }
+                rowData[key] = text;
             });
-            const filledCells = rowData.filter((el) => { return el !== ''; });
-            if (filledCells.length === 0) {
+            if (isEmpty) {
                 return;
             }
             entries.push(rowData);
@@ -129,14 +133,15 @@ class TableEditable extends HTMLElement {
      * @param {String[]} array
      * @returns {HTMLTableRowElement}
      */
-    addRow(content = []) {
+    addRow (content = []) {
         const row = document.createElement('tr');
         const cell = document.createElement('td');
         cell.setAttribute('contenteditable', true);
 
         for (let i = 0; i < this.columns; i++) {
+            const key = this.columnNames[i].toLowerCase();
             const newCell = cell.cloneNode(false);
-            newCell.innerHTML = content[i] || '';
+            newCell.innerHTML = content[key] || '';
             row.appendChild(newCell);
         }
         this.shadowRoot.querySelector('tbody').appendChild(row);
@@ -145,7 +150,7 @@ class TableEditable extends HTMLElement {
     /**
      * Clear out the body rows.
      */
-    clear() {
+    clear () {
         Array.from(this.shadowRoot.querySelectorAll('tbody > tr')).forEach((row) => {
             row.parentNode.removeChild(row);
         });
@@ -153,10 +158,10 @@ class TableEditable extends HTMLElement {
     /**
      * Get focused element.
      */
-    deepActiveElement() {
+    deepActiveElement () {
         let a = document.activeElement;
         while (a && a.shadowRoot && a.shadowRoot.activeElement) {
-          a = a.shadowRoot.activeElement;
+            a = a.shadowRoot.activeElement;
         }
         return a;
     }
@@ -164,7 +169,7 @@ class TableEditable extends HTMLElement {
      * Handler: Enter to move through the items or add new ones.
      * @param {KeyboardEvent} ev Keypress event
      */
-    _keyPress(ev) {
+    _keyPress (ev) {
         if (ev.key !== 'Enter' || ev.shiftKey) {
             return;
         }
@@ -198,7 +203,7 @@ class TableEditable extends HTMLElement {
      * On blur dispatch an event so the character model can be updated.
      * @param {Event} ev
      */
-    _blur(ev) {
+    _blur (ev) {
         const detail = {
             field: this.fieldName,
             value: this.contentArray
@@ -208,7 +213,7 @@ class TableEditable extends HTMLElement {
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('[contenteditable=true]').focus();
     }
 }

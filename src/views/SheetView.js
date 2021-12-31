@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 import Tabs from './Tabs.js';
+import Weapon from '../models/Weapon.js';
 
 class SheetView {
     /**
@@ -230,7 +231,7 @@ class SheetView {
         if (typeof cur_character[field] === 'undefined') {
             return;
         }
-        const newValue = ev.detail.value;
+        let newValue = ev.detail.value;
         if (field === 'skills') {
             const currentVal = cur_character.getSkill(subfield);
             if (!this.sameValues(currentVal, newValue)) {
@@ -251,6 +252,11 @@ class SheetView {
             return;
         }
         const currentVal = cur_character[field];
+        if (field === 'weapons') {
+            newValue = newValue.map((object) => {
+                return new Weapon(object);
+            });
+        }
         if (!this.sameValues(currentVal, newValue)) {
             cur_character[field] = newValue;
             this.showUnsavedDialog();
