@@ -405,8 +405,8 @@ export default class Character5e {
             if (prop === 'emitter') {
                 return;
             }
-            if (prop.substr(0, 1) === '_') {
-                obj[prop.substr(1)] = this[prop];
+            if (prop.substring(0, 1) === '_') {
+                obj[prop.substring(1)] = this[prop];
             } else {
                 obj[prop] = this[prop];
             }
