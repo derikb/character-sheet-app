@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/derikb/character-sheet-5e/compare/v2.3.0...v3.0.0) (2021-12-31)
+
+
+### Features
+
+* **auth:** Add sign/out via firebase ([d589de7](https://github.com/derikb/character-sheet-5e/commit/d589de7ad02d94efbaadc9dd2d417027b6622769))
+* Move to build, improve dir layout ([582b325](https://github.com/derikb/character-sheet-5e/commit/582b325c08f142d8241b257ef29a7b0b3dff9e86)), closes [#87](https://github.com/derikb/character-sheet-5e/issues/87)
+
 ## [2.3.0](https://github.com/derikb/character-sheet-5e/compare/v2.2.4...v2.3.0) (2021-11-24)
 
 

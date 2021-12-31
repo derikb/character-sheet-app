@@ -1,6 +1,6 @@
 {
   "name": "character-sheet-5e",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Online character sheet for D&D",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
   },
   "standard-version": {
     "scripts": {
-      "postbump": "npm run build"
+      "postbump": "npm run build && git add ./dist/service_worker.js"
     },
     "bumpFiles": [
       "package.json",
