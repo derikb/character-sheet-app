@@ -18,7 +18,7 @@ import Modal from './components/Modal.js';
 */
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register(
-        new URL('service_worker.js', import.meta.url),
+        './service_worker.js',
         {
             type: 'module'
         }
