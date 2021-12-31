@@ -34,7 +34,7 @@ const Manager = {
      * @param {Object} e event object from hash change
      */
     changeCharacter: function () {
-        const urlhash = window.location.hash.substr(1);
+        const urlhash = window.location.hash.substring(1);
         this.loadCharacter(urlhash);
     },
     /**
@@ -370,7 +370,7 @@ ${JSON.stringify(data)}`;
         this.emitter.on('error:display', this.showErrorMessage, this);
 
         // Check the hash to see if we need to load a specific character
-        const urlhash = window.location.hash.substr(1);
+        const urlhash = window.location.hash.substring(1);
         if (urlhash !== '') {
             this.loadCharacter(urlhash).catch((error) => {
                 console.log(error);

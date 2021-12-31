@@ -173,12 +173,6 @@ export default class Character5e {
             delete this.skills.sleight_of_Hand;
             this.skills.sleight_of_hand = sleight;
         }
-
-        // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
-        if (!Array.isArray(weapons)) {
-            const lines = weapons.split(/<br\/?>/i);
-            weapons = lines.map((el) => { return [el]; });
-        }
         this.weapons = weapons;
         this.proficiencies_other = proficiencies_other;
         this.languages = languages;
@@ -187,34 +181,14 @@ export default class Character5e {
         this.bonds = bonds;
         this.flaws = flaws;
         this.appearance = appearance;
-        // @version < 1.8.0 Backwards compatible convert string to array
-        if (!Array.isArray(equipment)) {
-            equipment = equipment.split(/<br\/?>/i);
-        }
         this.equipment = equipment;
         this.cp = cp;
         this.sp = sp;
         this.gp = gp;
         this.pp = pp;
-        // @version < 1.8.0 Backwards compatible convert string to array
-        if (!Array.isArray(features)) {
-            features = features.split(/<br\/?>/i);
-        }
         this.features = features;
         this.notes = notes;
-        // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
-        if (!Array.isArray(notes_adv)) {
-            notes_adv = [
-                ['', notes_adv]
-            ];
-        }
         this.notes_adv = notes_adv;
-        // @version < 1.8.0 Backwards compatible convert string to the text of a first list item.
-        if (!Array.isArray(notes_cam)) {
-            notes_cam = [
-                ['', notes_cam]
-            ];
-        }
         this.notes_cam = notes_cam;
         this.npcs = npcs;
         this.factions = factions;
