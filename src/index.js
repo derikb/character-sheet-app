@@ -17,12 +17,12 @@ import Modal from './components/Modal.js';
 * Register service worker if it's supported
 */
 if ('serviceWorker' in navigator) {
-    // navigator.serviceWorker.register(
-    //     new URL('service_worker.js', import.meta.url),
-    //     {
-    //         type: 'module'
-    //     }
-    // );
+    navigator.serviceWorker.register(
+        new URL('service_worker.js', import.meta.url),
+        {
+            type: 'module'
+        }
+    );
 }
 
 const emitter = new EventEmitter();

@@ -32,8 +32,6 @@
     "normalize.css": "^8.0.1",
     "standard-version": "^9.3.2"
   },
-  "source": "src/index.html",
-  "target": "dist/index.html",
   "standard-version": {
     "scripts": {
       "postbump": "npm run build"
