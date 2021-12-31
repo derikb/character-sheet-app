@@ -1,6 +1,7 @@
 /**
  * Container for Definition list pairs used as note header/text.
  */
+import CharacterNote from '../models/CharacterNote.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -33,14 +34,13 @@ template.innerHTML = `
 `;
 
 class NoteListItem extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    connectedCallback() {
+    connectedCallback () {
         // set any default attributes
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'list-item');
@@ -49,42 +49,43 @@ class NoteListItem extends HTMLElement {
         this.addEventListener('keypress', this._keyPress);
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.removeEventListener('keypress', this._keyPress);
     }
     /**
      * Get the content (header and text) of the pair.
+     * @returns {CharacterNote}
      */
-    get content() {
-        return [
-            this.shadowRoot.querySelector('dt').innerHTML,
-            this.shadowRoot.querySelector('dd').innerHTML
-        ];
+    get content () {
+        return new CharacterNote({
+            header: this.shadowRoot.querySelector('dt').innerHTML,
+            text: this.shadowRoot.querySelector('dd').innerHTML
+        });
     }
     /**
      * Set the header and text of the pair.
-     * @param {String[]}
+     * @param {CharacterNote}
      */
-    set content([header = '', text = '']) {
+    set content (note) {
         // set the content.
-        this.shadowRoot.querySelector('dt').innerHTML = header;
-        this.shadowRoot.querySelector('dd').innerHTML = text;
+        this.shadowRoot.querySelector('dt').innerHTML = note.header;
+        this.shadowRoot.querySelector('dd').innerHTML = note.text;
     }
     /**
      * Clear the text.
      */
-    clear() {
+    clear () {
         this.content = [];
     }
     /**
      * Get the in focus element.
      * @returns {Element}
      */
-    deepActiveElement() {
+    deepActiveElement () {
         let a = document.activeElement;
         while (a && a.shadowRoot && a.shadowRoot.activeElement) {
-          a = a.shadowRoot.activeElement;
+            a = a.shadowRoot.activeElement;
         }
         return a;
     }
@@ -92,12 +93,12 @@ class NoteListItem extends HTMLElement {
      * Handler: Enter to move through the items.
      * @param {KeyboardEvent} ev Keypress event
      */
-    _keyPress(ev) {
+    _keyPress (ev) {
         if (ev.key !== 'Enter' || ev.shiftKey) {
             return;
         }
         const el = this.deepActiveElement();
-        if (el.tagName == 'DT' || el.closest('dt')) {
+        if (el.tagName === 'DT' || el.closest('dt')) {
             ev.preventDefault();
             ev.stopPropagation();
             // focus on the sibling DD
@@ -107,7 +108,7 @@ class NoteListItem extends HTMLElement {
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('dt').focus();
     }
 }

@@ -1,4 +1,5 @@
-import { default as NoteListItem } from './NoteListItem.js';
+import NoteListItem from './NoteListItem.js';
+import CharacterNote from '../models/CharacterNote.js';
 
 /**
  * Parent container for Definition list pairs used as note header/text.
@@ -19,14 +20,13 @@ template.innerHTML = `
 `;
 
 class NoteList extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    connectedCallback() {
+    connectedCallback () {
         // set any default attributes?
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'list');
@@ -37,7 +37,7 @@ class NoteList extends HTMLElement {
         this._upgradeProperty('fieldName');
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.removeEventListener('keypress', this._keyPress);
         this.removeEventListener('blur', this._blur);
@@ -63,41 +63,42 @@ class NoteList extends HTMLElement {
     /**
      * Getter: field name for data.
      */
-    get fieldName() {
+    get fieldName () {
         return this.dataset.name || '';
     }
     /**
      * Getter: Content of list items.
+     * @returns {CharacterNote[]}
      */
-    get contentArray() {
+    get contentArray () {
         const items = Array.from(this.shadowRoot.querySelectorAll('note-list-item'));
-        let array = [];
+        const array = [];
         items.forEach((item) => {
-            const content = item.content || null;
-            if (!Array.isArray(content)) {
-                return;
-            }
-            if (!content[0] && !content[1]) {
+            const content = item.content;
+            // Check if it's empty.
+            if (!content.header && !content.text) {
                 return;
             }
             array.push(content);
-        })
+        });
         return array;
     }
     /**
      * Add a new note-list-item.
      * Set its header/text if appropriate.
-     * @param {String[]} array
+     * @param {CharacterNote|null} note
      */
-    addItem([header = '', text = '']) {
+    addItem (note = null) {
         const item = new NoteListItem();
-        item.content = [header, text];
+        if (note) {
+            item.content = note;
+        }
         this.shadowRoot.appendChild(item);
     }
     /**
      * Clear out the items.
      */
-    clear() {
+    clear () {
         Array.from(this.shadowRoot.querySelectorAll('note-list-item')).forEach((item) => {
             this.shadowRoot.removeChild(item);
         });
@@ -105,10 +106,10 @@ class NoteList extends HTMLElement {
     /**
      * Get focused element.
      */
-    deepActiveElement() {
+    deepActiveElement () {
         let a = document.activeElement;
         while (a && a.shadowRoot && a.shadowRoot.activeElement) {
-          a = a.shadowRoot.activeElement;
+            a = a.shadowRoot.activeElement;
         }
         return a;
     }
@@ -116,7 +117,7 @@ class NoteList extends HTMLElement {
      * Handler: Enter to move through the items or add new ones.
      * @param {KeyboardEvent} ev Keypress event
      */
-    _keyPress(ev) {
+    _keyPress (ev) {
         if (ev.key !== 'Enter' || ev.shiftKey) {
             return;
         }
@@ -143,7 +144,7 @@ class NoteList extends HTMLElement {
      * On blur dispatch an event so the character model can be updated.
      * @param {Event} ev
      */
-    _blur(ev) {
+    _blur (ev) {
         const detail = {
             field: this.fieldName,
             value: this.contentArray
@@ -153,7 +154,7 @@ class NoteList extends HTMLElement {
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('note-list-item').focus();
     }
 }

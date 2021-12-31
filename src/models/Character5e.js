@@ -4,6 +4,7 @@
 
 import { skillAttributes, skillLevels } from './CharacterConstants.js';
 import Weapon from './Weapon.js';
+import CharacterNote from './CharacterNote.js';
 
 export default class Character5e {
     /**
@@ -16,10 +17,11 @@ export default class Character5e {
      * @prop {Weapon[]} weapons Weapon data (name, att, dam, notes).
      * @prop {String[]} features Special features and abilities.
      * @prop {String[]} equipment Stuff the character carries.
-     * @prop {Array[]} notes_adv Adventure notes [header, text]
-     * @prop {Array[]} notes_cam Campaign notes [header, text]
-     * @prop {Array[]} npcs NPC notes [header, text]
-     * @prop {Array[]} factions NPC notes [header, text]
+     * @prop {CharacterNote[]} notes_adv Adventure notes
+     * @prop {CharacterNote[]} notes_cam Campaign notes
+     * @prop {CharacterNote[]} npcs NPC notes
+     * @prop {CharacterNote[]} factions NPC notes
+     * @prop {CharacterNote[]} partymembers Other party members.
      * @prop {String} key_prev If character was imported into app with identical key. This is that key and the character is given a new one on import.
      * @prop {Object} skills Skill and its level. 0/1/2 (See skillLevels).
      */
@@ -176,12 +178,12 @@ export default class Character5e {
         }
 
         this.weapons = [];
-        // @version < 3.0.0 backwards compat
         weapons.forEach((item) => {
             // Remove null and non-objects
             if (item && typeof item !== 'object') {
                 return;
             }
+            // @version < 3.0.0 backwards compat
             if (Array.isArray(item)) {
                 // convert
                 this.weapons.push(new Weapon({
@@ -190,6 +192,10 @@ export default class Character5e {
                     damage: item[2] || '',
                     notes: item[3] || ''
                 }));
+                return;
+            }
+            if (item instanceof Weapon) {
+                this.weapons.push(item);
                 return;
             }
             this.weapons.push(new Weapon(item));
@@ -209,11 +215,11 @@ export default class Character5e {
         this.pp = pp;
         this.features = features;
         this.notes = notes;
-        this.notes_adv = notes_adv;
-        this.notes_cam = notes_cam;
-        this.npcs = npcs;
-        this.factions = factions;
-        this.partymembers = partymembers;
+        this.notes_adv = this._convertNotes(notes_adv);
+        this.notes_cam = this._convertNotes(notes_cam);
+        this.npcs = this._convertNotes(npcs);
+        this.factions = this._convertNotes(factions);
+        this.partymembers = this._convertNotes(partymembers);
         this.spell_ability = spell_ability;
         this.spell_save = spell_save;
         this.spell_attack = spell_attack;
@@ -224,6 +230,35 @@ export default class Character5e {
         this.key_prev = key_prev;
 
         this.emitter = null;
+    }
+    /**
+     * Convert notes arrays from Array[] or Object[] to CharacterNotes[]
+     * @param {Array} noteArray
+     * @returns
+     */
+    _convertNotes (noteArray) {
+        const value = [];
+        noteArray.forEach((item) => {
+            // Remove null and non-objects
+            if (item && typeof item !== 'object') {
+                return;
+            }
+            if (item instanceof CharacterNote) {
+                value.push(item);
+                return;
+            }
+            // @version < 3.0.0 backwards compat
+            if (Array.isArray(item)) {
+                // convert
+                value.push(new CharacterNote({
+                    header: item[0] || '',
+                    text: item[1] || ''
+                }));
+                return;
+            }
+            value.push(new CharacterNote(item));
+        });
+        return value;
     }
     /**
      * Level getter.

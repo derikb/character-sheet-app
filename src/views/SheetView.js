@@ -85,7 +85,7 @@ class SheetView {
                             el.addItem(item);
                         });
                     }
-                    el.addItem([]);
+                    el.addItem();
                     break;
                 case 'TABLE-EDITABLE':
                     el.clear();
