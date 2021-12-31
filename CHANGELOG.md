@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/derikb/character-sheet-5e/compare/v3.0.0...v3.0.1) (2021-12-31)
+
+
+### Bug Fixes
+
+* **notes:** Add CharacterNote class ([3af8e98](https://github.com/derikb/character-sheet-5e/commit/3af8e981bd6da6c86e8e1071a556ffa1f164f845)), closes [#89](https://github.com/derikb/character-sheet-5e/issues/89)
+* **service worker:** Fix url reference ([e0c9a47](https://github.com/derikb/character-sheet-5e/commit/e0c9a47f6796b00dc15636d0b7894c683e19ac12))
+* **substr:** Replace deprecated substr with substring ([ba11491](https://github.com/derikb/character-sheet-5e/commit/ba11491e9b397cc328ae49f9b57b79bbbd4e321c))
+* **weapons:** Fix data type from array to class ([cb9e06b](https://github.com/derikb/character-sheet-5e/commit/cb9e06b6827a615c99812e42950d7d5805b6a975)), closes [#89](https://github.com/derikb/character-sheet-5e/issues/89)
+
 ## [3.0.0](https://github.com/derikb/character-sheet-5e/compare/v2.3.0...v3.0.0) (2021-12-31)
 
 
