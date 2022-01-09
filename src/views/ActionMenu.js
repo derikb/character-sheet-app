@@ -383,6 +383,15 @@ const ActionMenu = {
         modal.open();
     },
     /**
+     * Show auth button if auth is setup.
+     */
+    showAuth: function () {
+        const authbutton = this.buttons.find((btn) => { return btn.el.classList.contains('btn-auth'); });
+        if (authbutton) {
+            authbutton.el.classList.remove('hidden');
+        }
+    },
+    /**
      * When user switches to being logged in.
      */
     signedIn: function () {
@@ -493,6 +502,7 @@ const ActionMenu = {
         this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
         this.emitter.on('backup:email', this.emailDownload, this);
         this.emitter.on('backup:textpaste', this.altDownload, this);
+        this.emitter.on('auth:enabled', this.showAuth, this);
         this.emitter.on('auth:signin', this.signedIn, this);
         this.emitter.on('auth:signout', this.signedOut, this);
     }

@@ -16,7 +16,7 @@ I hate fillable pdfs. I couldn't find a sharp pencil for the character sheet I p
 
 You'll need a local server running, or to put the code on a remote server.
 
-For remove saving you will probably have to create your own firebase configs and rebuild the app.
+For remote saving you will have to add your own firebase configs to `./src/config/firebase.js`  and rebuild the app.
 
 ## Local Server
 

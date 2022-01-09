@@ -1,4 +1,3 @@
-// import { init } from './firebaseService.js';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc } from 'firebase/firestore';
 import { getUser } from './AuthService.js';
 

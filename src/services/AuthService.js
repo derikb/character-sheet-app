@@ -4,6 +4,7 @@
 import { init } from './firebaseService.js';
 import { getAuth, GoogleAuthProvider, signInWithRedirect, onAuthStateChanged, signOut as fbSignOut } from 'firebase/auth';
 
+let isAuthConfigured = false;
 let currentUser = null;
 let emitter = null;
 
@@ -26,6 +27,9 @@ const isAuthed = function () {
  * Trigger a signin (Google only).
  */
 const signIn = function () {
+    if (!isAuthConfigured) {
+        return;
+    }
     const auth = getAuth();
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);
@@ -37,25 +41,35 @@ const signIn = function () {
 const monitorAuth = function (em) {
     // local reference to EventEmitter
     emitter = em;
-    init();
-    const auth = getAuth();
+    try {
+        init();
+        const auth = getAuth();
+        isAuthConfigured = true;
 
-    onAuthStateChanged(auth, user => {
-        if (user != null) {
-            console.log('Auth state changed to have a user.');
-            currentUser = user;
-            emitter.trigger('auth:signin');
-        } else {
-            console.log('Auth state changed to no user.');
-            currentUser = null;
-            emitter.trigger('auth:signout');
-        }
-    });
+        onAuthStateChanged(auth, user => {
+            if (user != null) {
+                console.log('Auth state changed to have a user.');
+                currentUser = user;
+                emitter.trigger('auth:signin');
+            } else {
+                console.log('Auth state changed to no user.');
+                currentUser = null;
+                emitter.trigger('auth:signout');
+            }
+        });
+
+        emitter.trigger('auth:enabled');
+    } catch (e) {
+        console.log(e.message);
+    }
 };
 /**
  * Sign out.
  */
 const signOut = function () {
+    if (!isAuthConfigured) {
+        return;
+    }
     const auth = getAuth();
     fbSignOut(auth).then(() => {
         // Don't really need to do anything here
