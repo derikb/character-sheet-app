@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.2](https://github.com/derikb/character-sheet-5e/compare/v3.0.1...v3.0.2) (2022-01-09)
+
+
+### Bug Fixes
+
+* **auth:** Add empty firebase config ([5b26c92](https://github.com/derikb/character-sheet-5e/commit/5b26c92f273cf1ea76fea81a6b9f0dfbb0582808)), closes [#90](https://github.com/derikb/character-sheet-5e/issues/90)
+
 ### [3.0.1](https://github.com/derikb/character-sheet-5e/compare/v3.0.0...v3.0.1) (2021-12-31)
 
 
