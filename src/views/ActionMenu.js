@@ -478,11 +478,11 @@ const ActionMenu = {
             this.buttons.push(new ActionButton(btn, this));
         });
 
-        this.opener = document.querySelector('.btn-open-actions');
+        // this.opener = document.querySelector('.btn-open-actions');
         // opener click handler
-        this.opener.addEventListener('click', (e) => {
-            this.el.classList.toggle('open');
-        });
+        // this.opener.addEventListener('click', (e) => {
+        //     this.el.classList.toggle('open');
+        // });
 
         // event handlers for all the menu buttons
         this.el.addEventListener('click', (ev) => {

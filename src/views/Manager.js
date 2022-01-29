@@ -318,7 +318,9 @@ ${JSON.stringify(data)}`;
         this.alert = document.getElementById('alert-main');
 
         this.sheetView = new SheetView(this.emitter);
-        this.sheetView.initialize();
+        document.querySelector('main').appendChild(
+            this.sheetView
+        );
 
         monitorAuth(this.emitter);
 
@@ -336,8 +338,8 @@ ${JSON.stringify(data)}`;
                 if (targetPane) {
                     this.sheetView.switchToPane(targetPane);
                 }
-                const target_id = link.getAttribute('href').substring(1);
-                document.getElementById(target_id).scrollIntoView();
+                const target_id = link.getAttribute('href');
+                this.sheetView.navigateTo(target_id);
             }
         });
 

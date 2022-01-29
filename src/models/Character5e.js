@@ -455,7 +455,9 @@ export default class Character5e {
      * @returns {Object}
      */
     toJSON () {
-        const obj = {};
+        const obj = {
+            className: 'Character5e'
+        };
         const props = Object.getOwnPropertyNames(this);
         props.forEach((prop) => {
             if (prop === 'emitter') {
