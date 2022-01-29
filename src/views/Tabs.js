@@ -5,6 +5,11 @@ class Tabs {
      */
     constructor (tablist) {
         this.tablist = tablist;
+        this.tabs = [];
+        this.panes = [];
+        if (!tablist) {
+            return;
+        }
         this.tabs = tablist.querySelectorAll('a[role=tab]');
         this.panes = tablist.parentNode.querySelectorAll(':scope > section[role=tabpanel]');
         Array.from(this.tabs).forEach((tab) => {
@@ -41,6 +46,9 @@ class Tabs {
     changeTab (ev) {
         ev.preventDefault();
         const oldTab = this.tablist.querySelector('[aria-selected=true]');
+        if (!oldTab) {
+            return;
+        }
         const oldIndex = Array.prototype.indexOf.call(this.tabs, oldTab);
         const newTab = ev.currentTarget;
         const newIndex = Array.prototype.indexOf.call(this.tabs, newTab);

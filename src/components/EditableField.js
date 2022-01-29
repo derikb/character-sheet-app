@@ -31,14 +31,13 @@ template.innerHTML = `
 `;
 
 class EditableField extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    connectedCallback() {
+    connectedCallback () {
         if (this.hasAttribute('placeholder')) {
             this.placeholderText = this.getAttribute('placeholder');
         }
@@ -48,7 +47,7 @@ class EditableField extends HTMLElement {
         this._upgradeProperty('fieldName');
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.removeEventListener('blur', this._blur);
     }
@@ -73,34 +72,37 @@ class EditableField extends HTMLElement {
     /**
      * Getter: field name for data.
      */
-    get fieldName() {
+    get fieldName () {
         return this.dataset.name || '';
+    }
+    get placeholderText () {
+        this.shadowRoot.querySelector('span').getAttribute('placeholder');
     }
     /**
      * Set placeholder text in the field.
      */
-    set placeholderText(val) {
+    set placeholderText (val) {
         this.shadowRoot.querySelector('span').setAttribute('placeholder', val);
     }
     /**
      * Getter: Content of field.
      * @returns {String}
      */
-    get content() {
+    get content () {
         return this.shadowRoot.querySelector('span').innerHTML;
     }
     /**
      * Setter: Content of field.
      * @param {String} value
      */
-    set content(value) {
+    set content (value) {
         this.shadowRoot.querySelector('span').innerHTML = value;
     }
     /**
      * On blur dispatch an event so the character model can be updated.
      * @param {Event} ev
      */
-    _blur(ev) {
+    _blur (ev) {
         let currentVal = this.content;
         // Trim empty end spaces/line breaks
         currentVal = currentVal.trim().replace(/(\s|&nbsp;|<br\/?>)+$/, '');
@@ -114,7 +116,7 @@ class EditableField extends HTMLElement {
     /**
      * Focus
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('[contenteditable=true]').focus();
     }
 }

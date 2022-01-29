@@ -235,7 +235,6 @@ class ActionMenu extends HTMLElement {
         Array.prototype.forEach.call(buttons, (btn) => {
             this.buttons.push(new ActionButton(btn, this));
         });
-        console.log(this.buttons);
         // event handlers for all the menu buttons
         this.shadowRoot.addEventListener('click', this._handleClicks.bind(this));
     }

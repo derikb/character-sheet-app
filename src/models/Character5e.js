@@ -5,7 +5,6 @@
 import { skillAttributes, skillLevels } from './CharacterConstants.js';
 import Weapon from './Weapon.js';
 import Character from './Character.js';
-import CharacterNote from './CharacterNote.js';
 
 export default class Character5e extends Character {
     /**

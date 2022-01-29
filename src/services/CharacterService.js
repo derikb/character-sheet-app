@@ -2,11 +2,13 @@
  * Service for retrieving, saving, deleting characters.
  * For now LocalStorage only, but potentially adaptable to different stores.
  */
- import Character from '../models/Character.js';
+import Character from '../models/Character.js';
 import Character5e from '../models/Character5e.js';
 import Storage from './Storage.js';
 import Database from './Database.js';
 import { isAuthed } from './AuthService.js';
+import Character5eSheet from '../views/Character5eSheet.js';
+import SheetView from '../views/SheetView.js';
 
 /**
  * Currently loaded character data is here
@@ -44,10 +46,8 @@ const characterFactory = function (type, obj) {
         case undefined:
         case 'Character5e':
             return new Character5e(obj);
-            break;
         default:
             return new Character(obj);
-            break;
     }
 };
 
@@ -245,6 +245,26 @@ const saveCurrentCharacter = function () {
     }
     saveCharacter(cur_character);
 };
+/**
+ * Get the right view for a character
+ * @param {Character} character
+ * @param {EventEmitter} emitter
+ * @returns {SheetView}
+ */
+const getSheetView = function (character, emitter) {
+    let view = null;
+    switch (character.className) {
+        // Backwards compatible
+        case undefined:
+        case 'Character5e':
+            view = new Character5eSheet({ emitter });
+            break;
+        default:
+            view = new SheetView({ emitter });
+            break;
+    }
+    return view;
+};
 
 export {
     generateCharacterKey,
@@ -261,5 +281,6 @@ export {
     getCurrentCharacter,
     setCurrentCharacter,
     getCurrentCharacterKey,
-    saveCurrentCharacter
+    saveCurrentCharacter,
+    getSheetView
 };

@@ -2,9 +2,8 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey } from '../services/CharacterService.js';
+import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey, getSheetView } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
-import SheetView from './SheetView.js';
 import { monitorAuth } from '../services/AuthService.js';
 
 const Manager = {
@@ -46,6 +45,12 @@ const Manager = {
         // Set character or creates one.
         const cur_character = setCurrentCharacter(key, true);
         cur_character.emitter = this.emitter;
+
+        this.sheetView = getSheetView(cur_character, this.emitter);
+        document.querySelector('main').innerHTML = '';
+        document.querySelector('main').appendChild(
+            this.sheetView
+        );
         this.sheetView.character = cur_character;
         this.emitter.trigger('loaddialog:close');
     },
@@ -316,11 +321,6 @@ ${JSON.stringify(data)}`;
         setLocalStoragePrefix(settings.prefix);
         // set up default alert
         this.alert = document.getElementById('alert-main');
-
-        this.sheetView = new SheetView(this.emitter);
-        document.querySelector('main').appendChild(
-            this.sheetView
-        );
 
         monitorAuth(this.emitter);
 
