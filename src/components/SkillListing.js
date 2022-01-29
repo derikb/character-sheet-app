@@ -47,14 +47,14 @@ class SkillListing extends HTMLElement {
         this.profCheck = this.shadowRoot.querySelector('input[data-name="skills"]');
         this.expertCheck = this.shadowRoot.querySelector('input[data-name="expert"]');
         // add event listeners
-        this.profCheck.addEventListener('change', this._checkSkills);
-        this.expertCheck.addEventListener('change', this._checkExpert);
+        this.profCheck.addEventListener('change', this._checkSkills.bind(this));
+        this.expertCheck.addEventListener('change', this._checkExpert.bind(this));
     }
 
     disconnectedCallback () {
         // remove event listeners
-        this.profCheck.removeEventListener('change', this._checkSkills);
-        this.expertCheck.removeEventListener('change', this._checkExpert);
+        this.profCheck.removeEventListener('change', this._checkSkills.bind(this));
+        this.expertCheck.removeEventListener('change', this._checkExpert.bind(this));
     }
     /**
      * Name of the skill based on the data-subfield attribute.
@@ -110,12 +110,9 @@ class SkillListing extends HTMLElement {
      * @param {Event} ev
      */
     _checkSkills (ev) {
-        console.log(ev.target);
-        console.log(ev.currentTarget);
-        const host = this.getRootNode().host;
         // change event for checkboxes
         // check data-name of check.
-        const expert = host.expertCheck;
+        const expert = this.expertCheck;
         if (!ev.target.checked) {
             expert.checked = false;
             expert.disabled = true;
@@ -125,28 +122,24 @@ class SkillListing extends HTMLElement {
 
         const detail = {
             field: 'skills',
-            subfield: host.skillName,
+            subfield: this.skillName,
             value: ev.target.checked ? 1 : 0
         };
-        host.dispatchEvent(new CustomEvent('fieldChange', { bubbles: true, detail }));
+        this.dispatchEvent(new CustomEvent('fieldChange', { bubbles: true, detail }));
     }
     /**
      * Handler when expert is (un)checked.
      * @param {Event} ev
      */
     _checkExpert (ev) {
-        console.log(ev.target);
-        console.log(ev.currentTarget);
         // change event for checkboxes
         // check data-name of check.
-        const host = this.getRootNode().host;
-
         const detail = {
             field: 'skills',
-            subfield: host.skillName,
+            subfield: this.skillName,
             value: ev.target.checked ? 2 : 1
         };
-        host.dispatchEvent(new CustomEvent('fieldChange', { bubbles: true, detail }));
+        this.dispatchEvent(new CustomEvent('fieldChange', { bubbles: true, detail }));
     }
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).

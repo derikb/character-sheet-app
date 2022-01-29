@@ -71,14 +71,14 @@ class AttributeListing extends HTMLElement {
         this.saveCheck = this.shadowRoot.querySelector('input[name="pc-save"]');
 
         // add event listeners
-        this.saveCheck.addEventListener('change', this._checkSave);
-        this.scoreInput.addEventListener('change', this._scoreUpdate);
+        this.saveCheck.addEventListener('change', this._checkSave.bind(this));
+        this.scoreInput.addEventListener('change', this._scoreUpdate.bind(this));
     }
 
     disconnectedCallback () {
         // remove event listeners
-        this.saveCheck.removeEventListener('change', this._checkSave);
-        this.scoreInput.removeEventListener('change', this._scoreUpdate);
+        this.saveCheck.removeEventListener('change', this._checkSave.bind(this));
+        this.scoreInput.removeEventListener('change', this._scoreUpdate.bind(this));
     }
     /**
      * Name of the skill based on the data-name attribute.
@@ -141,25 +141,22 @@ class AttributeListing extends HTMLElement {
      * @param {Event} ev
      */
     _checkSave (ev) {
-        const host = this.getRootNode().host;
-
         const detail = {
-            field: host.attributeName,
+            field: this.attributeName,
             value: ev.target.checked ? 1 : 0
         };
-        host.dispatchEvent(new CustomEvent('saveChange', { bubbles: true, detail }));
+        this.dispatchEvent(new CustomEvent('saveChange', { bubbles: true, detail }));
     }
     /**
      * Handler: Change event on number input.
      * @param {Event} ev
      */
     _scoreUpdate (ev) {
-        const host = this.getRootNode().host;
         const detail = {
-            field: host.attributeName,
+            field: this.attributeName,
             value: ev.target.value
         };
-        host.dispatchEvent(new CustomEvent('attributeChange', { bubbles: true, detail }));
+        this.dispatchEvent(new CustomEvent('attributeChange', { bubbles: true, detail }));
     }
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
