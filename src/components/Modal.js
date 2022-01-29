@@ -305,7 +305,7 @@ class Modal extends HTMLElement {
         /**
          * Get the opener trigger (usually a button/link).
          */
-        this.opener = document.activeElement;
+        this.opener = this.deepActiveElement();
         this.shadowRoot.host.hidden = false;
         this.focusFirst();
         // We need to do this to be able to remove the listener later.

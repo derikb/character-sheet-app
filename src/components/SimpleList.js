@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /**
  * Parent container for a simple list.
  */
@@ -22,14 +23,13 @@ template.innerHTML = `
 `;
 
 class SimpleList extends HTMLElement {
-
-    constructor() {
+    constructor () {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    connectedCallback() {
+    connectedCallback () {
         // set any default attributes?
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'list');
@@ -41,7 +41,7 @@ class SimpleList extends HTMLElement {
         this._upgradeProperty('subFieldName');
     }
 
-    disconnectedCallback() {
+    disconnectedCallback () {
         // remove event listeners
         this.removeEventListener('keypress', this._keyPress);
         this.removeEventListener('blur', this._blur);
@@ -67,25 +67,25 @@ class SimpleList extends HTMLElement {
     /**
      * Getter: field name for data.
      */
-    get fieldName() {
+    get fieldName () {
         return this.dataset.name || '';
     }
     /**
      * Setter: subfield name for data.
      */
-    set subFieldName(value) {
+    set subFieldName (value) {
         this.dataset.subfield = value;
-      }
+    }
     /**
      * Getter: subfield name for data.
      */
-    get subFieldName() {
+    get subFieldName () {
         return this.dataset.subfield || '';
     }
     /**
      * Getter: Content of list items.
      */
-    get contentArray() {
+    get contentArray () {
         const items = Array.from(this.shadowRoot.querySelectorAll('li'));
         let array = [];
         items.forEach((item) => {
@@ -94,7 +94,7 @@ class SimpleList extends HTMLElement {
                 return;
             }
             array.push(content);
-        })
+        });
         return array;
     }
     /**
@@ -103,7 +103,7 @@ class SimpleList extends HTMLElement {
      * @param {String} content
      * @returns {HTMLLIElement}
      */
-    addItem(content = '') {
+    addItem (content = '') {
         const item = document.createElement('li');
         item.setAttribute('contenteditable', true);
         item.innerHTML = content;
@@ -113,7 +113,7 @@ class SimpleList extends HTMLElement {
     /**
      * Clear out the items.
      */
-    clear() {
+    clear () {
         Array.from(this.shadowRoot.querySelectorAll('li')).forEach((item) => {
             this.shadowRoot.removeChild(item);
         });
@@ -121,10 +121,10 @@ class SimpleList extends HTMLElement {
     /**
      * Get focused element.
      */
-    deepActiveElement() {
+    deepActiveElement () {
         let a = document.activeElement;
         while (a && a.shadowRoot && a.shadowRoot.activeElement) {
-          a = a.shadowRoot.activeElement;
+            a = a.shadowRoot.activeElement;
         }
         return a;
     }
@@ -132,13 +132,13 @@ class SimpleList extends HTMLElement {
      * Handler: Enter to move through the items or add new ones.
      * @param {KeyboardEvent} ev Keypress event
      */
-    _keyPress(ev) {
+    _keyPress (ev) {
         if (ev.key !== 'Enter' || ev.shiftKey) {
             return;
         }
         // Get the focused element.
-        const el = document.activeElement.shadowRoot.activeElement;
-        if (el.tagName == 'LI' || el.closest('li')) {
+        const el = this.deepActiveElement();
+        if (el.tagName === 'LI' || el.closest('li')) {
             ev.preventDefault();
             // compare the focused elements parent component node (note-list-item) to the last item in the list.
             if (el === this.shadowRoot.lastElementChild) {
@@ -158,7 +158,7 @@ class SimpleList extends HTMLElement {
      * On blur dispatch an event so the character model can be updated.
      * @param {Event} ev
      */
-    _blur(ev) {
+    _blur (ev) {
         const detail = {
             field: this.fieldName,
             subfield: this.subFieldName,
@@ -169,11 +169,13 @@ class SimpleList extends HTMLElement {
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
      */
-    focus() {
+    focus () {
         this.shadowRoot.querySelector('li').focus();
     }
 }
 
-window.customElements.define('simple-list', SimpleList);
+if (!window.customElements.get('simple-list')) {
+    window.customElements.define('simple-list', SimpleList);
+}
 
 export default SimpleList;
