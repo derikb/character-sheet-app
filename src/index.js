@@ -26,7 +26,8 @@ if ('serviceWorker' in navigator) {
 }
 
 const emitter = new EventEmitter();
-ActionMenu.initialize(emitter);
+
+document.querySelector('action-menu').setEmitter(emitter);
 
 Manager.initialize({
     emitter: emitter,

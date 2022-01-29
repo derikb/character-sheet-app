@@ -276,31 +276,6 @@ h1 {
 }
 
 /*
-    Application actions menu
-*/
-.app-actions {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.8s ease;
-    position: relative;
-}
-.app-actions.open {
-    max-height: 150px;
-}
-
-/* Larger than phone screen */
-@media (min-width: 50.0rem) {
-    .btn-open-actions {
-        display: none;
-    }
-    .app-actions, .app-actions.open {
-        display: block;
-        max-height: none;
-        overflow: visible;
-    }
-}
-
-/*
     Alerts and dialogs
 */
 /* Close button in modal */

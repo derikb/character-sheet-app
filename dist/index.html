@@ -37,17 +37,7 @@
         <modal-mib id="dialog-sync" hidden></modal-mib>
 
         <div class="container">
-            <div class="app-actions" role="toolbar" aria-label="Character Actions">
-                <button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
-                <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>
-                <confirm-button class="btn btn-new-character" data-action="new" tabindex="-1">
-                    <span slot="default">New</span>
-                </confirm-button>
-                <button type="button" class="btn-backup btn-dialog" data-action="backup" tabindex="-1">Backup</button>
-                <button type="button" class="btn-restore-backup btn-dialog" data-action="restore" tabindex="-1">Restore</button>
-                <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
-                <button type="button" class="btn-auth btn-dialog hidden" data-action="auth" tabindex="-1">Login</button>
-            </div>
+            <action-menu></action-menu>
             <main></main>
             <footer>
                 <h4>Character Sheet. 5e.</h4>

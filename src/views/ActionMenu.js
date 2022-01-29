@@ -53,6 +53,14 @@ class ActionButton {
             this.menu.setFocusToLast();
         }
     }
+
+    isFocusable () {
+        return this.el.getAttribute('tabindex') > -1;
+    }
+
+    isVisible () {
+        return !!(this.el.offsetWidth || this.el.offsetHeight || this.el.getClientRects().length);
+    }
     /**
      * Set button to not be tabbable.
      */
@@ -73,8 +81,16 @@ class ActionButton {
     }
     /**
      * Switch to this button. Set its tabindex and focus.
+     * @param {Boolean} forward
      */
-    switchTo () {
+    switchTo (forward = true) {
+        if (!this.isVisible()) {
+            if (forward) {
+                this.menu.setFocusToNext(this);
+            } else {
+                this.menu.setFocusToPrevious(this);
+            }
+        }
         this.setTabFocus();
         this.focus();
     }
@@ -83,53 +99,179 @@ class ActionButton {
 /**
  * Toolbar and associated action events or dialogs.
  */
-const ActionMenu = {
-    /**
-     * @prop {Array} Matching action button classes to methods to calls.
-     */
-    actions: {
-        save: 'saveCharacter',
-        load: 'openLoadModal',
-        new: 'newCharacter',
-        backup: 'openDownloadForm',
-        restore: 'openRestoreForm',
-        delete: 'openDeleteModal',
-        auth: 'openAuthDialog'
-    },
-    /**
-     * @prop {ActionButton[]}
-     */
-    buttons: [],
-    /**
-     * @prop {HTMLELement} Menu element
-     */
-    el: null,
-    /**
-     * @prop {HTMLELement} Menu toogle button when menu is collapsed on narrow screens.
-     */
-    opener: null,
-    /**
-     * @prop {Modal} Modal for load menu.
-     */
-    loadDialog: null,
-    /**
-     * @prop {Modal} Modal for Backup save.
-     */
-    downloadDialog: null,
-    /**
-     * @prop {Modal} Modal for Backup restore.
-     */
-    restoreDialog: null,
-    /**
-     * @prop {Modal} authDialog
-     */
-    authDialog: null,
-    /**
-     * @prop {Modal} syncDialog
-     */
-    syncDialog: null,
+const template = document.createElement('template');
+template.innerHTML = `
+<link rel="stylesheet" href="./styles.css">
+<style>
+:host {
+    position: relative;
+    display: flex;
+}
+:host button, :host confirm-button {
+    margin-right: 1rem;
+}
 
-    openAuthDialog: function () {
+:host .more-action-contain {
+    position: relative;
+}
+
+:host .more-actions.closed {
+    display: none;
+}
+
+:host .more-actions {
+    display: block;
+    position: absolute;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    z-index: 10;
+}
+:host .more-actions button {
+    margin-right: 0;
+}
+
+/* Larger than phone screen */
+@media (min-width: 50.0rem) {
+    :host .btn-more {
+        display: none;
+    }
+    :host .more-actions {
+        position: relative;
+        background-color: transparent;
+        padding: 0;
+        display: inline-block;
+        z-index: 0;
+    }
+    :host .more-actions.closed {
+        display: block;
+    }
+    :host .more-actions button {
+        margin-right: 1rem;
+    }
+}
+</style>
+<button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
+    <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>
+    <confirm-button class="btn btn-new-character" data-action="new" tabindex="-1">
+        <span slot="default">New</span>
+    </confirm-button>
+    <div class="more-action-contain">
+        <button type="button" class="btn btn-more" data-action="more">More</button>
+        <div class="more-actions closed">
+            <button type="button" class="btn-backup btn-dialog" data-action="backup" tabindex="-1">Backup</button>
+            <button type="button" class="btn-restore-backup btn-dialog" data-action="restore" tabindex="-1">Restore</button>
+            <button type="button" class="btn-delete btn-dialog" data-action="delete" tabindex="-1">Delete</button>
+            <button type="button" class="btn-auth btn-dialog hidden" data-action="auth" tabindex="-1">Login</button>
+        </div>
+    </div>
+
+`;
+
+/**
+* @prop {Array} Matching action button classes to methods to calls.
+*/
+const buttonActions = {
+    save: 'saveCharacter',
+    load: 'openLoadModal',
+    new: 'newCharacter',
+    backup: 'openDownloadForm',
+    restore: 'openRestoreForm',
+    delete: 'openDeleteModal',
+    auth: 'openAuthDialog',
+    more: 'showMore'
+};
+class ActionMenu extends HTMLElement {
+    constructor () {
+        super();
+        this.attachShadow({ mode: 'open' });
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.setAttribute('role', 'toolbar');
+        this.setAttribute('aria-label', 'Character Actions');
+        this.setAttribute('tabindex', 0);
+        /**
+         * @prop {ActionButton[]}
+         */
+        this.buttons = [];
+        /**
+         * @prop {HTMLELement} Menu toogle button when menu is collapsed on narrow screens.
+         */
+        this.opener = null;
+        /**
+         * @prop {Modal} Modal for load menu.
+         */
+        this.loadDialog = null;
+        /**
+         * @prop {Modal} Modal for Backup save.
+         */
+        this.downloadDialog = null;
+        /**
+         * @prop {Modal} Modal for Backup restore.
+         */
+        this.restoreDialog = null;
+        /**
+         * @prop {Modal} authDialog
+         */
+        this.authDialog = null;
+        /**
+         * @prop {Modal} syncDialog
+         */
+        this.syncDialog = null;
+    }
+
+    connectedCallback () {
+        this.addEventListener('focus', this.focus.bind(this));
+
+        const buttons = this.shadowRoot.querySelectorAll('button, confirm-button');
+        Array.prototype.forEach.call(buttons, (btn) => {
+            this.buttons.push(new ActionButton(btn, this));
+        });
+        console.log(this.buttons);
+        // event handlers for all the menu buttons
+        this.shadowRoot.addEventListener('click', this._handleClicks.bind(this));
+    }
+
+    disconnectedCallback () {
+        this.shadowRoot.removeEventListener('click', this._handleClicks.bind(this));
+        if (this.emitter) {
+            this.emitter.off('loaddialog:close', this.closeLoadModal, this);
+            this.emitter.off('loaddialog:toggle', this.openLoadModal, this);
+            this.emitter.off('backup:email', this.emailDownload, this);
+            this.emitter.off('backup:textpaste', this.altDownload, this);
+            this.emitter.off('auth:enabled', this.showAuth, this);
+            this.emitter.off('auth:signin', this.signedIn, this);
+            this.emitter.off('auth:signout', this.signedOut, this);
+        }
+    }
+
+    setEmitter (emitter) {
+        this.emitter = emitter;
+        this.emitter.on('loaddialog:close', this.closeLoadModal, this);
+        this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
+        this.emitter.on('backup:email', this.emailDownload, this);
+        this.emitter.on('backup:textpaste', this.altDownload, this);
+        this.emitter.on('auth:enabled', this.showAuth, this);
+        this.emitter.on('auth:signin', this.signedIn, this);
+        this.emitter.on('auth:signout', this.signedOut, this);
+    }
+
+    _handleClicks (ev) {
+        const target = ev.target.closest('button, confirm-button');
+        const button = this.buttons.find((btn) => { return btn.el === target; });
+        if (!button) {
+            return;
+        }
+        const action = buttonActions[button.action] || null;
+        if (!action) {
+            return;
+        }
+        this[action](button);
+    }
+
+    openAuthDialog () {
         this.authDialog = this.authDialog || document.getElementById('dialog-auth');
         this.authDialog.clear();
         if (this.authDialog.isOpen) {
@@ -158,11 +300,11 @@ const ActionMenu = {
             });
         }
         this.authDialog.open();
-    },
+    }
     /**
      * Open the character sync modal.
      */
-    openSyncModal: function () {
+    openSyncModal () {
         this.syncDialog = this.syncDialog || document.getElementById('dialog-sync');
         this.syncDialog.clear();
         if (this.syncDialog.isOpen) {
@@ -192,12 +334,12 @@ const ActionMenu = {
             .catch((error) => {
                 console.log(error);
             });
-    },
+    }
     /**
      * Show the dialog for backing up characters.
      * Else close it if its open.
      */
-    openDownloadForm: function () {
+    openDownloadForm () {
         this.downloadDialog = this.downloadDialog || document.getElementById('dialog-backup');
         this.downloadDialog.clear();
         if (this.downloadDialog.isOpen) {
@@ -219,12 +361,12 @@ const ActionMenu = {
             this.emitter.trigger('backup:download', ev.target);
         });
         this.downloadDialog.open();
-    },
+    }
     /**
      * Show the back up restore form.
      * Else close it if its open.
      */
-    openRestoreForm: function () {
+    openRestoreForm () {
         this.restoreDialog = this.restoreDialog || document.getElementById('dialog-restore');
         this.restoreDialog.clear();
         if (this.restoreDialog.isOpen) {
@@ -240,12 +382,12 @@ const ActionMenu = {
             this.restoreDialog.closeClear();
         });
         this.restoreDialog.open();
-    },
+    }
     /**
      * If file download is unavailable show the data to copy/paste
      * @param {String} data the backup data
      */
-    altDownload: function (data) {
+    altDownload (data) {
         const p = document.createElement('p');
         p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
         const text = document.createElement('textarea');
@@ -255,12 +397,12 @@ const ActionMenu = {
         this.downloadDialog.header = 'Alernate Download Option';
         this.downloadDialog.setContent([p, text, this.downloadDialog.getCloseButton()], false);
         this.downloadDialog.open();
-    },
+    }
     /**
      * Show email download link.
      * @param {String} url The email url
      */
-    emailDownload: function (url) {
+    emailDownload (url) {
         const a = document.createElement('a');
         a.href = url;
         a.setAttribute('target', '_blank');
@@ -273,37 +415,37 @@ const ActionMenu = {
         this.downloadDialog.clear();
         this.downloadDialog.setContent([p, this.downloadDialog.getCloseButton()], false);
         this.downloadDialog.open();
-    },
+    }
     /**
      * Trigger a save character event.
      */
-    saveCharacter: function () {
+    saveCharacter () {
         this.emitter.trigger('character:save');
-    },
+    }
     /**
      * Trigger a new character event.
      */
-    newCharacter: function (button) {
+    newCharacter (button) {
         this.emitter.trigger('character:new');
         button.el.reset();
-    },
+    }
     /**
      * Load up a character by triggering a hash change.
      * @param {Event} ev Click event
      * @returns
      */
-    loadCharClick: function (ev) {
+    loadCharClick (ev) {
         const button = ev.currentTarget;
         const charKey = button.dataset.key || '';
         if (charKey === '') {
             return;
         }
         window.location.hash = `#${charKey}`;
-    },
+    }
     /**
      * Open the dialog to load a character.
      */
-    openLoadModal: function () {
+    openLoadModal () {
         this.loadDialog = this.loadDialog || document.getElementById('dialog-load');
         this.loadDialog.clear();
         if (this.loadDialog.isOpen) {
@@ -340,19 +482,19 @@ const ActionMenu = {
         });
         this.loadDialog.setContent([...content.children]);
         this.loadDialog.open();
-    },
+    }
     /**
      * Close the load modal.
      */
-    closeLoadModal: function () {
+    closeLoadModal () {
         if (this.loadDialog !== null) {
             this.loadDialog.closeClear();
         }
-    },
+    }
     /**
      * Modal for deleting characters.
      */
-    openDeleteModal: function () {
+    openDeleteModal () {
         const modal = document.getElementById('dialog-delete');
         if (modal.isOpen) {
             modal.close();
@@ -381,20 +523,24 @@ const ActionMenu = {
             }
         });
         modal.open();
-    },
+    }
+
+    showMore () {
+        this.shadowRoot.querySelector('.more-actions').classList.toggle('closed');
+    }
     /**
      * Show auth button if auth is setup.
      */
-    showAuth: function () {
+    showAuth () {
         const authbutton = this.buttons.find((btn) => { return btn.el.classList.contains('btn-auth'); });
         if (authbutton) {
             authbutton.el.classList.remove('hidden');
         }
-    },
+    }
     /**
      * When user switches to being logged in.
      */
-    signedIn: function () {
+    signedIn () {
         const button = this.buttons.find((b) => {
             return b.action === 'auth';
         });
@@ -403,11 +549,11 @@ const ActionMenu = {
         }
         // Trigger the dialog so user can sync data.
         this.openAuthDialog();
-    },
+    }
     /**
      * When user switches to being logged ou.
      */
-    signedOut: function () {
+    signedOut () {
         const button = this.buttons.find((b) => {
             return b.action === 'auth';
         });
@@ -417,12 +563,12 @@ const ActionMenu = {
         if (this.authDialog && this.authDialog.isOpen) {
             this.authDialog.close();
         }
-    },
+    }
     /**
      * Set focus to next button (or wrap around).
      * @param {ActionButton} currentBtn
      */
-    setFocusToNext: function (currentBtn) {
+    setFocusToNext (currentBtn) {
         const index = this.buttons.indexOf(currentBtn);
         const newIndex = index + 1;
         if (newIndex > this.buttons.length - 1) {
@@ -430,34 +576,37 @@ const ActionMenu = {
             return;
         }
         this.buttons[newIndex].switchTo();
-    },
+    }
     /**
      * Set focus to previous button (or wrap around).
      * @param {ActionButton} currentBtn
      */
-    setFocusToPrevious: function (currentBtn) {
+    setFocusToPrevious (currentBtn) {
         const index = this.buttons.indexOf(currentBtn);
         const newIndex = index - 1;
         if (newIndex < 0) {
             this.setFocusToLast();
             return;
         }
-        this.buttons[newIndex].switchTo();
-    },
+        this.buttons[newIndex].switchTo(false);
+    }
     /**
      * Set focus to first button.
      */
-    setFocusToFirst: function () {
+    setFocusToFirst () {
         this.buttons[0].switchTo();
-    },
+    }
     /**
      * Set focus to last button.
      */
-    setFocusToLast: function () {
-        this.buttons[this.buttons.length - 1].switchTo();
-    },
-
-    setTabFocusToButton: function (button) {
+    setFocusToLast () {
+        this.buttons[this.buttons.length - 1].switchTo(false);
+    }
+    /**
+     * Set focus to specific button.
+     * @param {ActionButton} button
+     */
+    setTabFocusToButton (button) {
         this.buttons.forEach((btn) => {
             if (btn === button) {
                 btn.switchTo();
@@ -465,47 +614,23 @@ const ActionMenu = {
                 btn.removeTabFocus();
             }
         });
-    },
+    }
     /**
-     * Add event handlers, etc.
-     * @param {EventEmitter} emitter
+     * Set focus to whatever button was last focused or else the first one.
      */
-    initialize: function (emitter) {
-        this.emitter = emitter;
-        this.el = document.querySelector('.app-actions');
-        const buttons = this.el.querySelectorAll('button, confirm-button');
-        Array.prototype.forEach.call(buttons, (btn) => {
-            this.buttons.push(new ActionButton(btn, this));
+    focus () {
+        let button = this.buttons.find((btn) => {
+            return btn.isFocusable();
         });
-
-        // this.opener = document.querySelector('.btn-open-actions');
-        // opener click handler
-        // this.opener.addEventListener('click', (e) => {
-        //     this.el.classList.toggle('open');
-        // });
-
-        // event handlers for all the menu buttons
-        this.el.addEventListener('click', (ev) => {
-            const target = ev.target.closest('button, confirm-button');
-            const button = this.buttons.find((btn) => { return btn.el === target; });
-            if (!button) {
-                return;
-            }
-            const action = this.actions[button.action] || null;
-            if (!action) {
-                return;
-            }
-            this[action](button);
-        });
-
-        this.emitter.on('loaddialog:close', this.closeLoadModal, this);
-        this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
-        this.emitter.on('backup:email', this.emailDownload, this);
-        this.emitter.on('backup:textpaste', this.altDownload, this);
-        this.emitter.on('auth:enabled', this.showAuth, this);
-        this.emitter.on('auth:signin', this.signedIn, this);
-        this.emitter.on('auth:signout', this.signedOut, this);
+        if (!button) {
+            button = this.buttons[0];
+        }
+        this.setTabFocusToButton(button);
     }
 };
+
+if (!window.customElements.get('action-menu')) {
+    window.customElements.define('action-menu', ActionMenu);
+}
 
 export default ActionMenu;
