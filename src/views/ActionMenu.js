@@ -153,6 +153,12 @@ template.innerHTML = `
         margin-right: 1rem;
     }
 }
+
+@media print {
+    :host {
+        display: none;
+    }
+}
 </style>
 <button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
     <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>

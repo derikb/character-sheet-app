@@ -589,7 +589,7 @@ ul[role=tablist] a[aria-selected=true] {
       background: #fff;
       font-size: 10px;
    }
-   .app-actions, .btn-open-actions, .dialog, footer {
+   .dialog, footer {
        display: none;
    }
    h1 {
