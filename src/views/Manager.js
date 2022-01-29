@@ -179,7 +179,7 @@ ${JSON.stringify(data)}`;
             let reloadCurrentChar = false;
             const currentCharKey = getCurrentCharacterKey();
             backups.forEach((char_obj) => {
-                const newCharacter = importCharacter(char_obj, this.appname);
+                const newCharacter = importCharacter(char_obj);
                 // if its the current character we should reload them
                 if (newCharacter.key === currentCharKey) {
                     reloadCurrentChar = true;

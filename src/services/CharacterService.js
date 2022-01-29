@@ -2,6 +2,7 @@
  * Service for retrieving, saving, deleting characters.
  * For now LocalStorage only, but potentially adaptable to different stores.
  */
+ import Character from '../models/Character.js';
 import Character5e from '../models/Character5e.js';
 import Storage from './Storage.js';
 import Database from './Database.js';
@@ -9,7 +10,7 @@ import { isAuthed } from './AuthService.js';
 
 /**
  * Currently loaded character data is here
- * @prop {Character5e|null}
+ * @prop {Character|null}
  */
 let cur_character = null;
 /**
@@ -32,16 +33,37 @@ const generateCharacterKey = function () {
     return key;
 };
 /**
+ * Get a Character of appropriate class.
+ * @param {String} type className for model.
+ * @param {Object} obj Character data.
+ * @returns {Character}
+ */
+const characterFactory = function (type, obj) {
+    switch (type) {
+        // Backwards compatible
+        case undefined:
+        case 'Character5e':
+            return new Character5e(obj);
+            break;
+        default:
+            return new Character(obj);
+            break;
+    }
+};
+
+/**
  * Return a new character for a key.
  * @param {String} key
+ * @param {String} type Model className
+ * @returns {Character}
  */
-const newCharacter = function (key) {
-    return new Character5e({ key: key });
+const newCharacter = function (key, type = 'Character5e') {
+    return characterFactory(type, { key: key });
 };
 /**
  * Get a single character model.
  * @param {String} key Character's key.
- * @returns {Character5e|null}
+ * @returns {Character|null}
  */
 const getCharacter = function (key) {
     if (!key) {
@@ -51,12 +73,12 @@ const getCharacter = function (key) {
     if (!char_obj || !char_obj.key) {
         return null;
     }
-    return new Character5e(char_obj);
+    return characterFactory(char_obj.className, char_obj);
 };
 /**
  * Get a single character model.
  * @param {String} key Character's key.
- * @returns {Character5e|null}
+ * @returns {Character|null}
  * @throws Error
  */
 const getCharacterRemote = async function (key) {
@@ -67,11 +89,11 @@ const getCharacterRemote = async function (key) {
     if (!char_obj || !char_obj.key) {
         return null;
     }
-    return new Character5e(char_obj);
+    return characterFactory(char_obj.className, char_obj);
 };
 /**
  * Save a single character.
- * @param {Character5e} character
+ * @param {Character} character
  * @param {String} appname
  * @returns {Boolean}
  */
@@ -86,7 +108,7 @@ const saveCharacter = function (character, appname = '') {
 };
 /**
  * Save a single character to the remote.
- * @param {Character5e} character
+ * @param {Character} character
  * @returns {Boolean}
  * @throws Error
  */
@@ -112,18 +134,20 @@ const removeCharacterRemote = async function (key) {
 };
 /**
  * Get all characters saved locally.
- * @returns {Character5e[]}
+ * @returns {Character[]}
  */
 const getAllCharactersLocal = function () {
     const characters = [];
     Storage.getAll().forEach((char_obj) => {
-        characters.push(new Character5e(char_obj));
+        characters.push(
+            characterFactory(char_obj.className, char_obj)
+        );
     });
     return characters;
 };
 /**
  * Get all characters saved to the remote database.
- * @returns {Map} entries are Character5e keyed to the key property.
+ * @returns {Map} entries are Character keyed to the key property.
  * @throws Error
  */
 const getAllCharactersRemote = async function () {
@@ -133,7 +157,7 @@ const getAllCharactersRemote = async function () {
     }
     const char_objects = await Database.getAll();
     char_objects.forEach((char_obj) => {
-        const char = new Character5e(char_obj);
+        const char = characterFactory(char_obj.className, char_obj);
         characters.set(char.key, char);
     });
     return characters;
@@ -141,15 +165,14 @@ const getAllCharactersRemote = async function () {
 /**
  * Import/save a character from an obj and return the model.
  * @param {Object} char_obj Character data from backup (we hope).
- * @param {String} appname App identifier.
- * @returns {Character5e}
+ * @returns {Character}
  * @throws {Error}
  */
-const importCharacter = function (char_obj, appname) {
-    if (typeof char_obj !== 'object' || !char_obj.key || char_obj.app !== appname) {
+const importCharacter = function (char_obj) {
+    if (typeof char_obj !== 'object' || !char_obj.key) {
         throw new Error(`Data appears to be invalid. Try removing any text that isn't part of the backup (i.e. email introduction).`);
     }
-    const newCharacter = new Character5e(char_obj);
+    const newCharacter = characterFactory(char_obj.className, char_obj);
     // do we have this char key already
     const existingCharacter = getCharacter(char_obj.key);
     if (existingCharacter && existingCharacter.charname !== '' && existingCharacter.charname !== newCharacter.charname) {
@@ -182,7 +205,7 @@ const setLocalStoragePrefix = function (prefix) {
  * Returns null if key is not locally set.
  * @param {String} key
  * @param {Boolean} createOnEmpty Create new character if the key isn't found.
- * @returns {Character5e|null}
+ * @returns {Character|null}
  */
 const setCurrentCharacter = function (key, createOnEmpty = false) {
     let char = getCharacter(key);
@@ -198,7 +221,7 @@ const setCurrentCharacter = function (key, createOnEmpty = false) {
 
 /**
  * Get character currently displayed.
- * @returns {Character5e|null}
+ * @returns {Character|null}
  */
 const getCurrentCharacter = function () {
     return cur_character;

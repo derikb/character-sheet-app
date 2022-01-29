@@ -221,8 +221,8 @@ class SyncInfo extends HTMLElement {
      * Set the character data.
      * @param {Object} data
      * @param {String} key Character key.
-     * @param {Character5e} local Local copy
-     * @param {Character5e} remote Remote copy
+     * @param {Character} local Local copy
+     * @param {Character} remote Remote copy
      * @param {String} latest Which is more recent.
      * @returns
      */

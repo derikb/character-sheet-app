@@ -4,9 +4,10 @@
 
 import { skillAttributes, skillLevels } from './CharacterConstants.js';
 import Weapon from './Weapon.js';
+import Character from './Character.js';
 import CharacterNote from './CharacterNote.js';
 
-export default class Character5e {
+export default class Character5e extends Character {
     /**
      * Property notes...
      * @prop {String} key Unique (in one instance of the app) id for the character. 7 Random letters/numbers.
@@ -22,7 +23,6 @@ export default class Character5e {
      * @prop {CharacterNote[]} npcs NPC notes
      * @prop {CharacterNote[]} factions NPC notes
      * @prop {CharacterNote[]} partymembers Other party members.
-     * @prop {String} key_prev If character was imported into app with identical key. This is that key and the character is given a new one on import.
      * @prop {Object} skills Skill and its level. 0/1/2 (See skillLevels).
      */
     constructor ({
@@ -143,9 +143,12 @@ export default class Character5e {
         updated = '',
         key_prev = ''
     }) {
-        this.app = 'character-sheet-5e';
-        this.key = key;
-        this.charname = charname;
+        super({
+            key,
+            charname,
+            updated,
+            key_prev
+        });
         this.charclass = charclass;
         this.race = race;
         this.background = background;
@@ -226,39 +229,14 @@ export default class Character5e {
         this.spell_slots = spell_slots;
         this.spell_slots_cur = spell_slots_cur;
         this.spells = spells;
-        this.updated = updated;
-        this.key_prev = key_prev;
 
         this.emitter = null;
     }
-    /**
-     * Convert notes arrays from Array[] or Object[] to CharacterNotes[]
-     * @param {Array} noteArray
-     * @returns
-     */
-    _convertNotes (noteArray) {
-        const value = [];
-        noteArray.forEach((item) => {
-            // Remove null and non-objects
-            if (item && typeof item !== 'object') {
-                return;
-            }
-            if (item instanceof CharacterNote) {
-                value.push(item);
-                return;
-            }
-            // @version < 3.0.0 backwards compat
-            if (Array.isArray(item)) {
-                // convert
-                value.push(new CharacterNote({
-                    header: item[0] || '',
-                    text: item[1] || ''
-                }));
-                return;
-            }
-            value.push(new CharacterNote(item));
-        });
-        return value;
+    get className () {
+        return 'Character5e';
+    }
+    get ruleset () {
+        return '5e';
     }
     /**
      * Level getter.
@@ -285,19 +263,6 @@ export default class Character5e {
         if (this.emitter) {
             this.emitter.trigger('character:proficiency:update');
         }
-    }
-    /**
-     * A quick summary header for use in lists.
-     */
-    get summaryHeader () {
-        return `${this.charname} (${this.charclass} ${this.level})`;
-    }
-    /**
-     * Localized last updated string.
-     */
-    get updatedTime () {
-        const date = new Date(this.updated);
-        return date.toLocaleString();
     }
     /**
      * Proficiency modifier as string.
@@ -449,35 +414,5 @@ export default class Character5e {
         if (this.emitter) {
             this.emitter.trigger('character:save:update', attr);
         }
-    }
-    /**
-     * Converting _ props for saving.
-     * @returns {Object}
-     */
-    toJSON () {
-        const obj = {
-            className: 'Character5e'
-        };
-        const props = Object.getOwnPropertyNames(this);
-        props.forEach((prop) => {
-            if (prop === 'emitter') {
-                return;
-            }
-            let value = this[prop];
-            if (Array.isArray(value)) {
-                value = value.map((el) => {
-                    if (typeof el.toJSON === 'function') {
-                        return el.toJSON();
-                    }
-                    return el;
-                });
-            }
-            if (prop.substring(0, 1) === '_') {
-                obj[prop.substring(1)] = value;
-            } else {
-                obj[prop] = value;
-            }
-        });
-        return obj;
     }
 };
