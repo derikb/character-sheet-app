@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/derikb/character-sheet-app/compare/v3.0.2...v4.0.0) (2022-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* **naming:** New repo name!
+
+### Features
+
+* **character:** Add Vagabonds character model/sheet ([131f1e2](https://github.com/derikb/character-sheet-app/commit/131f1e299b59e89cf432f61e1d6ee88f5a85efc0)), closes [#98](https://github.com/derikb/character-sheet-app/issues/98)
+* **diceroller:** Added component ([134bc61](https://github.com/derikb/character-sheet-app/commit/134bc6192fc4724cb812ffa24ea14e2bb26a1b85)), closes [#88](https://github.com/derikb/character-sheet-app/issues/88)
+* **naming:** Renamed to be more generic ([90df93d](https://github.com/derikb/character-sheet-app/commit/90df93d1769c7aee625ab0aa7bf3010421a9419c)), closes [#92](https://github.com/derikb/character-sheet-app/issues/92)
+* **nav:** Update based on current sheet ([9e4a08d](https://github.com/derikb/character-sheet-app/commit/9e4a08d469ad53fa4bbf341d05e3d6be53ae3a01)), closes [#99](https://github.com/derikb/character-sheet-app/issues/99)
+* **simplelist:** Add optional numbering ([b1f9b38](https://github.com/derikb/character-sheet-app/commit/b1f9b38423dcc7e2b84460661b91b1b81dec15e6)), closes [#95](https://github.com/derikb/character-sheet-app/issues/95)
+* **versioning:** Setup for using it later ([b14fc50](https://github.com/derikb/character-sheet-app/commit/b14fc50d67f803e98385b9d1d98d697104bee8cb)), closes [#71](https://github.com/derikb/character-sheet-app/issues/71)
+* **views:** Subclass view for future ([d1ffab3](https://github.com/derikb/character-sheet-app/commit/d1ffab33f6c7ff5c0ee46f1762ca6fe07d7542bc)), closes [#93](https://github.com/derikb/character-sheet-app/issues/93)
+
+
+### Bug Fixes
+
+* **components:** Fix 2 issues with binding event listeners ([f47c19b](https://github.com/derikb/character-sheet-app/commit/f47c19b9c3503a1f2b7f6e744d611d5c3860baf3))
+* **components:** Fix active element in shadowDOM ([9c68408](https://github.com/derikb/character-sheet-app/commit/9c6840817a67307837a6a2422c937eb6c9faed0c)), closes [#96](https://github.com/derikb/character-sheet-app/issues/96)
+* **menu:** Change narrow screen UI ([d768944](https://github.com/derikb/character-sheet-app/commit/d768944a53a6b4b3392f3e0e29e07fb95cc472fc)), closes [#97](https://github.com/derikb/character-sheet-app/issues/97)
+
 ### [3.0.2](https://github.com/derikb/character-sheet-5e/compare/v3.0.1...v3.0.2) (2022-01-09)
 
 
