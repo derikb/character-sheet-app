@@ -63,13 +63,15 @@ export default class CharacterVagabonds extends Character {
         factions = [],
         partymembers = [],
         updated = '',
-        key_prev = ''
+        key_prev = '',
+        version = ''
     }) {
         super({
             key,
             charname,
             updated,
-            key_prev
+            key_prev,
+            version
         });
         this.level = level;
         this.conflict_approach = conflict_approach;

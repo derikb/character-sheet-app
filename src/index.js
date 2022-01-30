@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import ActionMenu from './views/ActionMenu.js';
 import EventEmitter from './services/EventEmitter.js';
 import Manager from './views/Manager.js';
 
 // All the web components we need in the app.
+import ActionMenu from './views/ActionMenu.js';
 import NoteListItem from './components/NoteListItem.js';
 import NoteList from './components/NoteList.js';
 import SimpleList from './components/SimpleList.js';

@@ -140,13 +140,15 @@ export default class Character5e extends Character {
             9: []
         },
         updated = '',
-        key_prev = ''
+        key_prev = '',
+        version = ''
     }) {
         super({
             key,
             charname,
             updated,
-            key_prev
+            key_prev,
+            version
         });
         this.charclass = charclass;
         this.race = race;

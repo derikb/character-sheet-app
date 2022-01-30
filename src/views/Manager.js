@@ -323,15 +323,19 @@ ${JSON.stringify(data)}`;
      * @param {String} settings.prefix prefix for localStorage keys
      * @param {String} settings.appname used to identify the app property in a character model
      */
-    initialize: function (settings) {
-        if (!settings.emitter || !settings.prefix || !settings.appname) {
+    initialize: function ({
+        emitter = null,
+        prefix = '',
+        appname = ''
+    }) {
+        if (!emitter || !prefix || !appname) {
             document.body.innerHTML = '<p>App is missing required settings.</p>';
             return;
         }
-        this.emitter = settings.emitter;
-        this.appname = settings.appname;
+        this.emitter = emitter;
+        this.appname = appname;
         // set up storage
-        setLocalStoragePrefix(settings.prefix);
+        setLocalStoragePrefix(prefix);
         // set up default alert
         this.alert = document.getElementById('alert-main');
 

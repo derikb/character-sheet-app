@@ -11,12 +11,33 @@ import { isAuthed } from './AuthService.js';
 import Character5eSheet from '../views/Character5eSheet.js';
 import CharacterVagabondsSheet from '../views/CharacterVagabondsSheet.js';
 import SheetView from '../views/SheetView.js';
+import { version } from '../../package.json';
+
+/**
+ * Compare character version against another version.
+ * For any future version based data manipulation.
+ *
+ * @param {String} charVersion Character semver version number.
+ * @param {String} compareVersion Another semver version to compare against.
+ * @returns {Boolean} True if charVersion is higher/newert than the compare version.
+ */
+const isCharVersionNewer = function (charVersion, compareVersion) {
+    // bacwards compatible
+    if (charVersion === '') {
+        return false;
+    }
+    return charVersion.localeCompare(compareVersion, undefined, { numeric: true }) > 0;
+};
 
 /**
  * Currently loaded character data is here
  * @prop {Character|null}
  */
 let cur_character = null;
+/**
+ * @prop {String} appVersion Current app version.
+ */
+const appVersion = version;
 /**
  * Return UTC datetime string for right now
  * @return {String}
@@ -118,6 +139,7 @@ const getCharacterRemote = async function (key) {
 const saveCharacter = function (character) {
     // Update saved timestamp
     character.updated = currentTimestamp();
+    character.version = appVersion;
     return Storage.set(character.key, character);
 };
 /**

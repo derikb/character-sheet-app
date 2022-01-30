@@ -10,18 +10,21 @@ import CharacterNote from './CharacterNote.js';
  * @prop {String} charname Name.
  * @prop {String} updated UTC date string.
  * @prop {String} key_prev If character was imported into app with identical key. This is that key and the character is given a new one on import.
+ * @prop {String} version Version number (semver format) of app.
  */
 export default class Character {
     constructor ({
         key = '',
         charname = '',
         updated = '',
-        key_prev = ''
+        key_prev = '',
+        version = ''
     }) {
         this.key = key;
         this.charname = charname;
         this.updated = updated;
         this.key_prev = key_prev;
+        this.version = version;
     }
     /**
      * Localized last updated string.
