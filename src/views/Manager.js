@@ -58,12 +58,12 @@ const Manager = {
         const cur_character = setCurrentCharacter(key, char_type, true);
         cur_character.emitter = this.emitter;
         // Load up correct view
-        this.sheetView = getSheetView(cur_character, this.emitter);
+        const sheetView = getSheetView(cur_character, this.emitter);
         document.querySelector('main').innerHTML = '';
         document.querySelector('main').appendChild(
-            this.sheetView
+            sheetView
         );
-        this.sheetView.character = cur_character;
+        sheetView.character = cur_character;
         this.emitter.trigger('loaddialog:close');
         this.emitter.trigger('newdialog:close');
     },
@@ -346,19 +346,6 @@ ${JSON.stringify(data)}`;
         shortCuts.addShortCut('Ctrl+Shift+ArrowRight', 'tab:switch');
         shortCuts.addShortCut('Ctrl+Shift+ArrowLeft', 'tab:switch');
         shortCuts.addShortCut('Ctrl+Shift+ArrowUp', 'loaddialog:toggle');
-
-        document.querySelector('nav').addEventListener('click', (e) => {
-            if (e.target.tagName === 'A') {
-                e.preventDefault();
-                const link = e.target;
-                const targetPane = link.dataset.tab;
-                if (targetPane) {
-                    this.sheetView.switchToPane(targetPane);
-                }
-                const target_id = link.getAttribute('href');
-                this.sheetView.navigateTo(target_id);
-            }
-        });
 
         document.querySelector('.btn-help').addEventListener('click', (ev) => {
             ev.preventDefault();

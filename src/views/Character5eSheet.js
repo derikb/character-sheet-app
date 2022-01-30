@@ -326,6 +326,18 @@ class Character5eSheet extends SheetView {
         this.emitter.on('character:proficiency:update', this._updateProficiency, this);
         this.emitter.on('character:attribute:update', this._updateAttributeMods, this);
         this.emitter.on('character:save:update', this._updateSaveMods, this);
+
+        // Set footer links.
+        const nav = document.querySelector('footer-nav');
+        if (nav) {
+            nav.setLinks([
+                { label: 'Attributes', tab: 'pane-stats', href: '#page-attributes' },
+                { label: 'Skills', tab: 'pane-stats', href: '#page-skills' },
+                { label: 'Spells', tab: 'pane-stats', href: '#page-spells' },
+                { label: 'Notes', tab: 'pane-notes', href: '#page-notes_adv' }
+
+            ]);
+        }
     }
 
     disconnectedCallback () {

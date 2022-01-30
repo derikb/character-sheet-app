@@ -21,7 +21,7 @@ dl.field-horizontal dt {
 
 <section id="pane-stats" class="grid" role="tabpanel" aria-labelledby="tab-stats">
     <section class="grid-span-col-2">
-        <dl class="field-horizontal">
+        <dl class="field-horizontal" id="page-attributes">
             <div>
                 <dt>Conflict Approach</dt><dd><field-editable data-name="conflict_approach"></field-editable></dd>
             </div>
@@ -81,7 +81,7 @@ dl.field-horizontal dt {
 </section>
 
 <section id="pane-notes" role="tabpanel" aria-labelledby="tab-notes" hidden class="grid">
-    <section>
+    <section id="page-notes">
         <h2>NPCs</h2>
         <note-list data-name="npcs"></note-list>
     </section>
@@ -102,7 +102,7 @@ dl.field-horizontal dt {
     </section>
 
     <section>
-        <h2 id="page-notes_adv">Adventure Notes</h2>
+        <h2>Adventure Notes</h2>
         <note-list data-name="notes_adv"></note-list>
     </section>
     <section>
@@ -132,6 +132,16 @@ class CharacterVagabondsSheet extends SheetView {
 
     connectedCallback () {
         super.connectedCallback();
+
+        // Set footer links.
+        const nav = document.querySelector('footer-nav');
+        if (nav) {
+            nav.setLinks([
+                { label: 'Attributes', tab: 'pane-stats', href: '#page-attributes' },
+                { label: 'Notes', tab: 'pane-notes', href: '#page-notes' }
+
+            ]);
+        }
     }
 
     disconnectedCallback () {

@@ -12,6 +12,7 @@ import SkillListing from './components/SkillListing.js';
 import AttributeListing from './components/AttributeListing.js';
 import DiceRoller from './components/DiceRoller.js';
 import EditableField from './components/EditableField.js';
+import FooterNav from './components/FooterNav.js';
 import ConfirmButton from './components/ConfirmButton.js';
 import Modal from './components/Modal.js';
 /**

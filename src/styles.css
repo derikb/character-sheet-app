@@ -519,48 +519,6 @@ footer {
     }
 }
 
-/*
-    Nav
-*/
-nav {
-    position: fixed;
-    bottom: 0;
-    background-color: rgb(238, 238, 238);
-    width: 100%;
-    left: 0;
-    padding: 0;
-    text-align: center;
-}
-nav ol {
-    list-style-type: none;
-}
-nav ol li {
-    display: inline-block;
-}
-nav ol li:last-of-type {
-    margin-bottom: 0;
-}
-nav a {
-    display: inline-block;
-    margin: 0;
-    border-right: 1px solid rgb(51, 51, 51);
-    padding: 0 1rem;
-    font-size: 0.75rem;
-    line-height: 1rem;
-}
-nav ol li:last-of-type a {
-    border-right: 0;
-}
-
-@media (min-width: 50.0rem) {
-    nav a {
-        margin: .5rem 0;
-        font-size: 1.25rem;
-        line-height: 1.75rem;
-    }
-
-}
-
 /**
  * Main tabs
  */

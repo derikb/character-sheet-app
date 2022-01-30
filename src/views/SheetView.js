@@ -25,7 +25,8 @@ class SheetView extends HTMLElement {
         if (templateNode) {
             this.shadowRoot.appendChild(templateNode);
         }
-
+        // Selector hook so we can always find regardless of child class.
+        this.dataset.sheetview = 'true';
         this.mainTabs = new Tabs(this.shadowRoot.querySelector('ul[role=tablist]'));
     }
 
@@ -47,6 +48,10 @@ class SheetView extends HTMLElement {
         });
 
         this.emitter.off('tab:switch', this.switchToPane, this);
+
+        // Remove footer links.
+        const nav = document.querySelector('footer-nav');
+        nav.removeLinks();
     }
     /**
      * Override in child to check correct class is set.
