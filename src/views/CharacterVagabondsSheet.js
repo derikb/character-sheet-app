@@ -75,7 +75,7 @@ dl.field-horizontal dt {
         <simple-list data-name="techniques"></simple-list>
 
         <h2>Inventory</h2>
-        <simple-list data-name="inventory"></simple-list>
+        <simple-list data-name="inventory" data-number="true"></simple-list>
     </section>
 </section>
 

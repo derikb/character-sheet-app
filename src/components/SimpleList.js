@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 /**
  * Parent container for a simple list.
+ * Add data-number="true" to make it a numbered list.
  */
 
 const template = document.createElement('template');
@@ -18,6 +19,16 @@ template.innerHTML = `
         display: block;
         margin-bottom: 0.125rem;
         border-bottom: 1px solid rgb(207,0,15);
+    }
+    :host([data-number]) li {
+        list-style: decimal;
+        display: list-item;
+    }
+    :host([data-number]) li::marker {
+        text-align: end;
+    }
+    li div {
+        display: inline-block;
     }
 </style>
 `;
