@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/derikb/character-sheet-app/compare/v4.0.0...v4.0.1) (2022-01-30)
+
+
+### Bug Fixes
+
+* **npm:** Update for security fixes ([b9b810a](https://github.com/derikb/character-sheet-app/commit/b9b810a0fba0663e8d183823fff8e1c2341822f7))
+
 ## [4.0.0](https://github.com/derikb/character-sheet-app/compare/v3.0.2...v4.0.0) (2022-01-30)
 
 
