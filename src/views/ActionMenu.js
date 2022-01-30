@@ -2,7 +2,7 @@
  * Action Toolbar
  * Also requires the Modal component.
  */
-import { getAllCharactersLocal, getCurrentCharacterKey } from '../services/CharacterService.js';
+import { getAllCharactersLocal, getCurrentCharacterKey, getGameOptions } from '../services/CharacterService.js';
 import ConfirmButton from '../components/ConfirmButton.js';
 import SyncInfo from '../components/SyncInfo.js';
 import { isAuthed, signIn, signOut } from '../services/AuthService.js';
@@ -106,8 +106,9 @@ template.innerHTML = `
 :host {
     position: relative;
     display: flex;
+    padding-top: .5rem;
 }
-:host button, :host confirm-button {
+:host button {
     margin-right: 1rem;
 }
 
@@ -162,11 +163,9 @@ template.innerHTML = `
 </style>
 <button type="button" class="btn-save" data-action="save" tabindex="0">Save</button>
     <button type="button" class="btn-load btn-dialog" data-action="load" tabindex="-1">Load</button>
-    <confirm-button class="btn btn-new-character" data-action="new" tabindex="-1">
-        <span slot="default">New</span>
-    </confirm-button>
+    <button class="btn-new-character btn-dialog" data-action="new" tabindex="-1">New</button>
     <div class="more-action-contain">
-        <button type="button" class="btn btn-more" data-action="more">More</button>
+        <button type="button" class="btn-more" data-action="more">More</button>
         <div class="more-actions closed">
             <button type="button" class="btn-backup btn-dialog" data-action="backup" tabindex="-1">Backup</button>
             <button type="button" class="btn-restore-backup btn-dialog" data-action="restore" tabindex="-1">Restore</button>
@@ -181,14 +180,14 @@ template.innerHTML = `
 * @prop {Array} Matching action button classes to methods to calls.
 */
 const buttonActions = {
-    save: 'saveCharacter',
-    load: 'openLoadModal',
-    new: 'newCharacter',
-    backup: 'openDownloadForm',
-    restore: 'openRestoreForm',
-    delete: 'openDeleteModal',
-    auth: 'openAuthDialog',
-    more: 'showMore'
+    save: '_saveCharacter',
+    load: '_openLoadModal',
+    new: '_newCharacterModal',
+    backup: '_openDownloadForm',
+    restore: '_openRestoreForm',
+    delete: '_openDeleteModal',
+    auth: '_openAuthDialog',
+    more: '_showMore'
 };
 class ActionMenu extends HTMLElement {
     constructor () {
@@ -206,6 +205,10 @@ class ActionMenu extends HTMLElement {
          * @prop {HTMLELement} Menu toogle button when menu is collapsed on narrow screens.
          */
         this.opener = null;
+        /**
+         * @prop {Modal} Modal for new menu.
+         */
+        this.newDialog = null;
         /**
          * @prop {Modal} Modal for load menu.
          */
@@ -231,7 +234,7 @@ class ActionMenu extends HTMLElement {
     connectedCallback () {
         this.addEventListener('focus', this.focus.bind(this));
 
-        const buttons = this.shadowRoot.querySelectorAll('button, confirm-button');
+        const buttons = this.shadowRoot.querySelectorAll('button');
         Array.prototype.forEach.call(buttons, (btn) => {
             this.buttons.push(new ActionButton(btn, this));
         });
@@ -242,29 +245,31 @@ class ActionMenu extends HTMLElement {
     disconnectedCallback () {
         this.shadowRoot.removeEventListener('click', this._handleClicks.bind(this));
         if (this.emitter) {
-            this.emitter.off('loaddialog:close', this.closeLoadModal, this);
-            this.emitter.off('loaddialog:toggle', this.openLoadModal, this);
-            this.emitter.off('backup:email', this.emailDownload, this);
-            this.emitter.off('backup:textpaste', this.altDownload, this);
-            this.emitter.off('auth:enabled', this.showAuth, this);
-            this.emitter.off('auth:signin', this.signedIn, this);
-            this.emitter.off('auth:signout', this.signedOut, this);
+            this.emitter.off('newdialog:close', this._closeNewModal, this);
+            this.emitter.off('loaddialog:close', this._closeLoadModal, this);
+            this.emitter.off('loaddialog:toggle', this._openLoadModal, this);
+            this.emitter.off('backup:email', this._emailDownload, this);
+            this.emitter.off('backup:textpaste', this._altDownload, this);
+            this.emitter.off('auth:enabled', this._showAuth, this);
+            this.emitter.off('auth:signin', this._signedIn, this);
+            this.emitter.off('auth:signout', this._signedOut, this);
         }
     }
 
     setEmitter (emitter) {
         this.emitter = emitter;
-        this.emitter.on('loaddialog:close', this.closeLoadModal, this);
-        this.emitter.on('loaddialog:toggle', this.openLoadModal, this);
-        this.emitter.on('backup:email', this.emailDownload, this);
-        this.emitter.on('backup:textpaste', this.altDownload, this);
-        this.emitter.on('auth:enabled', this.showAuth, this);
-        this.emitter.on('auth:signin', this.signedIn, this);
-        this.emitter.on('auth:signout', this.signedOut, this);
+        this.emitter.on('newdialog:close', this._closeNewModal, this);
+        this.emitter.on('loaddialog:close', this._closeLoadModal, this);
+        this.emitter.on('loaddialog:toggle', this._openLoadModal, this);
+        this.emitter.on('backup:email', this._emailDownload, this);
+        this.emitter.on('backup:textpaste', this._altDownload, this);
+        this.emitter.on('auth:enabled', this._showAuth, this);
+        this.emitter.on('auth:signin', this._signedIn, this);
+        this.emitter.on('auth:signout', this._signedOut, this);
     }
 
     _handleClicks (ev) {
-        const target = ev.target.closest('button, confirm-button');
+        const target = ev.target.closest('button');
         const button = this.buttons.find((btn) => { return btn.el === target; });
         if (!button) {
             return;
@@ -276,7 +281,7 @@ class ActionMenu extends HTMLElement {
         this[action](button);
     }
 
-    openAuthDialog () {
+    _openAuthDialog () {
         this.authDialog = this.authDialog || document.getElementById('dialog-auth');
         this.authDialog.clear();
         if (this.authDialog.isOpen) {
@@ -296,7 +301,7 @@ class ActionMenu extends HTMLElement {
                 signOut();
             });
             this.authDialog.querySelector('#syncData').addEventListener('click', (ev) => {
-                this.openSyncModal();
+                this._openSyncModal();
                 this.authDialog.close();
             });
         } else {
@@ -309,7 +314,7 @@ class ActionMenu extends HTMLElement {
     /**
      * Open the character sync modal.
      */
-    openSyncModal () {
+    _openSyncModal () {
         this.syncDialog = this.syncDialog || document.getElementById('dialog-sync');
         this.syncDialog.clear();
         if (this.syncDialog.isOpen) {
@@ -322,7 +327,6 @@ class ActionMenu extends HTMLElement {
         const currentCharKey = getCurrentCharacterKey();
 
         getCharacterMatchings().then((matches) => {
-            console.log(matches);
             const frag = document.createDocumentFragment();
             matches.forEach((match) => {
                 const info = new SyncInfo();
@@ -344,7 +348,7 @@ class ActionMenu extends HTMLElement {
      * Show the dialog for backing up characters.
      * Else close it if its open.
      */
-    openDownloadForm () {
+    _openDownloadForm () {
         this.downloadDialog = this.downloadDialog || document.getElementById('dialog-backup');
         this.downloadDialog.clear();
         if (this.downloadDialog.isOpen) {
@@ -371,7 +375,7 @@ class ActionMenu extends HTMLElement {
      * Show the back up restore form.
      * Else close it if its open.
      */
-    openRestoreForm () {
+    _openRestoreForm () {
         this.restoreDialog = this.restoreDialog || document.getElementById('dialog-restore');
         this.restoreDialog.clear();
         if (this.restoreDialog.isOpen) {
@@ -392,7 +396,7 @@ class ActionMenu extends HTMLElement {
      * If file download is unavailable show the data to copy/paste
      * @param {String} data the backup data
      */
-    altDownload (data) {
+    _altDownload (data) {
         const p = document.createElement('p');
         p.innerHTML = `Your current browser/os does not support direct file downloads, so here is the data for you to copy/paste.`;
         const text = document.createElement('textarea');
@@ -407,7 +411,7 @@ class ActionMenu extends HTMLElement {
      * Show email download link.
      * @param {String} url The email url
      */
-    emailDownload (url) {
+    _emailDownload (url) {
         const a = document.createElement('a');
         a.href = url;
         a.setAttribute('target', '_blank');
@@ -424,22 +428,68 @@ class ActionMenu extends HTMLElement {
     /**
      * Trigger a save character event.
      */
-    saveCharacter () {
+    _saveCharacter () {
         this.emitter.trigger('character:save');
     }
     /**
-     * Trigger a new character event.
+     * Open the new character modal.
      */
-    newCharacter (button) {
-        this.emitter.trigger('character:new');
-        button.el.reset();
+    _newCharacterModal (button) {
+        this.newDialog = this.newDialog || document.getElementById('dialog-new');
+        this.newDialog.clear();
+        if (this.newDialog.isOpen) {
+            this.newDialog.close();
+            return;
+        }
+
+        // Are there unsaved changes
+        // This could be done better in the future if we had some kind of central state management.
+        let currentlyUnsaved = false;
+        // is the unsaved dialog showing...
+        const unsavedDialog = document.querySelector('.alert-unsaved');
+        if (unsavedDialog && !unsavedDialog.hidden) {
+            currentlyUnsaved = true;
+        }
+
+        const template = document.getElementById('createModal');
+        const content = document.importNode(template.content, true);
+
+        if (currentlyUnsaved) {
+            const alert = document.createElement('p');
+            alert.classList.add('alert');
+            alert.innerHTML = '<strong>Warning:</strong> You have unsaved changes.';
+            content.querySelector('form').prepend(alert);
+        }
+
+        const select = content.querySelector('select');
+        getGameOptions().forEach((char_type) => {
+            const option = document.createElement('option');
+            option.value = char_type;
+            option.innerText = char_type;
+            select.appendChild(option);
+        });
+        this.newDialog.setContent([...content.children]);
+        this.newDialog.querySelector('form').addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            const formData = new FormData(ev.target);
+            this.emitter.trigger('character:new', formData.get('char_type'));
+        });
+        this.newDialog.open();
+    }
+    /**
+     * Close the mew modal.
+     */
+    _closeNewModal () {
+        if (this.newDialog !== null) {
+            this.newDialog.closeClear();
+        }
     }
     /**
      * Load up a character by triggering a hash change.
      * @param {Event} ev Click event
      * @returns
      */
-    loadCharClick (ev) {
+    _loadCharClick (ev) {
         const button = ev.currentTarget;
         const charKey = button.dataset.key || '';
         if (charKey === '') {
@@ -450,7 +500,7 @@ class ActionMenu extends HTMLElement {
     /**
      * Open the dialog to load a character.
      */
-    openLoadModal () {
+    _openLoadModal () {
         this.loadDialog = this.loadDialog || document.getElementById('dialog-load');
         this.loadDialog.clear();
         if (this.loadDialog.isOpen) {
@@ -481,7 +531,7 @@ class ActionMenu extends HTMLElement {
                 cButton.confirm = false;
             }
             // set this so it's added _after_ the internal confirm event.
-            cButton.confirmCallback = this.loadCharClick.bind(this);
+            cButton.confirmCallback = this._loadCharClick.bind(this);
             li.appendChild(cButton);
             list.appendChild(li);
         });
@@ -491,7 +541,7 @@ class ActionMenu extends HTMLElement {
     /**
      * Close the load modal.
      */
-    closeLoadModal () {
+    _closeLoadModal () {
         if (this.loadDialog !== null) {
             this.loadDialog.closeClear();
         }
@@ -499,7 +549,7 @@ class ActionMenu extends HTMLElement {
     /**
      * Modal for deleting characters.
      */
-    openDeleteModal () {
+    _openDeleteModal () {
         const modal = document.getElementById('dialog-delete');
         if (modal.isOpen) {
             modal.close();
@@ -530,13 +580,13 @@ class ActionMenu extends HTMLElement {
         modal.open();
     }
 
-    showMore () {
+    _showMore () {
         this.shadowRoot.querySelector('.more-actions').classList.toggle('closed');
     }
     /**
      * Show auth button if auth is setup.
      */
-    showAuth () {
+    _showAuth () {
         const authbutton = this.buttons.find((btn) => { return btn.el.classList.contains('btn-auth'); });
         if (authbutton) {
             authbutton.el.classList.remove('hidden');
@@ -545,7 +595,7 @@ class ActionMenu extends HTMLElement {
     /**
      * When user switches to being logged in.
      */
-    signedIn () {
+    _signedIn () {
         const button = this.buttons.find((b) => {
             return b.action === 'auth';
         });
@@ -553,12 +603,12 @@ class ActionMenu extends HTMLElement {
             button.el.innerHTML = 'Sync/Logout';
         }
         // Trigger the dialog so user can sync data.
-        this.openAuthDialog();
+        this._openAuthDialog();
     }
     /**
      * When user switches to being logged ou.
      */
-    signedOut () {
+    _signedOut () {
         const button = this.buttons.find((b) => {
             return b.action === 'auth';
         });

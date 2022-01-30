@@ -35,25 +35,25 @@ class ConfirmButton extends HTMLElement {
         this._confirm = true;
         // No default callback after confirmation.
         this._confirmCallback = null;
-        this.shadowRoot.host.dataset.triggered = 'false';
+        this.dataset.triggered = 'false';
         // Accessible role
-        this.shadowRoot.host.setAttribute('role', 'button');
+        this.setAttribute('role', 'button');
     }
     connectedCallback () {
         // Add focus-ability if it has not already been set in the html.
-        if (this.shadowRoot.host.getAttribute('tabindex') === null) {
-            this.shadowRoot.host.setAttribute('tabindex', 0);
+        if (this.getAttribute('tabindex') === null) {
+            this.setAttribute('tabindex', 0);
         }
         // click handler
         this.addEventListener('click', this._handleClick);
         // space/enter handler to simulate normal button
         this.addEventListener('keydown', this._handleKeyDown);
-        this._wait = parseInt(this.shadowRoot.host.dataset.wait || 3000, 10);
+        this._wait = parseInt(this.dataset.wait || 3000, 10);
         // Allow for setting the confirm click feature to be disabled.
         // Only set this here if the data attribute is explicitly set
         // else it will overwrite the property set on the class directly.
-        if (this.shadowRoot.host.dataset.confirm !== undefined) {
-            this._confirm = !(this.shadowRoot.host.dataset.confirm === 'false');
+        if (this.dataset.confirm !== undefined) {
+            this._confirm = !(this.dataset.confirm === 'false');
         }
         // Unhide slotted content now that the button is loaded.
         // CSS will handle this now based on data-triggered.
@@ -83,9 +83,9 @@ class ConfirmButton extends HTMLElement {
         this._triggered = newValue;
         // Update data-triggered so the css changes what text is displayed.
         if (this._triggered) {
-            this.shadowRoot.host.dataset.triggered = 'true';
+            this.dataset.triggered = 'true';
         } else {
-            this.shadowRoot.host.dataset.triggered = 'false';
+            this.dataset.triggered = 'false';
         }
     }
     get triggered () {
@@ -141,7 +141,7 @@ class ConfirmButton extends HTMLElement {
         }
         // Prevent things like space bar trigger scrolling while focused on the button.
         ev.preventDefault();
-        this.shadowRoot.host.click();
+        this.click();
     }
     /**
      * Use to reset the button from external code.
@@ -151,6 +151,8 @@ class ConfirmButton extends HTMLElement {
     }
 }
 
-window.customElements.define('confirm-button', ConfirmButton);
+if (!window.customElements.get('confirm-button')) {
+    window.customElements.define('confirm-button', ConfirmButton);
+}
 
 export default ConfirmButton;

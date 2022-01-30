@@ -22,30 +22,42 @@ const Manager = {
      */
     dialog_undo: document.querySelector('.alert-delete'),
     /**
-     * Start a new character by changing the hash.
+     * Start a new character and change the hash.
      */
-    triggerNewCharacter: function () {
-        window.location.hash = `#${generateCharacterKey()}`;
+    triggerNewCharacter: function (char_type = '') {
+        const key = generateCharacterKey();
+        this.loadCharacter(key, char_type)
+            .then(() => {
+                window.location.hash = `#${key}`;
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     },
     /**
      * Change the character based on a hash change
      * or maybe I should process the event in the handler and pass it here if necessary...
-     * @param {Object} e event object from hash change
      */
     changeCharacter: function () {
         const urlhash = window.location.hash.substring(1);
+        // No need if the character is already loaded.
+        const cur_character_key = getCurrentCharacterKey();
+        if (cur_character_key && urlhash === cur_character_key) {
+            return;
+        }
         this.loadCharacter(urlhash);
     },
     /**
      * Load character data based on a key
      * @param {String} key Character identifier
+     * @param {String} char_type Character class type.
      */
-    loadCharacter: async function (key) {
+    loadCharacter: async function (key, char_type = '') {
         this.hideUnsavedDialog();
         // Set character or creates one.
-        const cur_character = setCurrentCharacter(key, true);
+        const cur_character = setCurrentCharacter(key, char_type, true);
         cur_character.emitter = this.emitter;
-
+        // Load up correct view
         this.sheetView = getSheetView(cur_character, this.emitter);
         document.querySelector('main').innerHTML = '';
         document.querySelector('main').appendChild(
@@ -53,6 +65,7 @@ const Manager = {
         );
         this.sheetView.character = cur_character;
         this.emitter.trigger('loaddialog:close');
+        this.emitter.trigger('newdialog:close');
     },
     /**
      * Save character data

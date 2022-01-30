@@ -58,20 +58,19 @@ class Modal extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.shadowRoot.host.setAttribute('role', 'dialog');
-        this.shadowRoot.host.setAttribute('aria-labelledby', 'modal-label');
+        this.setAttribute('role', 'dialog');
+        this.setAttribute('aria-labelledby', 'modal-label');
 
         this.boundOutsideClickClose = function () {};
         this.boundKeyboardEvents = function () {};
         this.opener = null;
-    }
-
-    connectedCallback () {
         this.addEventListener('click', this.handleCloseClick);
     }
 
+    connectedCallback () {
+    }
+
     disconnectedCallback () {
-        this.removeEventListener('click', this.handleCloseClick);
     }
 
     get header () {
@@ -84,7 +83,7 @@ class Modal extends HTMLElement {
      * Is the modal open or not
      */
     get isOpen () {
-        return !this.shadowRoot.host.hidden;
+        return !this.hidden;
     }
     /**
      * Return a close button to use
@@ -306,7 +305,7 @@ class Modal extends HTMLElement {
          * Get the opener trigger (usually a button/link).
          */
         this.opener = this.deepActiveElement();
-        this.shadowRoot.host.hidden = false;
+        this.hidden = false;
         this.focusFirst();
         // We need to do this to be able to remove the listener later.
         this.boundOutsideClickClose = this.outsideClickClose.bind(this);
@@ -319,7 +318,7 @@ class Modal extends HTMLElement {
      * Return focus to whatever opened it.
      */
     close () {
-        this.shadowRoot.host.hidden = true;
+        this.hidden = true;
         // Remove click handler to close modal.
         document.removeEventListener('click', this.boundOutsideClickClose, true);
         document.removeEventListener('keydown', this.boundKeyboardEvents, true);
@@ -382,6 +381,8 @@ class Modal extends HTMLElement {
     }
 }
 
-window.customElements.define('modal-mib', Modal);
+if (!window.customElements.get('modal-mib')) {
+    window.customElements.define('modal-mib', Modal);
+}
 
 export default Modal;

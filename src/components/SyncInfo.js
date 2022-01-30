@@ -72,8 +72,8 @@ class SyncInfo extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(template.content.cloneNode(true));
-        this.shadowRoot.host.setAttribute('role', 'list-item');
-        this.shadowRoot.host.setAttribute('aria-labelledby', 'char-name');
+        this.setAttribute('role', 'list-item');
+        this.setAttribute('aria-labelledby', 'char-name');
         this._key = '';
         this.localDiv = this.shadowRoot.querySelector('.local');
         this.remoteDiv = this.shadowRoot.querySelector('.remote');
@@ -277,6 +277,8 @@ class SyncInfo extends HTMLElement {
     }
 }
 
-window.customElements.define('sync-info', SyncInfo);
+if (!window.customElements.get('sync-info')) {
+    window.customElements.define('sync-info', SyncInfo);
+}
 
 export default SyncInfo;

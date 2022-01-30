@@ -4,10 +4,12 @@
  */
 import Character from '../models/Character.js';
 import Character5e from '../models/Character5e.js';
+import CharacterVagabonds from '../models/CharacterVagabonds.js';
 import Storage from './Storage.js';
 import Database from './Database.js';
 import { isAuthed } from './AuthService.js';
 import Character5eSheet from '../views/Character5eSheet.js';
+import CharacterVagabondsSheet from '../views/CharacterVagabondsSheet.js';
 import SheetView from '../views/SheetView.js';
 
 /**
@@ -34,6 +36,19 @@ const generateCharacterKey = function () {
     }
     return key;
 };
+
+/**
+ * Options for games characters can be created for.
+ * @todo probably should have a constant file for these.
+ * @returns {String[]}
+ */
+const getGameOptions = function () {
+    return [
+        'Character5e',
+        'CharacterVagabonds'
+    ];
+};
+
 /**
  * Get a Character of appropriate class.
  * @param {String} type className for model.
@@ -43,9 +58,13 @@ const generateCharacterKey = function () {
 const characterFactory = function (type, obj) {
     switch (type) {
         // Backwards compatible
+        // and default
         case undefined:
+        case '':
         case 'Character5e':
             return new Character5e(obj);
+        case 'CharacterVagabonds':
+            return new CharacterVagabonds(obj);
         default:
             return new Character(obj);
     }
@@ -58,7 +77,7 @@ const characterFactory = function (type, obj) {
  * @returns {Character}
  */
 const newCharacter = function (key, type = 'Character5e') {
-    return characterFactory(type, { key: key });
+    return characterFactory(type, { key });
 };
 /**
  * Get a single character model.
@@ -199,16 +218,17 @@ const setLocalStoragePrefix = function (prefix) {
  * Set current character based on key.
  * Returns null if key is not locally set.
  * @param {String} key
+ * @param {String} type Type of character to create.
  * @param {Boolean} createOnEmpty Create new character if the key isn't found.
  * @returns {Character|null}
  */
-const setCurrentCharacter = function (key, createOnEmpty = false) {
+const setCurrentCharacter = function (key, type, createOnEmpty = false) {
     let char = getCharacter(key);
     if (!char) {
         if (!createOnEmpty) {
             return null;
         }
-        char = newCharacter(key);
+        char = newCharacter(key, type);
     }
     cur_character = char;
     return cur_character;
@@ -254,6 +274,9 @@ const getSheetView = function (character, emitter) {
         case 'Character5e':
             view = new Character5eSheet({ emitter });
             break;
+        case 'CharacterVagabonds':
+            view = new CharacterVagabondsSheet({ emitter });
+            break;
         default:
             view = new SheetView({ emitter });
             break;
@@ -262,6 +285,7 @@ const getSheetView = function (character, emitter) {
 };
 
 export {
+    getGameOptions,
     generateCharacterKey,
     getCharacter,
     getCharacterRemote,

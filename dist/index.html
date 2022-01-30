@@ -29,6 +29,7 @@
             </div>
         </div>
         <modal-mib id="alert-main"  hidden></modal-mib>
+        <modal-mib id="dialog-new" hidden></modal-mib>
         <modal-mib id="dialog-load" hidden></modal-mib>
         <modal-mib id="dialog-backup" hidden></modal-mib>
         <modal-mib id="dialog-restore" hidden></modal-mib>
@@ -155,6 +156,16 @@
             <p>This will delete locally stored characters. If you have saved characters remotely, use the sync modal to remove the remote copies.</p>
             <ul id="delete_list">
             </ul>
+        </template>
+
+        <template id="createModal">
+            <span slot="header">New Character</span>
+            <form id="form_new" target="_self">
+                <label for="char_type">Character Type</label>
+                <select name="char_type" id="char_type">
+                </select>
+                <button type="submit" class="mg-top">Create</button>
+            </form>
         </template>
 
         <template id="loadModal">
