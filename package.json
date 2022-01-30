@@ -4,12 +4,12 @@
   "description": "Online character sheet for Tabletop Role-Playing Games",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/derikb/character-sheet-5e.git"
+    "url": "git+https://github.com/derikb/character-sheet-app.git"
   },
   "bugs": {
-    "url": "https://github.com/derikb/character-sheet-5e/issues"
+    "url": "https://github.com/derikb/character-sheet-app/issues"
   },
-  "homepage": "https://github.com/derikb/character-sheet-5e#readme",
+  "homepage": "https://github.com/derikb/character-sheet-app#readme",
   "keywords": [
     "d&d",
     "rpg",
