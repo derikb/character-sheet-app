@@ -71,6 +71,7 @@ dl.field-horizontal dt {
     </section>
 
     <section class="grid-span-col-1">
+        <dice-roller data-die="2d6"></dice-roller>
         <h2>Techniques</h2>
         <simple-list data-name="techniques"></simple-list>
 

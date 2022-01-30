@@ -10,6 +10,7 @@ import SimpleList from './components/SimpleList.js';
 import TableEditable from './components/TableEditable.js';
 import SkillListing from './components/SkillListing.js';
 import AttributeListing from './components/AttributeListing.js';
+import DiceRoller from './components/DiceRoller.js';
 import EditableField from './components/EditableField.js';
 import ConfirmButton from './components/ConfirmButton.js';
 import Modal from './components/Modal.js';

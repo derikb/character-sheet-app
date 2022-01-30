@@ -19,7 +19,8 @@
   "author": "Derik A Badman",
   "license": "GPL-3.0",
   "dependencies": {
-    "firebase": "^9.5.0"
+    "firebase": "^9.5.0",
+    "rpg-table-randomizer": "^1.1.3"
   },
   "devDependencies": {
     "esbuild": "^0.14.2",

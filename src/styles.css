@@ -3,6 +3,10 @@
 /**
  * Start app specific CSS
  */
+ * {
+    --primary-color: rgb(207,0,15);
+    --primary-color-darker: rgb(150,40,27);
+ }
 
 html {
   box-sizing: border-box;
@@ -10,7 +14,6 @@ html {
 }
 
 body {
-  color: #606c76;
   color: #3e4348;
   font-size: 1rem;
   font-weight: 300;
@@ -43,7 +46,7 @@ body {
 }
 
 button, .btn {
-  background-color: rgb(207,0,15);
+  background-color: var(--primary-color, black);
   border: none;
   border-radius: 0.4rem;
   color: #fff;
@@ -60,7 +63,7 @@ button, .btn {
   white-space: nowrap;
 }
 button:hover, button:focus, .btn:hover, .btn:focus {
-  background-color: #606c76;
+  background-color: var(--primary-color-darker, black); /** #606c76; */
   color: #fff;
 }
 button[slot="confirm"], .btn[data-triggered="true"] {
@@ -76,7 +79,7 @@ button[disabled]:hover, button[disabled]:focus {
 /* Button that looks like link */
 button.btn-plain, confirm-button.btn-plain {
     background-color: rgba(0, 0, 0, 0);
-    color: rgb(207,0,15);
+    color: var(--primary-color, black);
     border: none;
     padding: 0;
     font-size: inherit;
@@ -87,7 +90,7 @@ button.btn-plain, confirm-button.btn-plain {
     height: auto;
 }
 button.btn-plain:hover, button.btn-plain:focus, confirm-button.btn-plain:hover, confirm-button.btn-plain:focus {
-    color: rgb(150,40,27);
+    color: var(--primary-color-darker, black);
     text-decoration: underline;
     opacity: inherit;
     background-color: inherit;
@@ -149,11 +152,11 @@ input[type='radio'] {
 }
 
 a {
-    color: rgb(207,0,15);
+    color: var(--primary-color, black);
     text-decoration: none;
 }
 a:hover {
-  color: rgb(150,40,27);
+  color: var(--primary-color-darker, black);
   text-decoration: underline;
 }
 
@@ -250,7 +253,7 @@ table.table-editable {
     margin-bottom: 1.5rem;
 }
 table.table-editable tbody tr {
-    border-bottom: 1px solid rgb(207,0,15);
+    border-bottom: 1px solid var(--primary-color, black);
     margin-bottom: .25rem;
 }
 
@@ -299,13 +302,13 @@ modal-mib form button.close {
 .alert {
     z-index: 125;
     font-weight: bold;
-    color: rgb(207,0,15);
+    color: var(--primary-color, black);
     font-size: 0.75rem;
     line-height: 1rem;
     padding: .25rem 1rem;
     min-width: initial;
     margin: 1rem 1rem 1rem auto;
-    border: 2px solid rgb(207,0,15);
+    border: 2px solid var(--primary-color, black);
     border-radius: 4px;
     background-color: #fefefe;
     box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5);
@@ -327,7 +330,7 @@ modal-mib form button.close {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: rgb(207,0,15);
+    background-color: var(--primary-color, black);
 }
 /** Only change this timing if the delete undo time changes. They need to match. */
 .alert-delete span.delete-timeout.transition {
@@ -448,7 +451,7 @@ dl.field dd:last-of-type {
     background-repeat: no-repeat;
     height: 3rem;
     width: 4rem;
-    color: rgb(207,0,15);
+    color: var(--primary-color, black);
     text-align: center;
     background-position: center;
     line-height: 2.5rem;
@@ -562,7 +565,7 @@ nav ol li:last-of-type a {
  * Main tabs
  */
 ul[role=tablist] {
-    border-bottom: 1px solid rgb(207,0,15);
+    border-bottom: 1px solid var(--primary-color, black);
     margin-bottom: 1rem;
 }
 ul[role=tablist] > li {
@@ -572,13 +575,13 @@ ul[role=tablist] > li {
 ul[role=tablist] a {
     display: inline-block;
     border-radius: .4rem .4rem 0 0;
-    border: 1px solid rgb(207,0,15);
+    border: 1px solid var(--primary-color, black);
     border-width: 1px 1px 0 1px;
     padding: .5rem .8rem;
     font-size: .9rem;
 }
 ul[role=tablist] a[aria-selected=true] {
-    background-color: rgb(207,0,15);
+    background-color: var(--primary-color, black);
     color: white;
 }
 
