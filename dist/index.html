@@ -5,16 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-        <title>Character Sheet. 5e.</title>
-        <meta name="application-name" content="Character Sheet. 5e.">
-        <meta name="description" content="Online character sheet for 5e D&amp;D.">
+        <title>Character Sheet. App.</title>
+        <meta name="application-name" content="Character Sheet. App.">
+        <meta name="description" content="Online character sheet for tabletop role playing games.">
 
         <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
         <link rel="icon" type="image/png" href="./favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="./favicon-16x16.png" sizes="16x16">
         <link rel="manifest" href="./manifest.json">
         <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
-        <meta name="apple-mobile-web-app-title" content="CharSheet5e">
+        <meta name="apple-mobile-web-app-title" content="CharSheetApp">
         <meta name="theme-color" content="#ffffff">
         <meta name="msapplication-config" content="./browserconfig.xml" />
 
@@ -40,11 +40,11 @@
             <action-menu></action-menu>
             <main></main>
             <footer>
-                <h4>Character Sheet. 5e.</h4>
+                <h4>Character Sheet. App.</h4>
                 <ul>
                     <li><button type="button" class="btn-plain btn-help btn-dialog">Help</button></li>
                     <li>Created by <a href="https://derikbadman.com">Derik A Badman</a></li>
-                    <li><a href="https://github.com/derikb/character-sheet-5e">Github</a></li>
+                    <li><a href="https://github.com/derikb/character-sheet-app">Github</a></li>
                 </ul>
             </footer>
             <nav>
@@ -59,10 +59,10 @@
         </div>
 
         <template id="introAlert">
-            <span slot="header">Character Sheet. 5e.</span>
-            <p>An online character sheet for 5th edition D&amp;D, usable offline (in some browsers).</p>
-            <p>Designed for modern browsers, if all else fails Chrome is your best bet and IE is your worst bet.</p>
-            <p><strong>Warning:</strong> Character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p>
+            <span slot="header">Character Sheet. App.</span>
+            <p>An online character sheet for tabletop role-playing games, usable offline (in some browsers).</p>
+            <p>Designed for modern browsers, if all else fails Chrome is your best bet and Safari is your worst bet.</p>
+            <p><strong>Warning:</strong> Unless you login, character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p>
             <p>This message will only appear until you save your first character.</p>
         </template>
         <template id="helpDialog">
@@ -71,7 +71,8 @@
             <h2>Most importantly</h2>
             <ul>
                 <li>This app only saves data to your browsers' local storage. If your browser's data is deleted, your saved characters will be deleted. Use the backup options to save character data when you make changes.</li>
-                <li>This app is designed for modern web browsers, it has been tested in Chrome (desktop and mobile), Firefox (desktop), and Safari (desktop and mobile). It is possible this will work in IE Edge too, I haven't tested it (if you try it send me any bugs).</li>
+                <li>To save remotely, login via the "Login" button and then use the Sync option to save data remotely. Right now the only Auth is via Google.</li>
+                <li>This app is designed for modern web browsers.</li>
                 <li>After you've loaded the app, it will work offline in Chrome, Firefox, and Safari (desktop) as well as Safari (iOS) and Chrome (Android). Chrome (iOS) does not seem to work offline, and I haven't tried any other browsers.</li>
             </ul>
 
@@ -89,16 +90,20 @@
                 </li>
                 <li><strong>Email Backup</strong> This will open your default email client and start a new message containing the currently viewed character's backup data as well as instructions on how to use that data.</li>
                 <li><strong>Restore Backup</strong> This opens a form for uploading a file or pasting in character backup data to save that character in the current browser. If the character already exists they will be updated to match the restored data (so be careful).</li>
+                <li><strong>Login</strong> Authenticate via a Google account to save data remotely.</li>
+                <li><strong>Sync/Logout</strong> Download/Upload data to/from the remote database; logout.</li>
             </ul>
 
             <h2>Character Sheet</h2>
 
             <ul>
                 <li>Click on data or empty areas to edit. Data is NOT automatically saved; you must hit the <strong>Save</strong> button (or use the keyboard shortcut).</li>
-                <li>Ability, saving throw, and skill modifiers are all automatically calculated when the proficiency, ability, save, or skill fields are changed.</li>
+                <li>Press <em>enter</em> while editing any list field to add another empty field to the list. (Use <em>Shift+Enter</em> to add a new line.)</li>
+                <li><ul>For 5e:</ul>
+                    <li>Ability, saving throw, and skill modifiers are all automatically calculated when the proficiency, ability, save, or skill fields are changed.</li>
                 <li>All other fields are manually changed.</li>
                 <li>Spell lists only appear if the corresponding spell slot is greater than 0.</li>
-                <li>Press <em>enter</em> while editing any list field to add another empty field to the list. (Use <em>Shift+Enter</em> to add a new line.)</li>
+                </ul></li>
             </ul>
 
             <h2>Keyboard Shortcuts</h2>

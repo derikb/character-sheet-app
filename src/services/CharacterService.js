@@ -94,16 +94,11 @@ const getCharacterRemote = async function (key) {
 /**
  * Save a single character.
  * @param {Character} character
- * @param {String} appname
  * @returns {Boolean}
  */
-const saveCharacter = function (character, appname = '') {
+const saveCharacter = function (character) {
     // Update saved timestamp
     character.updated = currentTimestamp();
-    // Make sure app name is set
-    if (appname !== '') {
-        character.app = appname;
-    }
     return Storage.set(character.key, character);
 };
 /**

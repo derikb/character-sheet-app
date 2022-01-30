@@ -31,6 +31,6 @@ document.querySelector('action-menu').setEmitter(emitter);
 
 Manager.initialize({
     emitter: emitter,
-    prefix: 'charsheet-5e-',
-    appname: 'character-sheet-5e'
+    prefix: 'charsheet-app-',
+    appname: 'character-sheet'
 });

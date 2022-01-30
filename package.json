@@ -1,7 +1,7 @@
 {
-  "name": "character-sheet-5e",
+  "name": "character-sheet-app",
   "version": "3.0.2",
-  "description": "Online character sheet for D&D",
+  "description": "Online character sheet for Tabletop Role-Playing Games",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/derikb/character-sheet-5e.git"
@@ -10,18 +10,17 @@
     "url": "https://github.com/derikb/character-sheet-5e/issues"
   },
   "homepage": "https://github.com/derikb/character-sheet-5e#readme",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "esbuild --serve=8080 --servedir=./dist ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --bundle",
-    "build": "esbuild ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --minify --sourcemap --bundle",
-    "release": "standard-version -a"
-  },
   "keywords": [
     "d&d",
-    "rpg"
+    "rpg",
+    "ttrpg",
+    "character sheet"
   ],
   "author": "Derik A Badman",
   "license": "GPL-3.0",
+  "dependencies": {
+    "firebase": "^9.5.0"
+  },
   "devDependencies": {
     "esbuild": "^0.14.2",
     "eslint": "^8.3.0",
@@ -32,6 +31,12 @@
     "normalize.css": "^8.0.1",
     "standard-version": "^9.3.2"
   },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "esbuild --serve=8080 --servedir=./dist ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --bundle",
+    "build": "esbuild ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --minify --sourcemap --bundle",
+    "release": "standard-version -a"
+  },
   "standard-version": {
     "scripts": {
       "postbump": "npm run build && git add ./dist/service_worker.js ./dist/service_worker.js.map ./dist/index.js ./dist/index.js.map ./dist/styles.css ./dist/styles.css.map"
@@ -40,8 +45,5 @@
       "package.json",
       "package-lock.json"
     ]
-  },
-  "dependencies": {
-    "firebase": "^9.5.0"
   }
 }
