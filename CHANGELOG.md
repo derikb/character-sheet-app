@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://github.com/derikb/character-sheet-app/compare/v4.0.1...v4.0.2) (2022-02-12)
+
+
+### Bug Fixes
+
+* **tabs:** Fix not working in FF ([395c187](https://github.com/derikb/character-sheet-app/commit/395c18774a5c335c87ddf62331e50159e9c01295)), closes [#102](https://github.com/derikb/character-sheet-app/issues/102)
+
 ### [4.0.1](https://github.com/derikb/character-sheet-app/compare/v4.0.0...v4.0.1) (2022-01-30)
 
 
