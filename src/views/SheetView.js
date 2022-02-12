@@ -27,10 +27,10 @@ class SheetView extends HTMLElement {
         }
         // Selector hook so we can always find regardless of child class.
         this.dataset.sheetview = 'true';
-        this.mainTabs = new Tabs(this.shadowRoot.querySelector('ul[role=tablist]'));
     }
 
     connectedCallback () {
+        this.mainTabs = new Tabs(this.shadowRoot.querySelector('ul[role=tablist]'));
         // Listen for events emitted from the components
         this.shadowRoot.addEventListener('fieldChange', this._handleFieldChange.bind(this));
         Array.from(this.shadowRoot.querySelectorAll('input[type=number]')).forEach((el) => {
@@ -80,6 +80,9 @@ class SheetView extends HTMLElement {
      * @param {String} targetPane
      */
     switchToPane (targetPane) {
+        if (!this.mainTabs) {
+            return;
+        }
         this.mainTabs.switchToPane(targetPane);
     }
     /**

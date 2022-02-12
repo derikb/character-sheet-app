@@ -11,7 +11,7 @@ class Tabs {
             return;
         }
         this.tabs = tablist.querySelectorAll('a[role=tab]');
-        this.panes = tablist.parentNode.querySelectorAll(':scope > section[role=tabpanel]');
+        this.panes = tablist.parentNode.querySelectorAll('section[role=tabpanel]');
         Array.from(this.tabs).forEach((tab) => {
             tab.addEventListener('click', this.changeTab.bind(this));
         });
