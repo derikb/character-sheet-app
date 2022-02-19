@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/derikb/character-sheet-app/compare/v4.0.2...v4.1.0) (2022-02-19)
+
+
+### Features
+
+* **diceroller:** Improve dice roller UI ([44865d1](https://github.com/derikb/character-sheet-app/commit/44865d1c50504515ae204cf997fa5a4b18543aaf)), closes [#106](https://github.com/derikb/character-sheet-app/issues/106)
+
+
+### Bug Fixes
+
+* **auth:** Better error handling ([45f77d6](https://github.com/derikb/character-sheet-app/commit/45f77d611e7a0b8edc79284c80081ffca16cfee2)), closes [#104](https://github.com/derikb/character-sheet-app/issues/104)
+
 ### [4.0.2](https://github.com/derikb/character-sheet-app/compare/v4.0.1...v4.0.2) (2022-02-12)
 
 
