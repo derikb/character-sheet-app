@@ -15,7 +15,7 @@ class ShortCutKeys {
      * @param {String} keys Key Combo use 'Ctrl+' and 'Shift+' to indicate those keys.
      * @param {String} event Event to emit.
      */
-    addShortCut(keys, event) {
+    addShortCut (keys, event) {
         this.shortcuts[keys] = event;
     }
     /**
@@ -24,7 +24,7 @@ class ShortCutKeys {
      * @param {Boolean} withControl Was control pressed.
      * @param {Boolean} withShift Was shift pressed.
      */
-    getKeyCode(key, withControl, withShift) {
+    getKeyCode (key, withControl, withShift) {
         let code = '';
         if (withControl) {
             code += 'Ctrl+';
@@ -39,7 +39,7 @@ class ShortCutKeys {
      * Handler: Keydown event.
      * @param {KeyboardEvent} ev Keydown
      */
-    checkShortCuts(ev) {
+    checkShortCuts (ev) {
         let withControl = false;
         let withShift = false;
         if (ev.ctrlKey) {
@@ -48,9 +48,9 @@ class ShortCutKeys {
         if (ev.shiftKey) {
             withShift = true;
         }
-        let key = ev.key;
+        const key = ev.key;
         const code = this.getKeyCode(key, withControl, withShift);
-        var event = this.shortcuts[code] || null;
+        const event = this.shortcuts[code] || null;
         if (event) {
             ev.preventDefault();
             ev.stopPropagation();

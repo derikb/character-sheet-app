@@ -19,12 +19,12 @@
   "author": "Derik A Badman",
   "license": "GPL-3.0",
   "dependencies": {
-    "firebase": "^9.6.0",
-    "rpg-table-randomizer": "^1.1.3"
+    "firebase": "^9.6.6",
+    "rpg-table-randomizer": "^1.3.0"
   },
   "devDependencies": {
-    "esbuild": "^0.14.14",
-    "eslint": "^8.8.0",
+    "esbuild": "^0.14.21",
+    "eslint": "^8.9.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
@@ -36,7 +36,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "esbuild --serve=8080 --servedir=./dist ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --bundle",
     "build": "esbuild ./src/styles.css ./src/index.js ./src/service_worker.js --outdir=./dist --loader:.svg=dataurl --loader:.html=file --minify --sourcemap --bundle",
-    "release": "standard-version -a"
+    "release": "standard-version -a",
+    "eslint": "eslint ./src"
   },
   "standard-version": {
     "scripts": {

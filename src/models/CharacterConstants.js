@@ -1,6 +1,3 @@
-
-
-
 /**
  * Matching attribute full names to the character properties.
  */
@@ -37,9 +34,8 @@ export const skillAttributes = Object.freeze({
     survival: attributes.WISDOM
 });
 
-
 export const skillLevels = Object.freeze({
     UNSKILLED: 0,
     PROFICIENT: 1,
     EXPERT: 2
- });
+});

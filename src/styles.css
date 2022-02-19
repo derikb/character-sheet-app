@@ -102,6 +102,10 @@ button.btn-sm, confirm-button.btn-sm {
     margin: 0;
 }
 
+button[slot="rollbuttons"] {
+    margin-right: 1rem;
+}
+
 fieldset {
     border: 1px solid rgb(221, 221, 221);
     margin: 0 0 1rem 0;
