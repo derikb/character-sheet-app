@@ -22,17 +22,34 @@ const getUser = function () {
 const isAuthed = function () {
     return getUser() !== null;
 };
+/**
+ * @param {Error} error Error usually from firebase
+ * @param {String} method Method it happened it.
+ */
+const handleError = function (error, method) {
+    const errorCode = error.code || '';
+    const errorMessage = error.message || '';
+    const message = `${method} auth error ${errorCode}: ${errorMessage}`;
+    console.log(message);
+    if (emitter) {
+        emitter.trigger('error:display', message);
+    }
+};
 
 /**
  * Trigger a signin (Google only).
  */
-const signIn = function () {
+const signIn = async function () {
     if (!isAuthConfigured) {
         return;
     }
-    const auth = getAuth();
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    try {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        await signInWithRedirect(auth, provider);
+    } catch (error) {
+        handleError(error, 'signIn');
+    }
 };
 /**
  *
@@ -59,8 +76,8 @@ const monitorAuth = function (em) {
         });
 
         emitter.trigger('auth:enabled');
-    } catch (e) {
-        console.log(e.message);
+    } catch (error) {
+        handleError(error, 'monitorAuth');
     }
 };
 /**
@@ -75,10 +92,7 @@ const signOut = function () {
         // Don't really need to do anything here
         // The observer catches the change the triggers any events.
     }).catch((error) => {
-        const errorCode = error.code || '';
-        const errorMessage = error.message || '';
-        console.log(`Signout auth error ${errorCode}: ${errorMessage}`);
-        emitter.trigger('error:display', `Signout auth error ${errorCode}: ${errorMessage}`);
+        handleError(error, 'signOut');
     });
 };
 

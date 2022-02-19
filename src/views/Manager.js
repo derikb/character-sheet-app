@@ -333,6 +333,9 @@ ${JSON.stringify(data)}`;
             return;
         }
         this.emitter = emitter;
+        // Set this up first.
+        this.emitter.on('error:display', this.showErrorMessage, this);
+
         this.appname = appname;
         // set up storage
         setLocalStoragePrefix(prefix);
@@ -373,7 +376,6 @@ ${JSON.stringify(data)}`;
         this.emitter.on('backup:restore', this.restoreFormSubmit, this);
         this.emitter.on('dialog:save:show', this.showUnsavedDialog, this);
         this.emitter.on('dialog:save:hide', this.hideUnsavedDialog, this);
-        this.emitter.on('error:display', this.showErrorMessage, this);
 
         // Check the hash to see if we need to load a specific character
         const urlhash = window.location.hash.substring(1);
