@@ -46,7 +46,7 @@ class SimpleList extends HTMLElement {
             this.setAttribute('role', 'list');
         }
         // add event listeners
-        this.addEventListener('keypress', this._keyPress);
+        this.addEventListener('keydown', this._keyDown);
         this.addEventListener('blur', this._blur);
         this._upgradeProperty('fieldName');
         this._upgradeProperty('subFieldName');
@@ -54,7 +54,7 @@ class SimpleList extends HTMLElement {
 
     disconnectedCallback () {
         // remove event listeners
-        this.removeEventListener('keypress', this._keyPress);
+        this.removeEventListener('keydown', this._keyDown);
         this.removeEventListener('blur', this._blur);
     }
     /**
@@ -143,13 +143,16 @@ class SimpleList extends HTMLElement {
      * Handler: Enter to move through the items or add new ones.
      * @param {KeyboardEvent} ev Keypress event
      */
-    _keyPress (ev) {
-        if (ev.key !== 'Enter' || ev.shiftKey) {
+    _keyDown (ev) {
+        if ((ev.key !== 'Enter' && ev.key !== 'Backspace' )|| ev.shiftKey) {
             return;
         }
         // Get the focused element.
         const el = this.deepActiveElement();
-        if (el.tagName === 'LI' || el.closest('li')) {
+        if (el.tagName !== 'LI' && !el.closest('li')) {
+            return;
+        }
+        if (ev.key == 'Enter') {
             ev.preventDefault();
             // compare the focused elements parent component node (note-list-item) to the last item in the list.
             if (el === this.shadowRoot.lastElementChild) {
@@ -162,6 +165,15 @@ class SimpleList extends HTMLElement {
                 if (nextItem) {
                     nextItem.focus();
                 }
+            }
+        } else if (ev.key == 'Backspace') {
+            // shadowRoot 0th child is a style object, so index 1 is our first textbox
+            if (el !== this.shadowRoot.children[1]) {
+               if (el.innerHTML == "") {
+                   const prevItem = el.previousElementSibling;
+                   prevItem.focus();
+                   el.remove();
+               } 
             }
         }
     }
