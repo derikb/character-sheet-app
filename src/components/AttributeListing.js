@@ -43,6 +43,16 @@ template.innerHTML = `
         min-width: 1.5rem;
         text-align: right;
     }
+    button {
+        background-color: var(--primary-color, black);
+        color: white;
+        border: none;
+        padding: 0.25rem 0.5rem;
+        margin: 0 0 -1rem 1rem;
+        clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 95%, 5% 75%, 5% 25%);
+        height: 1.25rem;
+        width: 1.25rem;
+    }
 </style>
 <label for="score"><slot></slot></label>
 <input type="number" id="score" class="pc-attribute" value=10 min=3 max=25 />
@@ -52,6 +62,7 @@ template.innerHTML = `
     Save
 </label>
 <span class="pc-save-mod small">0</span>
+<button type="button" data-die="1d20" aria-label="Saving throw"></button>
 `;
 
 class AttributeListing extends HTMLElement {
@@ -73,12 +84,14 @@ class AttributeListing extends HTMLElement {
         // add event listeners
         this.saveCheck.addEventListener('change', this._checkSave.bind(this));
         this.scoreInput.addEventListener('change', this._scoreUpdate.bind(this));
+        this.shadowRoot.querySelector('button').addEventListener('click', this._savingThrow.bind(this));
     }
 
     disconnectedCallback () {
         // remove event listeners
         this.saveCheck.removeEventListener('change', this._checkSave.bind(this));
         this.scoreInput.removeEventListener('change', this._scoreUpdate.bind(this));
+        this.shadowRoot.querySelector('button').removeEventListener('click', this._savingThrow.bind(this));
     }
     /**
      * Name of the skill based on the data-name attribute.
@@ -129,6 +142,10 @@ class AttributeListing extends HTMLElement {
     set attributeMod (val) {
         this.shadowRoot.querySelector('.pc-attribute-mod').innerHTML = val;
     }
+
+    get saveMod () {
+        return this.shadowRoot.querySelector('.pc-save-mod').innerHTML;
+    }
     /**
      * Set the save modifier.
      * @param {String} mod
@@ -157,6 +174,19 @@ class AttributeListing extends HTMLElement {
             value: ev.target.value
         };
         this.dispatchEvent(new CustomEvent('attributeChange', { bubbles: true, detail }));
+    }
+    /**
+     * Roll a saving throw.
+     * @param {ClickEvent} ev
+     */
+    _savingThrow (ev) {
+        const roller = document.querySelector('sheet-view-5e').shadowRoot.querySelector('dice-roller');
+        if (!roller) {
+            return;
+        }
+        const mod = this.saveMod;
+        const die = `1d20${mod !== '0' ? mod : ''}`;
+        roller.roll(die);
     }
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).

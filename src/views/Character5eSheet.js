@@ -107,6 +107,10 @@ template.innerHTML = `
     </section>
 
     <section class="grid-span-col-2">
+        <h2>Dice Roller</h2>
+        <dice-roller>
+            <button type="button" slot="rollbuttons" data-die="1d20">1d20</button>
+        </dice-roller>
         <h2>Weapons & Attacks</h2>
         <table-editable columns="Name||Attack||Damage||Notes" data-name="weapons"></table-editable>
 
