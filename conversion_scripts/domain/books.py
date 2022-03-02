@@ -11,7 +11,7 @@ from .util import DynamicFrozenDictEnum
 
 
 class _BookDef(BaseModel):
-	"""Private dataclass for parsing allowed books."""
+	"""Definition of a source book."""
 
 	name: str
 	abbr: str
@@ -20,7 +20,7 @@ class _BookDef(BaseModel):
 
 
 class Book(DynamicFrozenDictEnum[_BookDef]):
-	"""D&D source material book."""
+	"""D&D source material book enum."""
 
 	@classmethod
 	def initialise(cls, *args: str, **kwargs: str) -> None:
@@ -131,10 +131,10 @@ class Book(DynamicFrozenDictEnum[_BookDef]):
 
 	def __init__(self, key: str):
 		"""Initialise a book without type checking."""
-		self._name = self._allowed_value_dict[key].name
-		self._abbr = self._allowed_value_dict[key].abbr
-		self._date = self._allowed_value_dict[key].date
-		self._official = self._allowed_value_dict[key].official
+		self._name = self.allowed_value_dict[key].name
+		self._abbr = self.allowed_value_dict[key].abbr
+		self._date = self.allowed_value_dict[key].date
+		self._official = self.allowed_value_dict[key].official
 		super().__init__(key)
 
 	def __repr__(self) -> str:
