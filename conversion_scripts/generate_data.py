@@ -8,19 +8,21 @@ from typing import Any, Dict, Iterable
 from pydantic import Extra  # pylint: disable=unused-import
 from pydantic import ValidationError
 
-from domain.books import initialise_books
-from domain.general import initialise_general
+from domain import general
+from domain import books
 from domain.spells import Spell, initialise_spells
+import js_writer
 
-EXTERNAL_5ETOOLS_MIRROR = os.path.join('/home', 'ephron', 'Projects', '5etools-mirror-1.github.io')
+EXTERNAL_5ETOOLS_MIRROR = os.path.abspath(os.path.join('..', '5etools-mirror-1.github.io'))
+OUTPUT_FOLDER = os.path.abspath(os.path.join("src", "data"))
 
 
 # Initialise independent definitions
 _PARSER_FILE_5E_TOOLS = os.path.join(EXTERNAL_5ETOOLS_MIRROR, 'js', 'parser.js')
 print("Initialising general data")
-initialise_general(parser_file=_PARSER_FILE_5E_TOOLS)
+general.initialise_general(parser_file=_PARSER_FILE_5E_TOOLS)
 print("Initialising books")
-initialise_books(
+books.initialise_books(
 	official_books_file=os.path.join(EXTERNAL_5ETOOLS_MIRROR, 'data', 'books.json'),
 	books_parser_file=_PARSER_FILE_5E_TOOLS,
 )
@@ -52,8 +54,62 @@ def _read_spells_from_5etools() -> Iterable[Dict[str, Any]]:
 		yield from source_spells['spell']
 
 
+def write_utils() -> None:
+	"""Write some common utility definitions to utils.js."""
+	print("Writing utils.js")
+	enum_imports, enum_def, enum_exports = js_writer.write_enum_definitions()
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'utils.js'),
+		module_doc="Various utility definitions.",
+		imports=enum_imports,
+		definitions=enum_def,
+		exports=enum_exports,
+	)
+
+
+def write_general() -> None:
+	"""Write general data definitions to general.js."""
+	print("Writing general.js")
+	imports, definitions, exports = js_writer.combine_definitions([
+		js_writer.write_enum(general.TimeUnit),
+		js_writer.write_dict_enum(general.Condition),
+		js_writer.write_enum(general.Attribute),
+		js_writer.write_dict_enum(general.CreatureType),
+		js_writer.write_dict_enum(general.DamageType),
+	])
+
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'general.js'),
+		module_doc="General data definitions.",
+		imports=imports,
+		definitions=definitions,
+		exports=exports,
+	)
+
+
+def write_books() -> None:
+	"""Write definitions of source books to books.js."""
+	print("Writing books.js")
+	imports, definitions, exports = js_writer.combine_definitions([
+		js_writer.write_dict_enum(books.Book),
+	])
+
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'books.js'),
+		module_doc="Data definitions for source books.",
+		imports=imports,
+		definitions=definitions,
+		exports=exports,
+	)
+
+
 if __name__ == '__main__':
+	# parse 5etools input
 	spells = list(get_spells())
 	print("Parsed", len(spells), "spells")
-	# print('-' * 120)
-	# print(spells[0])
+
+	# write js output
+	os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+	write_utils()
+	write_general()
+	write_books()

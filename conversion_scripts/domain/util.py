@@ -13,12 +13,12 @@ DFDE = TypeVar('DFDE', bound='DynamicFrozenDictEnum')
 class DynamicFrozenDictEnum(Generic[ValueType]):
 	"""Initialisable class for instances of a select and frozen number of keys and any value type."""
 
-	_allowed_value_dict: Dict[str, ValueType] = {}
+	allowed_value_dict: Dict[str, ValueType] = {}
 
 	@classmethod
 	def is_initialised(cls) -> bool:
 		"""Return whether allowed values have been loaded."""
-		return bool(cls._allowed_value_dict)
+		return bool(cls.allowed_value_dict)
 
 	@classmethod
 	def _set_allowed_values(cls, values: Dict[str, ValueType]) -> None:
@@ -30,7 +30,7 @@ class DynamicFrozenDictEnum(Generic[ValueType]):
 				raise ValueError(f"Bad value type for key '{key}': '{data}' ({type(data)})") from err
 			if not isinstance(key, str):
 				raise ValueError(f"Bad key type: '{key}' ({type(key)})")
-		cls._allowed_value_dict = values
+		cls.allowed_value_dict = values
 
 	@classmethod
 	def __get_validators__(cls) -> Iterable[Callable[[Any], Any]]:
@@ -44,10 +44,10 @@ class DynamicFrozenDictEnum(Generic[ValueType]):
 			raise TypeError(f"Bad key for {cls.__name__}: {key} ({type(key)})")
 		if not cls.is_initialised():
 			raise ValueError(f"{cls.__name__} class not initialised.")
-		if key not in cls._allowed_value_dict:
+		if key not in cls.allowed_value_dict:
 			raise KeyError(
 				f"Unknown key: '{key}', known keys and values are:\n" + '\n'.join(
-					f"{key_}: {str(data)}" for key_, data in cls._allowed_value_dict.items()
+					f"{key_}: {str(data)}" for key_, data in cls.allowed_value_dict.items()
 				)
 			)
 		return cls(key)

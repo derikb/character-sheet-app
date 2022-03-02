@@ -81,7 +81,7 @@ class School(DynamicFrozenDictEnum[str]):
 
 	def __init__(self, key: str):
 		"""Set full name of school."""
-		self._name = self._allowed_value_dict[key]
+		self._name = self.allowed_value_dict[key]
 		super().__init__(key)
 
 	@property
@@ -221,7 +221,7 @@ class AttackType(DynamicFrozenDictEnum[str]):
 
 	def __init__(self, key: str):
 		"""Set full name of attack type."""
-		self._name = self._allowed_value_dict[key]
+		self._name = self.allowed_value_dict[key]
 		super().__init__(key)
 
 	@property
