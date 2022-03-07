@@ -221,7 +221,7 @@ def write_basemodel_class_definition(class_name: str, model_class: Type[BaseMode
 	] + [
 		"     * @param {" + _python_to_js_type(
 			field.outer_type_.__name__
-		) + "} " + field.name + " " + field.field_info.description + "\n"
+		) + "} " + field.name + (" " + field.field_info.description if field.field_info.description else "") + "\n"
 		for field in model_class.__fields__.values()
 	] + [
 		"     */\n",

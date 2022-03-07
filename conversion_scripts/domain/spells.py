@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, root_validator, validator
 
 from .backgrounds import Background
 from .books import Book, BookReference
-from .classes import ClassDefinition
+from .classes import Class
 from .description import Description
 from .general import Attribute, Condition, CreatureType, DamageType, Time
 from .races import Race
@@ -257,7 +257,7 @@ class Spell(BaseModel, extra=Extra.forbid):
 	durations: List[SpellDuration]					# duration(s) of the spell's effects
 	description: List[Description]					# description of the spell
 	higher_level_description: Optional[str]			# description for higher levels
-	classes: Optional[List[ClassDefinition]]		# classes that can use this spell
+	classes: Optional[List[Class]]					# classes that can use this spell
 	races: Optional[List[Race]]						# races that can use this spell
 	backgrounds: Optional[List[Background]]			# backgrounds that can use this spell
 	conditions_inflicted: List[Condition]			# conditions inflicted on spell target
