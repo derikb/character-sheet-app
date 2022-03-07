@@ -23,7 +23,7 @@ class ClassDescription(BaseModel, extra=Extra.forbid):
 		return values
 
 
-class ClassDefinition(BaseModel, extra=Extra.forbid):
+class Class(BaseModel, extra=Extra.forbid):
 	"""Full definition of a class with possible subclass."""
 
 	main_class: ClassDescription = Field(alias='class')
@@ -33,7 +33,7 @@ class ClassDefinition(BaseModel, extra=Extra.forbid):
 	# pylint: disable=no-self-argument
 	@root_validator(pre=True)
 	def reassign_sub_sub_class_and_wrap_if_open(  # type: ignore
-		cls: Type[ClassDefinition], values: Dict[str, Any]
+		cls: Type[Class], values: Dict[str, Any]
 	) -> Dict[str, Any]:
 		"""Wrap main class if bare, and reassign subsubclass."""
 		if 'name' in values:

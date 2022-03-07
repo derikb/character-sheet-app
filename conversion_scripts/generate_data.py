@@ -12,6 +12,7 @@ from domain import books
 from domain import backgrounds
 from domain import general
 from domain import races
+from domain import classes
 from domain.spells import Spell, initialise_spells
 import js_writer
 
@@ -131,6 +132,22 @@ def write_backgrounds() -> None:
 	)
 
 
+def write_classes() -> None:
+	"""Write a 'Class' class to classes.js :-) ."""
+	print("Writing classes.js")
+	descr_definitions, descr_exports = js_writer.write_basemodel_class_definition(
+		'ClassDescription', classes.ClassDescription
+	)
+	class_definitions, class_exports = js_writer.write_basemodel_class_definition('Class', classes.Class)
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'classes.js'),
+		module_doc="Data definitions for character classes.",
+		imports={},
+		definitions=descr_definitions + ['\n'] + class_definitions,
+		exports=descr_exports + class_exports,
+	)
+
+
 if __name__ == '__main__':
 	# parse 5etools input
 	spells = list(get_spells())
@@ -143,3 +160,4 @@ if __name__ == '__main__':
 	write_books()
 	write_races()
 	write_backgrounds()
+	write_classes()
