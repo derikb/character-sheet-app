@@ -8,8 +8,9 @@ from typing import Any, Dict, Iterable
 from pydantic import Extra  # pylint: disable=unused-import
 from pydantic import ValidationError
 
-from domain import general
 from domain import books
+from domain import backgrounds
+from domain import general
 from domain import races
 from domain.spells import Spell, initialise_spells
 import js_writer
@@ -105,15 +106,25 @@ def write_books() -> None:
 
 
 def write_races() -> None:
-	"""Write a race class to races.js.
-
-	Keep in sync with race.py.
-	"""
+	"""Write a race class to races.js."""
 	print("Writing races.js")
 	definitions, exports = js_writer.write_basemodel_class_definition('Race', races.Race)
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'races.js'),
 		module_doc="Data definition for races.",
+		imports={},
+		definitions=definitions,
+		exports=exports,
+	)
+
+
+def write_backgrounds() -> None:
+	"""Write a backgrounds class to backgrounds.js."""
+	print("Writing backgrounds.js")
+	definitions, exports = js_writer.write_basemodel_class_definition('Background', backgrounds.Background)
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'backgrounds.js'),
+		module_doc="Data definition for backgrounds.",
 		imports={},
 		definitions=definitions,
 		exports=exports,
@@ -131,3 +142,4 @@ if __name__ == '__main__':
 	write_general()
 	write_books()
 	write_races()
+	write_backgrounds()
