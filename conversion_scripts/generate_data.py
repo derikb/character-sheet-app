@@ -10,6 +10,7 @@ from pydantic import ValidationError
 
 from domain import general
 from domain import books
+from domain import races
 from domain.spells import Spell, initialise_spells
 import js_writer
 
@@ -103,6 +104,22 @@ def write_books() -> None:
 	)
 
 
+def write_races() -> None:
+	"""Write a race class to races.js.
+
+	Keep in sync with race.py.
+	"""
+	print("Writing races.js")
+	definitions, exports = js_writer.write_basemodel_class_definition('Race', races.Race)
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'races.js'),
+		module_doc="Data definition for races.",
+		imports={},
+		definitions=definitions,
+		exports=exports,
+	)
+
+
 if __name__ == '__main__':
 	# parse 5etools input
 	spells = list(get_spells())
@@ -113,3 +130,4 @@ if __name__ == '__main__':
 	write_utils()
 	write_general()
 	write_books()
+	write_races()
