@@ -26,6 +26,18 @@ class DescriptionEntries(BaseModel, extra=Extra.forbid):
 			raise ValueError(f"Wrong type for description entries: '{entry_type}'")
 		return values
 
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string as a list of paragraphs."""
+		indent = "\t" * indent_level
+		html = indent + ("<b>" + self.name + "</b>\n" if self.name else "")
+		for entry in self.entries:
+			html += indent + "<p>\n" + (
+				indent + "\t" + entry + "\n"
+				if isinstance(entry, str)
+				else entry.to_html(indent_level + 1)
+			) + indent + "</p>\n"
+		return html
+
 
 class DescriptionQuote(BaseModel, extra=Extra.forbid):
 	"""A citation in the description."""
@@ -41,6 +53,22 @@ class DescriptionQuote(BaseModel, extra=Extra.forbid):
 		if entry_type != 'quote':
 			raise ValueError(f"Wrong type for description quote: '{entry_type}'")
 		return values
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string as an indented list of paragraphs, followed by an attribution."""
+		indent = "\t" * indent_level
+		html = indent + "\"\n" + indent + "<i>\n"
+		prefix = (indent + "<p>\n" if len(self.entries) > 1 else "")
+		postfix = (indent + "</p>\n" if len(self.entries) > 1 else "")
+		for entry in self.entries:
+			html += prefix + (
+				indent + entry + "\n"
+				if isinstance(entry, str)
+				else entry.to_html(indent_level)
+			) + postfix
+		html += indent + "</i>\n" + indent + "\"\n"
+		html += indent + ("<p>— " + self.author + "</p>\n" if self.author else "")
+		return html
 
 
 class DescriptionInset(BaseModel, extra=Extra.forbid):
@@ -59,6 +87,20 @@ class DescriptionInset(BaseModel, extra=Extra.forbid):
 		if entry_type != 'inset':
 			raise ValueError(f"Wrong type for description inset: '{entry_type}'")
 		return values
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string as an inset box."""
+		indent = "\t" * indent_level
+		html = indent + "<p style=\"padding: 2px; border: 2px solid;\">\n"
+		html += indent + "\t<b>" + self.name + "</b> (" + self.source.abbreviation + " p." + str(self.page) + ")\n"
+		for entry in self.entries:
+			html += (
+				indent + "\t" + entry + "\n"
+				if isinstance(entry, str)
+				else entry.to_html(indent_level + 1)
+			)
+		html += indent + "</p>\n"
+		return html
 
 
 class TextAlignment(str, Enum):
@@ -101,6 +143,10 @@ class TableCell(BaseModel, extra=Extra.forbid):
 			return str(roll['min']) + '-' + str(roll['max'])
 
 		raise ValueError(f"Table cell with unrecognised type: '{value}' ({type(value)})")
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string."""
+		return "\t" * indent_level + self.value + "\n"
 
 
 DESCRIPTION_TABLE_COLUMN_STYLE_PATTERN = re.compile(
@@ -159,6 +205,47 @@ class DescriptionTable(BaseModel, extra=Extra.forbid):
 				parsed_styles.append(style_str)
 		return parsed_styles
 
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string as a table."""
+		indent = "\t" * indent_level
+		html = indent + "<table style=\"border-collapse: collapse;\">\n"
+
+		if self.caption:
+			html += indent + "\t<caption>" + self.caption + "</caption>\n"
+
+		col_widths = [col.width for col in self.column_styles]
+		border_style = "border: 1px solid;"
+
+		content_html = indent + "\t<tr>\n"
+		for col_ind, header in enumerate(self.headers):
+			content_html += indent + "\t\t<th style=\"" + border_style + "\">" + header + "</th>\n"
+			col_widths[col_ind] = max(col_widths[col_ind], len(header) + 1)
+		content_html += indent + "\t</tr>\n"
+
+		for row in self.rows:
+			content_html += indent + "\t<tr>\n"
+			for col_ind, cell in enumerate(row):
+				content_html += indent + "\t\t<td style=\"" + border_style + "\">\n"
+				cell_content = cell.to_html(indent_level + 3)
+				content_html += cell_content
+				col_widths[col_ind] = max(
+					col_widths[col_ind],
+					max(len(line.lstrip("\t")) for line in cell_content.split("\n")) + 1
+				)
+				content_html += indent + "\t\t</td>\n"
+			content_html += indent + "\t</tr>\n"
+		content_html += indent + "</table>\n"
+
+		html += indent + "\t<colgroup>\n"
+		for col_ind, col in enumerate(self.column_styles):
+			html += indent + "\t\t<col style=\"width: " + str(col_widths[col_ind]) + "ch; "
+			html += "text-align: " + col.alignment.value + ";\">\n"
+		html += indent + "\t</colgroup>\n"
+
+		html += content_html
+
+		return html
+
 
 class RecursiveDescriptionListItem(BaseModel, extra=Extra.forbid):
 	"""Item in a description list."""
@@ -174,6 +261,20 @@ class RecursiveDescriptionListItem(BaseModel, extra=Extra.forbid):
 		if item_type != 'item':
 			raise ValueError(f"Unknown list item type: '{item_type}'")
 		return values
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string."""
+		html = ""
+		indent = "\t" * indent_level
+		for entry in self.entries:
+			html += indent + "<p>\n"
+			html += (
+				indent + "\t" + entry + "\n"
+				if isinstance(entry, str)
+				else entry.to_html(indent_level + 1)
+			)
+			html += indent + "</p>\n"
+		return html
 
 
 DescriptionListItem = Union[str, RecursiveDescriptionListItem]
@@ -197,6 +298,21 @@ class DescriptionList(BaseModel, extra=Extra.forbid):
 			raise ValueError(f"Unknown list style '{style}'")
 
 		return values
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string as an unordered list."""
+		indent = "\t" * indent_level
+		html = indent + "<ul>\n"
+		for item in self.items:
+			html += indent + "\t<li>\n"
+			html += (
+				indent + "\t\t" + item + "\n"
+				if isinstance(item, str)
+				else item.to_html(indent_level + 2)
+			)
+			html += indent + "\t</li>\n"
+		html += indent + "</ul>\n"
+		return html
 
 
 Description = Union[str, DescriptionEntries, DescriptionQuote, DescriptionInset, DescriptionTable, DescriptionList]

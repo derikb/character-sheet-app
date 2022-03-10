@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, Iterable
+from typing import Any, Dict, Iterable, List
 
 from pydantic import Extra  # pylint: disable=unused-import
 from pydantic import ValidationError
@@ -13,7 +13,7 @@ from domain import backgrounds
 from domain import general
 from domain import races
 from domain import classes
-from domain.spells import Spell, initialise_spells
+from domain import spells
 import js_writer
 
 EXTERNAL_5ETOOLS_MIRROR = os.path.abspath(os.path.join('..', '5etools-mirror-1.github.io'))
@@ -30,14 +30,14 @@ books.initialise_books(
 	books_parser_file=_PARSER_FILE_5E_TOOLS,
 )
 print("Initialising spell data")
-initialise_spells(parser_file=_PARSER_FILE_5E_TOOLS)
+spells.initialise_spells(parser_file=_PARSER_FILE_5E_TOOLS)
 
 
-def get_spells() -> Iterable[Spell]:
+def get_spells() -> Iterable[spells.Spell]:
 	"""Read spells from external 5etools clone and parse to domain class."""
 	for raw_spell in _read_spells_from_5etools():
 		try:
-			current_spell = Spell.from_raw(raw_spell)
+			current_spell = spells.Spell.from_raw(raw_spell)
 		except (ValueError, ValidationError) as err:
 			raise ValueError(f"{err} while processing raw spell\n{raw_spell}") from err
 		yield current_spell
@@ -148,10 +148,28 @@ def write_classes() -> None:
 	)
 
 
+def temp_write_descriptions(file: str, spells_: List[spells.Spell]) -> None:
+	"""Write all spell descriptions to file."""
+	with open(file, 'wt', encoding='utf-8') as out_file:
+		out_file.write(
+			("=" * 120 + "\n").join([
+				"<h2>" + spell.name + "</h2>\n" + "\n".join([
+					(
+						"<p>\n\t" + item + "\n</p>\n"
+						if isinstance(item, str)
+						else "<p>\n" + item.to_html(1) + "</p>\n"
+					)
+					for item in spell.description
+				])
+				for spell in spells_
+			])
+		)
+
+
 if __name__ == '__main__':
 	# parse 5etools input
-	spells = list(get_spells())
-	print("Parsed", len(spells), "spells")
+	all_spells = list(get_spells())
+	print("Parsed", len(all_spells), "spells")
 
 	# write js output
 	os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -161,3 +179,5 @@ if __name__ == '__main__':
 	write_races()
 	write_backgrounds()
 	write_classes()
+
+	temp_write_descriptions("temp.html", all_spells)
