@@ -1,9 +1,10 @@
 """Defines the domain of descriptions, as a recursive union of various types."""
 from __future__ import annotations
 
+import abc
 import re
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Union
 
 from pydantic import Extra  # pylint: disable=unused-import
 from pydantic import BaseModel, Field, root_validator, validator
@@ -11,48 +12,117 @@ from pydantic import BaseModel, Field, root_validator, validator
 from .books import Book
 
 
-class DescriptionEntries(BaseModel, extra=Extra.forbid):
-	"""More detailed description entry."""
+# class Description(abc.ABC):
+# 	"""Base class for descriptions."""
+
+# 	def __new__(cls, value: Union[str, list, Dict[str, Any]]) -> Description:
+# 		"""Create an appropriate description class based on value."""
+# 		if isinstance(value, str):
+# 			return StringDescription(value=value)
+# 		elif isinstance(value, list):
+# 			return ListDescription(entries=value)
+# 		elif isinstance(value, dict):
+# 			if 'type' not in value:
+# 				raise KeyError(f"Description dict without 'type' key: {value}.")
+# 			descr_type = value.pop('type', None)
+# 			if descr_type == 'entries':
+# 				return ListDescription(**value)
+# 			elif descr_type == 'quote':
+# 				return QuoteDescription(**value)
+# 			elif descr_type == 'inset':
+# 				return InsetDescription(**value)
+# 			elif descr_type == 'cell':
+# 				return CellDescription(**value)
+# 			elif descr_type == 'table':
+# 				return TableDescription(**value)
+# 			elif descr_type == 'list':
+# 				return EnumerationDescription(**value)
+# 			raise KeyError(f"Description dict with unknown type: '{value['type']}'.")
+# 		raise ValueError(f"Unknown description type: '{type(value)}'")
+
+# 	@abc.abstractmethod
+# 	def to_html(self, indent_level: int = 0) -> str:
+# 		"""Create an html-string representation."""
+# 		raise NotImplementedError()
+
+# 	@classmethod
+# 	def __get_validators__(cls) -> Iterable[Callable]:
+# 		"""Create empty validators to satisfy pydantic (actual validation in __new__)."""
+# 		return []
+
+
+class Description(abc.ABC):
+	"""Base class for descriptions."""
+
+	@classmethod
+	def create_subclass_instance(cls, value: Union[str, list, Dict[str, Any]]) -> Description:
+		"""Create an appropriate description class based on value."""
+		if isinstance(value, str):
+			return StringDescription(value=value)
+		elif isinstance(value, list):
+			return ListDescription(entries=value)
+		elif isinstance(value, dict):
+			if 'type' not in value:
+				raise KeyError(f"Description dict without 'type' key: {value}.")
+			descr_type = value.pop('type', None)
+			if descr_type == 'entries':
+				return ListDescription(**value)
+			elif descr_type == 'quote':
+				return QuoteDescription(**value)
+			elif descr_type == 'inset':
+				return InsetDescription(**value)
+			elif descr_type == 'cell':
+				return CellDescription(**value)
+			elif descr_type == 'table':
+				return TableDescription(**value)
+			elif descr_type == 'list':
+				return EnumerationDescription(**value)
+			if descr_type == 'item':
+				return ListDescription(**value)
+			raise KeyError(f"Description dict with unknown type: '{descr_type}'.")
+		raise ValueError(f"Unknown description type: '{type(value)}'")
+
+	@abc.abstractmethod
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Create an html-string representation."""
+		raise NotImplementedError()
+
+	@classmethod
+	def __get_validators__(cls) -> Iterable[Callable[[Union[str, list, Dict[str, Any]]], Description]]:
+		"""Yield pydantic validators create the proper description type."""
+		yield cls.create_subclass_instance
+
+
+class StringDescription(BaseModel, Description, extra=Extra.forbid):
+	"""Simple string-description."""
+
+	value: str
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string."""
+		return "\t" * indent_level + self.value + "\n"
+
+
+class ListDescription(BaseModel, Description, extra=Extra.forbid):
+	"""Description consisting of a list of other descriptions."""
 
 	entries: List[Description]
-	name: str
-
-	# pylint: disable=no-self-argument
-	@root_validator(pre=True)
-	def check_type(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
-		"""Check whether the type is correct."""
-		entry_type = values.pop('type', None)
-		if entry_type != 'entries':
-			raise ValueError(f"Wrong type for description entries: '{entry_type}'")
-		return values
+	name: Optional[str] = None
 
 	def to_html(self, indent_level: int = 0) -> str:
 		"""Convert self to html string as a list of paragraphs."""
 		indent = "\t" * indent_level
 		html = indent + ("<b>" + self.name + "</b>\n" if self.name else "")
 		for entry in self.entries:
-			html += indent + "<p>\n" + (
-				indent + "\t" + entry + "\n"
-				if isinstance(entry, str)
-				else entry.to_html(indent_level + 1)
-			) + indent + "</p>\n"
+			html += indent + "<p>\n" + entry.to_html(indent_level + 1) + indent + "</p>\n"
 		return html
 
 
-class DescriptionQuote(BaseModel, extra=Extra.forbid):
+class QuoteDescription(BaseModel, Description, extra=Extra.forbid):
 	"""A citation in the description."""
 
 	entries: List[Description]
 	author: str = Field(alias='by')
-
-	# pylint: disable=no-self-argument
-	@root_validator(pre=True)
-	def check_type(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
-		"""Check whether the type is correct."""
-		entry_type = values.pop('type', None)
-		if entry_type != 'quote':
-			raise ValueError(f"Wrong type for description quote: '{entry_type}'")
-		return values
 
 	def to_html(self, indent_level: int = 0) -> str:
 		"""Convert self to html string as an indented list of paragraphs, followed by an attribution."""
@@ -61,17 +131,13 @@ class DescriptionQuote(BaseModel, extra=Extra.forbid):
 		prefix = (indent + "<p>\n" if len(self.entries) > 1 else "")
 		postfix = (indent + "</p>\n" if len(self.entries) > 1 else "")
 		for entry in self.entries:
-			html += prefix + (
-				indent + entry + "\n"
-				if isinstance(entry, str)
-				else entry.to_html(indent_level)
-			) + postfix
+			html += prefix + entry.to_html(indent_level) + postfix
 		html += indent + "</i>\n" + indent + "\"\n"
 		html += indent + ("<p>— " + self.author + "</p>\n" if self.author else "")
 		return html
 
 
-class DescriptionInset(BaseModel, extra=Extra.forbid):
+class InsetDescription(BaseModel, Description, extra=Extra.forbid):
 	"""An inset into a description."""
 
 	entries: List[Description]
@@ -79,28 +145,43 @@ class DescriptionInset(BaseModel, extra=Extra.forbid):
 	source: Book
 	page: int
 
-	# pylint: disable=no-self-argument
-	@root_validator(pre=True)
-	def check_type(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
-		"""Check whether the type is correct."""
-		entry_type = values.pop('type', None)
-		if entry_type != 'inset':
-			raise ValueError(f"Wrong type for description inset: '{entry_type}'")
-		return values
-
 	def to_html(self, indent_level: int = 0) -> str:
 		"""Convert self to html string as an inset box."""
 		indent = "\t" * indent_level
 		html = indent + "<p style=\"padding: 2px; border: 2px solid;\">\n"
 		html += indent + "\t<b>" + self.name + "</b> (" + self.source.abbreviation + " p." + str(self.page) + ")\n"
 		for entry in self.entries:
-			html += (
-				indent + "\t" + entry + "\n"
-				if isinstance(entry, str)
-				else entry.to_html(indent_level + 1)
-			)
+			html += entry.to_html(indent_level + 1)
 		html += indent + "</p>\n"
 		return html
+
+
+class DieRoll(BaseModel, extra=Extra.forbid):
+	"""Model for a (range of) die roll result(s)."""
+
+	pad: Optional[int] = None
+	exact: Optional[int] = None
+	minimum: Optional[int] = Field(None, alias='min')
+	maximum: Optional[int] = Field(None, alias='max')
+
+
+class CellDescription(BaseModel, Description, extra=Extra.forbid):
+	"""Description of a table cell."""
+
+	roll: DieRoll
+
+	def to_html(self, indent_level: int = 0) -> str:
+		"""Convert self to html string."""
+		string_value = "" if self.roll.pad is None else " " * self.roll.pad
+		if self.roll.exact is not None:
+			string_value = str(self.roll.exact)
+		else:
+			if self.roll.minimum is not None:
+				string_value += str(self.roll.minimum)
+			string_value += "-"
+			if self.roll.maximum is not None:
+				string_value += str(self.roll.maximum)
+		return "\t" * indent_level + string_value + "\n"
 
 
 class TextAlignment(str, Enum):
@@ -117,59 +198,23 @@ class DescriptionTableColumnStyle(BaseModel, extra=Extra.forbid):
 	alignment: TextAlignment = Field(TextAlignment.LEFT, alias='align')
 
 
-class TableCell(BaseModel, extra=Extra.forbid):
-	"""Cell in a description table."""
-
-	value: str
-
-	# pylint: disable=no-self-argument
-	@validator('value', pre=True)
-	def convert_cell_to_str(cls, value: Union[str, Dict[str, Any]]) -> str:
-		"""Convert a cell to str in case it is a dict."""
-		if isinstance(value, str):
-			return value
-
-		if isinstance(value, dict):
-			if value.get('type') != 'cell':
-				raise ValueError(f"table cell type unrecognised: {value.get('type')} in table cell {value}.")
-			if list(value.keys()) != ['type', 'roll']:
-				raise ValueError(f"table cell with unrecognised keys: {value}.")
-			roll = value['roll']
-			roll.pop('pad', None)
-			if list(roll.keys()) not in [['exact'], ['min', 'max']]:
-				raise ValueError(f"table cell roll with unrecognised keys: {roll} in table cell {value}.")
-			if 'exact' in roll:
-				return str(roll['exact'])
-			return str(roll['min']) + '-' + str(roll['max'])
-
-		raise ValueError(f"Table cell with unrecognised type: '{value}' ({type(value)})")
-
-	def to_html(self, indent_level: int = 0) -> str:
-		"""Convert self to html string."""
-		return "\t" * indent_level + self.value + "\n"
-
-
 DESCRIPTION_TABLE_COLUMN_STYLE_PATTERN = re.compile(
 	r'\s*col-(?P<width>\d+)\s*(text-)?(?P<align>' + r'|'.join([align.value for align in TextAlignment]) + r')?\s*'
 )
 
 
-class DescriptionTable(BaseModel, extra=Extra.forbid):
+class TableDescription(BaseModel, Description, extra=Extra.forbid):
 	"""Description entry with table format."""
 
 	caption: Optional[str] = None
 	headers: List[str] = Field(alias='colLabels')
 	column_styles: List[DescriptionTableColumnStyle] = Field(alias='colStyles')
-	rows: List[List[TableCell]]
+	rows: List[List[Description]]
 
 	# pylint: disable=no-self-argument
 	@root_validator(pre=True)
 	def check_n_columns_consistency(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
 		"""Check whether all fields have the same number of columns."""
-		entry_type = values.pop('type', '')
-		if entry_type != 'table':
-			raise ValueError(f"Description table with wrong type: '{entry_type}'")
-
 		header_len = len(values.get('colLabels', []))
 		styles_len = len(values.get('colStyles', []))
 		if header_len != styles_len:
@@ -177,14 +222,13 @@ class DescriptionTable(BaseModel, extra=Extra.forbid):
 				f"length of headers ({header_len}) does not match length of styles "
 				f"({styles_len}) in DescriptionTable {values}"
 			)
-		rows = values.pop('rows', [])
-		for ind, row in enumerate(rows):
+		for ind, row in enumerate(values.get('rows', [])):
 			if len(row) != styles_len:
 				raise ValueError(
 					f"lenght of row {ind} ({len(row)}) does not match length of styles "
 					f"({styles_len}) in DescriptionTable {values}"
 				)
-		return dict({'rows': [[{'value': cell} for cell in row] for row in rows]}, **values)
+		return values
 
 	@validator('column_styles', pre=True)
 	def build_column_style(cls, value: List[Union[str, Dict[str, Any]]]) -> List[Dict[str, Any]]:
@@ -247,56 +291,18 @@ class DescriptionTable(BaseModel, extra=Extra.forbid):
 		return html
 
 
-class RecursiveDescriptionListItem(BaseModel, extra=Extra.forbid):
-	"""Item in a description list."""
+class EnumerationDescription(BaseModel, Description, extra=Extra.forbid):
+	"""Description entry with an enumeration of other descriptions."""
 
-	name: str
-	entries: List[Description]
-
-	# pylint: disable=no-self-argument
-	@root_validator(pre=True)
-	def check_type(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
-		"""Check whether the type of list item is recognised."""
-		item_type = values.pop('type', None)
-		if item_type != 'item':
-			raise ValueError(f"Unknown list item type: '{item_type}'")
-		return values
-
-	def to_html(self, indent_level: int = 0) -> str:
-		"""Convert self to html string."""
-		html = ""
-		indent = "\t" * indent_level
-		for entry in self.entries:
-			html += indent + "<p>\n"
-			html += (
-				indent + "\t" + entry + "\n"
-				if isinstance(entry, str)
-				else entry.to_html(indent_level + 1)
-			)
-			html += indent + "</p>\n"
-		return html
-
-
-DescriptionListItem = Union[str, RecursiveDescriptionListItem]
-
-
-class DescriptionList(BaseModel, extra=Extra.forbid):
-	"""Description entry with list format."""
-
-	items: List[DescriptionListItem]
+	items: List[Description]
 
 	# pylint: disable=no-self-argument
 	@root_validator(pre=True)
-	def check_type_and_style(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
-		"""Check whether all fields have the same number of columns."""
-		list_type = values.pop('type', None)
-		if list_type != 'list':
-			raise ValueError(f"Description list with wrong type: '{list_type}'")
-
+	def check_style(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore
+		"""Check whether style is missing or has an expected value."""
 		style = values.pop('style', 'single')
 		if style not in ('single', 'list-hang-notitle'):
 			raise ValueError(f"Unknown list style '{style}'")
-
 		return values
 
 	def to_html(self, indent_level: int = 0) -> str:
@@ -304,20 +310,6 @@ class DescriptionList(BaseModel, extra=Extra.forbid):
 		indent = "\t" * indent_level
 		html = indent + "<ul>\n"
 		for item in self.items:
-			html += indent + "\t<li>\n"
-			html += (
-				indent + "\t\t" + item + "\n"
-				if isinstance(item, str)
-				else item.to_html(indent_level + 2)
-			)
-			html += indent + "\t</li>\n"
+			html += indent + "\t<li>\n" + item.to_html(indent_level + 2) + indent + "\t</li>\n"
 		html += indent + "</ul>\n"
 		return html
-
-
-Description = Union[str, DescriptionEntries, DescriptionQuote, DescriptionInset, DescriptionTable, DescriptionList]
-
-DescriptionEntries.update_forward_refs()
-DescriptionQuote.update_forward_refs()
-DescriptionInset.update_forward_refs()
-RecursiveDescriptionListItem.update_forward_refs()

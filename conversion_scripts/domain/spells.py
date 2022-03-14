@@ -247,29 +247,29 @@ class EldritchInvocation(BaseModel, extra=Extra.forbid):
 class Spell(BaseModel, extra=Extra.forbid):
 	"""Domain representation of a spell."""
 
-	name: str										# name of the spell
-	sources: List[BookReference]					# source material defining the spell (first is main source)
-	min_level: int									# minimal level required to cast
-	school: School									# school of the spell
-	cast_times: List[Time]							# Time it takes to cast a spell
-	spell_range: Range								# range (and shape) of the spell
-	components: SpellComponents						# components required for casting
-	durations: List[SpellDuration]					# duration(s) of the spell's effects
-	description: List[Description]					# description of the spell
-	higher_level_description: Optional[str]			# description for higher levels
-	classes: Optional[List[Class]]					# classes that can use this spell
-	races: Optional[List[Race]]						# races that can use this spell
-	backgrounds: Optional[List[Background]]			# backgrounds that can use this spell
-	conditions_inflicted: List[Condition]			# conditions inflicted on spell target
-	conditions_immune: List[Condition]				# conditions for which spell grants immunity
-	saving_throws: List[Attribute]					# saving throws
-	creatures_affected: List[CreatureType]			# creature types that can be affected
-	damage: Damage									# damage inflicted by the spell
-	damage_resist: List[DamageType]					# resistances granted by the spell
-	damage_immune: List[DamageType]					# Immunities granted by the spell
-	ability_check: List[Attribute]					# check required for cast
-	srd_name: Optional[str]							# whether the spell is available in the System Reference Document
-	eldritch_invocations: Optional[					# eldritch invocations
+	name: str									# name of the spell
+	sources: List[BookReference]				# source material defining the spell (first is main source)
+	min_level: int								# minimal level required to cast
+	school: School								# school of the spell
+	cast_times: List[Time]						# Time it takes to cast a spell
+	spell_range: Range							# range (and shape) of the spell
+	components: SpellComponents					# components required for casting
+	durations: List[SpellDuration]				# duration(s) of the spell's effects
+	description: Description					# description of the spell
+	higher_level_description: Optional[str]		# description for higher levels
+	classes: Optional[List[Class]]				# classes that can use this spell
+	races: Optional[List[Race]]					# races that can use this spell
+	backgrounds: Optional[List[Background]]		# backgrounds that can use this spell
+	conditions_inflicted: List[Condition]		# conditions inflicted on spell target
+	conditions_immune: List[Condition]			# conditions for which spell grants immunity
+	saving_throws: List[Attribute]				# saving throws
+	creatures_affected: List[CreatureType]		# creature types that can be affected
+	damage: Damage								# damage inflicted by the spell
+	damage_resist: List[DamageType]				# resistances granted by the spell
+	damage_immune: List[DamageType]				# Immunities granted by the spell
+	ability_check: List[Attribute]				# check required for cast
+	srd_name: Optional[str]						# whether the spell is available in the System Reference Document
+	eldritch_invocations: Optional[				# eldritch invocations
 		List[EldritchInvocation]
 	]
 
@@ -299,7 +299,7 @@ class Spell(BaseModel, extra=Extra.forbid):
 			spell_range=raw_spell.pop('range', None),
 			components=raw_spell.pop('components', None),
 			durations=raw_spell.pop('duration', None),
-			description=raw_spell.pop('entries', None),
+			description=raw_spell.pop('entries', []),
 			higher_level_description=(
 				raw_spell.pop('entriesHigherLevel')[0]['entries'][0] if 'entriesHigherLevel' in raw_spell else None
 			),
