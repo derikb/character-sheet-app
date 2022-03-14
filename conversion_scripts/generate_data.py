@@ -13,7 +13,7 @@ from domain import backgrounds
 from domain import general
 from domain import races
 from domain import classes
-from domain import spells
+from domain import spells as spells
 import js_writer
 
 EXTERNAL_5ETOOLS_MIRROR = os.path.abspath(os.path.join('..', '5etools-mirror-1.github.io'))
@@ -153,14 +153,7 @@ def temp_write_descriptions(file: str, spells_: List[spells.Spell]) -> None:
 	with open(file, 'wt', encoding='utf-8') as out_file:
 		out_file.write(
 			("=" * 120 + "\n").join([
-				"<h2>" + spell.name + "</h2>\n" + "\n".join([
-					(
-						"<p>\n\t" + item + "\n</p>\n"
-						if isinstance(item, str)
-						else "<p>\n" + item.to_html(1) + "</p>\n"
-					)
-					for item in spell.description
-				])
+				"<h2>" + spell.name + "</h2>\n" + spell.description.to_html()
 				for spell in spells_
 			])
 		)
