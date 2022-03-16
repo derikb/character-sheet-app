@@ -12,45 +12,6 @@ from pydantic import BaseModel, Field, root_validator, validator
 from .books import Book
 
 
-# class Description(abc.ABC):
-# 	"""Base class for descriptions."""
-
-# 	def __new__(cls, value: Union[str, list, Dict[str, Any]]) -> Description:
-# 		"""Create an appropriate description class based on value."""
-# 		if isinstance(value, str):
-# 			return StringDescription(value=value)
-# 		elif isinstance(value, list):
-# 			return ListDescription(entries=value)
-# 		elif isinstance(value, dict):
-# 			if 'type' not in value:
-# 				raise KeyError(f"Description dict without 'type' key: {value}.")
-# 			descr_type = value.pop('type', None)
-# 			if descr_type == 'entries':
-# 				return ListDescription(**value)
-# 			elif descr_type == 'quote':
-# 				return QuoteDescription(**value)
-# 			elif descr_type == 'inset':
-# 				return InsetDescription(**value)
-# 			elif descr_type == 'cell':
-# 				return CellDescription(**value)
-# 			elif descr_type == 'table':
-# 				return TableDescription(**value)
-# 			elif descr_type == 'list':
-# 				return EnumerationDescription(**value)
-# 			raise KeyError(f"Description dict with unknown type: '{value['type']}'.")
-# 		raise ValueError(f"Unknown description type: '{type(value)}'")
-
-# 	@abc.abstractmethod
-# 	def to_html(self, indent_level: int = 0) -> str:
-# 		"""Create an html-string representation."""
-# 		raise NotImplementedError()
-
-# 	@classmethod
-# 	def __get_validators__(cls) -> Iterable[Callable]:
-# 		"""Create empty validators to satisfy pydantic (actual validation in __new__)."""
-# 		return []
-
-
 class Description(abc.ABC):
 	"""Base class for descriptions."""
 
@@ -93,6 +54,33 @@ class Description(abc.ABC):
 		yield cls.create_subclass_instance
 
 
+_NORMALISATION_PATTERNS = {
+	re.compile(r"{@" + name + r"\s+([^}\|]+)\|?[^}]*?}"): r"<" + style + r">\1</" + style + r">"
+	for name, style in [
+		(emphasis_word, 'em') for emphasis_word in [
+			"action", "adventure", "book", "classFeature", "condition", "creature", "filter", "item", "race", "sense",
+			"skill", "spell",
+		]
+	] + [(bold_word, 'b') for bold_word in ["d20", "damage", "dice", "hit", "b"]] + [("i", 'i')]
+}
+_NORMALISATION_PATTERNS.update({
+	re.compile(r"{@chance\s+([^}\|]+)\|?[^}]*?}"): r"\1%",
+})
+_NORMALISATION_POST_PATTERNS = {
+	re.compile(r"{@note\s*([^}]+)}"): r"\1",
+}
+
+
+def _normalise_html_string(orig: str) -> str:
+	"""Replace "... {@... ...} ..."."""
+	processed = orig
+	for pattern, replace_pattern in _NORMALISATION_PATTERNS.items():
+		processed = re.sub(pattern, replace_pattern, processed)
+	for pattern, replace_pattern in _NORMALISATION_POST_PATTERNS.items():
+		processed = re.sub(pattern, replace_pattern, processed)
+	return processed
+
+
 class StringDescription(BaseModel, Description, extra=Extra.forbid):
 	"""Simple string-description."""
 
@@ -100,7 +88,7 @@ class StringDescription(BaseModel, Description, extra=Extra.forbid):
 
 	def to_html(self, indent_level: int = 0) -> str:
 		"""Convert self to html string."""
-		return "\t" * indent_level + self.value + "\n"
+		return "\t" * indent_level + _normalise_html_string(self.value) + "\n"
 
 
 class ListDescription(BaseModel, Description, extra=Extra.forbid):
@@ -249,6 +237,10 @@ class TableDescription(BaseModel, Description, extra=Extra.forbid):
 				parsed_styles.append(style_str)
 		return parsed_styles
 
+	@staticmethod
+	def _count_cell_width(cell: str) -> int:
+		return max(len(re.sub(r"</?[^>]+>", "", line.lstrip("\t"))) for line in cell.split("\n")) + 1
+
 	def to_html(self, indent_level: int = 0) -> str:
 		"""Convert self to html string as a table."""
 		indent = "\t" * indent_level
@@ -262,8 +254,9 @@ class TableDescription(BaseModel, Description, extra=Extra.forbid):
 
 		content_html = indent + "\t<tr>\n"
 		for col_ind, header in enumerate(self.headers):
-			content_html += indent + "\t\t<th style=\"" + border_style + "\">" + header + "</th>\n"
-			col_widths[col_ind] = max(col_widths[col_ind], len(header) + 1)
+			normalised_header = _normalise_html_string(header)
+			content_html += indent + "\t\t<th style=\"" + border_style + "\">" + normalised_header + "</th>\n"
+			col_widths[col_ind] = max(col_widths[col_ind], self._count_cell_width(normalised_header))
 		content_html += indent + "\t</tr>\n"
 
 		for row in self.rows:
@@ -272,10 +265,7 @@ class TableDescription(BaseModel, Description, extra=Extra.forbid):
 				content_html += indent + "\t\t<td style=\"" + border_style + "\">\n"
 				cell_content = cell.to_html(indent_level + 3)
 				content_html += cell_content
-				col_widths[col_ind] = max(
-					col_widths[col_ind],
-					max(len(line.lstrip("\t")) for line in cell_content.split("\n")) + 1
-				)
+				col_widths[col_ind] = max(col_widths[col_ind], self._count_cell_width(cell_content))
 				content_html += indent + "\t\t</td>\n"
 			content_html += indent + "\t</tr>\n"
 		content_html += indent + "</table>\n"
