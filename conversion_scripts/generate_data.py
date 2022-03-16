@@ -160,17 +160,16 @@ def temp_write_descriptions(file: str, spells_: List[spells.Spell]) -> None:
 
 
 if __name__ == '__main__':
-	# parse 5etools input
-	all_spells = list(get_spells())
-	print("Parsed", len(all_spells), "spells")
-
-	# write js output
 	os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
 	write_utils()
 	write_general()
 	write_books()
 	write_races()
 	write_backgrounds()
 	write_classes()
+
+	all_spells = list(get_spells())
+	print("Parsed", len(all_spells), "spells")
 
 	temp_write_descriptions("temp.html", all_spells)
