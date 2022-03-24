@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable
 
 from pydantic import Extra  # pylint: disable=unused-import
 from pydantic import ValidationError
@@ -13,7 +13,7 @@ from domain import backgrounds
 from domain import general
 from domain import races
 from domain import classes
-from domain import spells as spells
+from domain import spells
 import js_writer
 
 EXTERNAL_5ETOOLS_MIRROR = os.path.abspath(os.path.join('..', '5etools-mirror-1.github.io'))
@@ -93,9 +93,7 @@ def write_general() -> None:
 def write_books() -> None:
 	"""Write definitions of source books to books.js."""
 	print("Writing books.js")
-	imports, definitions, exports = js_writer.combine_definitions([
-		js_writer.write_dict_enum(books.Book),
-	])
+	imports, definitions, exports = js_writer.write_dict_enum(books.Book)
 
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'books.js'),
@@ -109,7 +107,7 @@ def write_books() -> None:
 def write_races() -> None:
 	"""Write a race class to races.js."""
 	print("Writing races.js")
-	definitions, exports = js_writer.write_basemodel_class_definition('Race', races.Race)
+	_, definitions, exports = js_writer.write_basemodel_class_definition('Race', races.Race)
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'races.js'),
 		module_doc="Data definition for races.",
@@ -122,7 +120,7 @@ def write_races() -> None:
 def write_backgrounds() -> None:
 	"""Write a backgrounds class to backgrounds.js."""
 	print("Writing backgrounds.js")
-	definitions, exports = js_writer.write_basemodel_class_definition('Background', backgrounds.Background)
+	_, definitions, exports = js_writer.write_basemodel_class_definition('Background', backgrounds.Background)
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'backgrounds.js'),
 		module_doc="Data definition for backgrounds.",
@@ -135,10 +133,10 @@ def write_backgrounds() -> None:
 def write_classes() -> None:
 	"""Write a 'Class' class to classes.js :-) ."""
 	print("Writing classes.js")
-	descr_definitions, descr_exports = js_writer.write_basemodel_class_definition(
+	_, descr_definitions, descr_exports = js_writer.write_basemodel_class_definition(
 		'ClassDescription', classes.ClassDescription
 	)
-	class_definitions, class_exports = js_writer.write_basemodel_class_definition('Class', classes.Class)
+	_, class_definitions, class_exports = js_writer.write_basemodel_class_definition('Class', classes.Class)
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'classes.js'),
 		module_doc="Data definitions for character classes.",
@@ -148,15 +146,32 @@ def write_classes() -> None:
 	)
 
 
-def temp_write_descriptions(file: str, spells_: List[spells.Spell]) -> None:
-	"""Write all spell descriptions to file."""
-	with open(file, 'wt', encoding='utf-8') as out_file:
-		out_file.write(
-			("=" * 120 + "\n").join([
-				"<h2>" + spell.name + "</h2>\n" + spell.description.to_html()
-				for spell in spells_
-			])
-		)
+def write_spells(spells_: Iterable[spells.Spell]) -> int:
+	"""Write spell definitions to spells.js :-) ."""
+	print("Writing spells.js")
+	imports, definitions, exports = js_writer.combine_definitions([
+		js_writer.write_dict_enum(spells.School),
+		js_writer.write_enum(spells.RangeType),
+		js_writer.write_enum(spells.DistanceType),
+		js_writer.write_basemodel_class_definition('Distance', spells.Distance),
+		js_writer.write_basemodel_class_definition('Range', spells.Range),
+		js_writer.write_basemodel_class_definition('MaterialComponent', spells.MaterialComponent),
+		js_writer.write_basemodel_class_definition('SpellComponents', spells.SpellComponents),
+		js_writer.write_enum(spells.DurationType),
+		js_writer.write_basemodel_class_definition('SpellDuration', spells.SpellDuration),
+		js_writer.write_dict_enum(spells.AttackType),
+		js_writer.write_basemodel_class_definition('Damage', spells.Damage),
+		js_writer.write_basemodel_class_definition('EldritchInvocation', spells.EldritchInvocation),
+		js_writer.write_basemodel_class_definition('Spell', spells.Spell),
+	])
+	js_writer.write_js_file(
+		file_path=os.path.join(OUTPUT_FOLDER, 'spells.js'),
+		module_doc="Data definitions for spells.",
+		imports=imports,
+		definitions=definitions,
+		exports=exports,
+	)
+	return len(list(spells_))
 
 
 if __name__ == '__main__':
@@ -169,7 +184,5 @@ if __name__ == '__main__':
 	write_backgrounds()
 	write_classes()
 
-	all_spells = list(get_spells())
-	print("Parsed", len(all_spells), "spells")
-
-	temp_write_descriptions("temp.html", all_spells)
+	n_spells = write_spells(get_spells())
+	print("Parsed", n_spells, "spells")

@@ -209,25 +209,27 @@ def write_dict_enum(enum: Type[DynamicFrozenDictEnum]) -> Tuple[Dict[str, List[s
 	)
 
 
-def write_basemodel_class_definition(class_name: str, model_class: Type[BaseModel]) -> Tuple[List[str], List[str]]:
+def write_basemodel_class_definition(
+	class_name: str, model_class: Type[BaseModel]
+) -> Tuple[Dict[str, List[str]], List[str], List[str]]:
 	"""Write a simple pydantic BaseModel as js class."""
 	if model_class.__doc__:
 		doc = write_doc(model_class.__doc__)
 	else:
 		doc = []
-	return doc + [
+	return {}, doc + [
 		"class " + class_name + " {\n",
 		"    /**\n",
 	] + [
 		"     * @param {" + _python_to_js_type(
-			field.outer_type_.__name__
+			field.outer_type_
 		) + "} " + field.name + (" " + field.field_info.description if field.field_info.description else "") + "\n"
 		for field in model_class.__fields__.values()
 	] + [
 		"     */\n",
 		"    constructor (" + ", ".join([
 			field.name + (
-				" = " + ('undefined' if field.default is None else str(field.default))
+				" = " + _python_to_js_value(field.default)
 				if not field.required
 				else ""
 			)
@@ -242,9 +244,20 @@ def write_basemodel_class_definition(class_name: str, model_class: Type[BaseMode
 	], [class_name]
 
 
-def _python_to_js_type(type_: str) -> str:
+def _python_to_js_type(type_: Type[object]) -> str:
 	"""Convert a python type to js."""
-	return _remove_optional(type_).replace('str', 'String')
+	if str(type_).startswith("typing.List"):
+		return _remove_optional(str(type_)[12:-1]) + "[]"
+	return _remove_optional(type_.__name__).replace('str', 'String')
+
+
+def _python_to_js_value(value: object) -> str:
+	"""Convert a python value to js value string."""
+	if value is None:
+		return 'undefined'
+	if isinstance(value, bool):
+		return str(value).lower()
+	return str(value)
 
 
 def _remove_optional(type_str: str) -> str:
