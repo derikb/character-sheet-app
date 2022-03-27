@@ -147,9 +147,9 @@ def write_classes() -> None:
 
 
 def write_spells(spells_: Iterable[spells.Spell]) -> int:
-	"""Write spell definitions to spells.js :-) ."""
+	"""Write spell definitions to spells.js."""
 	print("Writing spells.js")
-	imports, definitions, exports = js_writer.combine_definitions([
+	infra_imports, infra_definitions, _ = js_writer.combine_definitions([
 		js_writer.write_dict_enum(spells.School),
 		js_writer.write_enum(spells.RangeType),
 		js_writer.write_enum(spells.DistanceType),
@@ -164,6 +164,12 @@ def write_spells(spells_: Iterable[spells.Spell]) -> int:
 		js_writer.write_basemodel_class_definition('EldritchInvocation', spells.EldritchInvocation),
 		js_writer.write_basemodel_class_definition('Spell', spells.Spell),
 	])
+	spell_imports, spell_definitions, spell_exports, n_spells = js_writer.write_object_list(
+		spells_, spells.Spell, 'spell_list'
+	)
+	imports, definitions, exports = js_writer.combine_definitions([
+		(infra_imports, infra_definitions, []), (spell_imports, spell_definitions, spell_exports)
+	])
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'spells.js'),
 		module_doc="Data definitions for spells.",
@@ -171,7 +177,7 @@ def write_spells(spells_: Iterable[spells.Spell]) -> int:
 		definitions=definitions,
 		exports=exports,
 	)
-	return len(list(spells_))
+	return n_spells
 
 
 if __name__ == '__main__':
@@ -184,5 +190,5 @@ if __name__ == '__main__':
 	write_backgrounds()
 	write_classes()
 
-	n_spells = write_spells(get_spells())
-	print("Parsed", n_spells, "spells")
+	N_SPELLS = write_spells(get_spells())
+	print("Parsed", N_SPELLS, "spells")

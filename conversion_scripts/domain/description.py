@@ -12,7 +12,16 @@ from pydantic import BaseModel, Field, root_validator, validator
 from .books import Book
 
 
-class Description(abc.ABC):
+class HTMLConvertible(abc.ABC):
+	"""Protocol to define a to_html function."""
+
+	@abc.abstractmethod
+	def to_html(self, indent_level: int) -> str:
+		"""Convert object to html-string."""
+		raise NotImplementedError()
+
+
+class Description(HTMLConvertible, abc.ABC):
 	"""Base class for descriptions."""
 
 	@classmethod
