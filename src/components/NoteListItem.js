@@ -89,6 +89,18 @@ class NoteListItem extends HTMLElement {
     focus () {
         this.shadowRoot.querySelector('dt').focus();
     }
+    /**
+     * Determine whether NoteListItem is empty, ignoring lead and trailing whitespace
+     * @returns true if empty, false otherwise
+     */
+    isEmpty () {
+        let empty = false;
+        if (this.shadowRoot.querySelector('dt').innerText.trim() === '' &&
+                this.shadowRoot.querySelector('dd').innerText.trim() === '') {
+            empty = true;
+        }
+        return empty;
+    }
 }
 
 window.customElements.define('note-list-item', NoteListItem);

@@ -198,7 +198,7 @@ class TableEditable extends HTMLElement {
             newRow.querySelector('td').focus();
             return;
         } else if (ev.key === 'Backspace') {
-            if (td.innerText !== '') {
+            if (td.innerText.trim() !== '') {
                 return;
             }
             // if it's not the first cell, move to the previous cell.
@@ -214,18 +214,15 @@ class TableEditable extends HTMLElement {
             const prevRow = row.previousElementSibling;
             if (prevRow) {
                 prevRow.lastElementChild.focus();
-                const children = row.children;
                 let delRow = true;
-                for (let i = 0; i < children.length; i++) {
-                    if (children[i].innerHTML !== '') {
+                row.querySelectorAll('td').forEach((c) => {
+                    if (c.innerText.trim() !== '') {
                         delRow = false;
-                        break;
                     }
-                }
+                });
                 if (delRow) {
                     row.remove();
                 }
-                return;
             }
         }
     }

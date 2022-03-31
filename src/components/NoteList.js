@@ -126,11 +126,9 @@ class NoteList extends HTMLElement {
             ev.preventDefault();
             if (el.tagName === 'DT' || el.closest('dt')) {
                 el.nextElementSibling.focus();
-
-            // If we're in the text section
             } else if (el.tagName === 'DD' || el.closest('dd')) {
                 if (el.parentNode.host === this.shadowRoot.lastElementChild) {
-                    // Last NoteList, so add a new item and focus.
+                    // Last NoteListItem, so add a new item and focus.
                     const newList = new NoteListItem();
                     this.shadowRoot.appendChild(newList);
                     newList.focus();
@@ -147,7 +145,7 @@ class NoteList extends HTMLElement {
                 return;
             }
             if (el.tagName === 'DT' || el.closest('dt')) {
-                // If it's not the first NoteList, move to the previous one's text field.
+                // If it's not the first NoteListItem, move to the previous one's text field.
                 if (el.parentNode.host !== this.shadowRoot.querySelector('note-list-item')) {
                     const prevItem = el.parentNode.host.previousElementSibling;
 
@@ -155,8 +153,8 @@ class NoteList extends HTMLElement {
                         prevItem.focus();
                         this.deepActiveElement().nextElementSibling.focus();
 
-                        // If both NoteList fields are empty, delete it
-                        if (el.innerText === '' && el.nextElementSibling.innerText === '') {
+                        // If both NoteListItem fields are empty, delete it
+                        if (el.parentNode.host.isEmpty()) {
                             el.parentNode.host.remove();
                         }
                     }

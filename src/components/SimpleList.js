@@ -168,7 +168,7 @@ class SimpleList extends HTMLElement {
             return;
         } else if (ev.key === 'Backspace') {
             if (el !== this.shadowRoot.querySelector('li')) {
-                if (el.innerText === '') {
+                if (el.innerText.trim() === '') {
                     const prevItem = el.previousElementSibling;
                     prevItem.focus();
                     el.remove();
