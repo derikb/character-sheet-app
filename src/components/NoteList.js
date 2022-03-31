@@ -118,43 +118,37 @@ class NoteList extends HTMLElement {
      * @param {KeyboardEvent} ev Keypress event
      */
     _keyDown (ev) {
-        if ((ev.key !== 'Enter' && ev.key !='Backspace') || ev.shiftKey) {
+        if ((ev.key !== 'Enter' && ev.key !== 'Backspace') || ev.shiftKey) {
             return;
         }
-        // Get the focused element.
         const el = this.deepActiveElement();
-        if (ev.key == 'Enter') {
+        if (ev.key === 'Enter') {
             ev.preventDefault();
-            // If we're in the header, focus on the text section
             if (el.tagName === 'DT' || el.closest('dt')) {
                 el.nextElementSibling.focus();
 
             // If we're in the text section
-            } else if (el.tagName == 'DD' || el.closest('dd')) {
+            } else if (el.tagName === 'DD' || el.closest('dd')) {
                 if (el.parentNode.host === this.shadowRoot.lastElementChild) {
                     // Last NoteList, so add a new item and focus.
                     const newList = new NoteListItem();
                     this.shadowRoot.appendChild(newList);
                     newList.focus();
-
                 } else {
-                    // Move to the next item.
                     const nextList = el.parentNode.host.nextElementSibling;
                     if (nextList) {
                         nextList.focus();
                     }
                 }
             }
-
-        } else if (ev.key == 'Backspace') {
-            // Do default behavior if cell isn't empty
-            if (el.innerHTML != '') {
+            return;
+        } else if (ev.key === 'Backspace') {
+            if (el.innerText !== '') {
                 return;
             }
-            // If we're in the header
             if (el.tagName === 'DT' || el.closest('dt')) {
                 // If it's not the first NoteList, move to the previous one's text field.
-                if (el.parentNode.host !== this.shadowRoot.children[1]) {
+                if (el.parentNode.host !== this.shadowRoot.querySelector('note-list-item')) {
                     const prevItem = el.parentNode.host.previousElementSibling;
 
                     if (prevItem) {
@@ -162,14 +156,12 @@ class NoteList extends HTMLElement {
                         this.deepActiveElement().nextElementSibling.focus();
 
                         // If both NoteList fields are empty, delete it
-                        if (el.innerHTML == '' && el.nextElementSibling.innerHTML == '' ) {
+                        if (el.innerText === '' && el.nextElementSibling.innerText === '') {
                             el.parentNode.host.remove();
                         }
                     }
                 }
-
-            // if we're in the text section
-            } else if (el.tagName == 'DD' || el.closest('dd')) {
+            } else if (el.tagName === 'DD' || el.closest('dd')) {
                 el.previousElementSibling.focus();
             }
         }

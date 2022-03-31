@@ -173,16 +173,15 @@ class TableEditable extends HTMLElement {
         if ((ev.key !== 'Enter' && ev.key !== 'Backspace') || ev.shiftKey) {
             return;
         }
-        // Get the focused element.
         const el = this.deepActiveElement();
         if (el.tagName !== 'TD' && !el.closest(`td`)) {
             return;
         }
         const td = el.tagName === 'TD' ? el : el.closest(`td`);
         const row = td.parentElement;
-        if (ev.key == 'Enter') {
+        if (ev.key === 'Enter') {
             ev.preventDefault();
-            // if it's not the last cell, move to the next cell.
+
             if (td !== row.lastElementChild) {
                 const nextCell = td.nextElementSibling;
                 if (nextCell) {
@@ -190,8 +189,6 @@ class TableEditable extends HTMLElement {
                 }
                 return;
             }
-            // it is the last cell.
-            // if there is a next row focus its first cell.
             const nextRow = row.nextElementSibling;
             if (nextRow) {
                 nextRow.querySelector('td').focus();
@@ -199,13 +196,13 @@ class TableEditable extends HTMLElement {
             }
             const newRow = this.addRow();
             newRow.querySelector('td').focus();
-        } else if (ev.key == 'Backspace') {
-            // do default behavior if cell isn't empty
-            if (td.innerHTML != '') {
+            return;
+        } else if (ev.key === 'Backspace') {
+            if (td.innerText !== '') {
                 return;
             }
             // if it's not the first cell, move to the previous cell.
-            if (td !== row.firstElementChild) { 
+            if (td !== row.firstElementChild) {
                 const prevCell = td.previousElementSibling;
                 if (prevCell) {
                     prevCell.focus();
@@ -217,11 +214,10 @@ class TableEditable extends HTMLElement {
             const prevRow = row.previousElementSibling;
             if (prevRow) {
                 prevRow.lastElementChild.focus();
-
                 const children = row.children;
-                var delRow = true;
-                for (var i = 0; i < children.length; i++) {
-                    if (children[i].innerHTML != "") {
+                let delRow = true;
+                for (let i = 0; i < children.length; i++) {
+                    if (children[i].innerHTML !== '') {
                         delRow = false;
                         break;
                     }
@@ -230,7 +226,7 @@ class TableEditable extends HTMLElement {
                     row.remove();
                 }
                 return;
-            } 
+            }
         }
     }
     /**

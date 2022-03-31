@@ -144,15 +144,14 @@ class SimpleList extends HTMLElement {
      * @param {KeyboardEvent} ev Keypress event
      */
     _keyDown (ev) {
-        if ((ev.key !== 'Enter' && ev.key !== 'Backspace' )|| ev.shiftKey) {
+        if ((ev.key !== 'Enter' && ev.key !== 'Backspace') || ev.shiftKey) {
             return;
         }
-        // Get the focused element.
         const el = this.deepActiveElement();
         if (el.tagName !== 'LI' && !el.closest('li')) {
             return;
         }
-        if (ev.key == 'Enter') {
+        if (ev.key === 'Enter') {
             ev.preventDefault();
             // compare the focused elements parent component node (note-list-item) to the last item in the list.
             if (el === this.shadowRoot.lastElementChild) {
@@ -166,14 +165,14 @@ class SimpleList extends HTMLElement {
                     nextItem.focus();
                 }
             }
-        } else if (ev.key == 'Backspace') {
-            // shadowRoot 0th child is a style object, so index 1 is our first textbox
-            if (el !== this.shadowRoot.children[1]) {
-               if (el.innerHTML == "") {
-                   const prevItem = el.previousElementSibling;
-                   prevItem.focus();
-                   el.remove();
-               } 
+            return;
+        } else if (ev.key === 'Backspace') {
+            if (el !== this.shadowRoot.querySelector('li')) {
+                if (el.innerText === '') {
+                    const prevItem = el.previousElementSibling;
+                    prevItem.focus();
+                    el.remove();
+                }
             }
         }
     }
