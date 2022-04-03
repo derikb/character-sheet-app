@@ -28,7 +28,7 @@ class Time(BaseModel, extra=Extra.forbid):
 
 	number: int
 	unit: TimeUnit
-	condition: Optional['str']
+	condition: Optional[str]
 	up_to: bool = False
 
 

@@ -75,6 +75,7 @@ def write_general() -> None:
 	print("Writing general.js")
 	imports, definitions, exports = js_writer.combine_definitions([
 		js_writer.write_enum(general.TimeUnit),
+		js_writer.write_basemodel_class_definition('Time', general.Time),
 		js_writer.write_dict_enum(general.Condition),
 		js_writer.write_enum(general.Attribute),
 		js_writer.write_dict_enum(general.CreatureType),
@@ -93,7 +94,10 @@ def write_general() -> None:
 def write_books() -> None:
 	"""Write definitions of source books to books.js."""
 	print("Writing books.js")
-	imports, definitions, exports = js_writer.write_dict_enum(books.Book)
+	imports, definitions, exports = js_writer.combine_definitions([
+		js_writer.write_dict_enum(books.Book),
+		js_writer.write_basemodel_class_definition('BookReference', books.BookReference)
+	])
 
 	js_writer.write_js_file(
 		file_path=os.path.join(OUTPUT_FOLDER, 'books.js'),

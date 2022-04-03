@@ -135,7 +135,7 @@ def write_enum(enum: Type[Enum]) -> Tuple[Dict[str, List[str]], List[str], List[
 		{'utils.js': [_ENUM_CONSTRUCTOR_NAME]},
 		doc + [
 			"const " + enum.__name__ + " = " + _ENUM_CONSTRUCTOR_NAME + "([" + ", ".join([
-				"'" + _normalise_enum_key(enum_entry.name.capitalize()) + "'" for enum_entry in enum
+				"'" + _normalise_enum_key(enum_entry.name) + "'" for enum_entry in enum
 			]) + "]);\n"
 		],
 		[enum.__name__]
@@ -416,4 +416,4 @@ def _get_object_import(obj: object, base_module_name: str) -> Dict[str, List[str
 
 
 def _normalise_enum_key(key: str) -> str:
-	return key.replace('-', '_')
+	return key.lower().replace('-', '_')

@@ -5,6 +5,7 @@
 import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey, getSheetView } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
 import { monitorAuth } from '../services/AuthService.js';
+import { SpellService } from '../services/SpellService.js';
 
 const Manager = {
     /** @prop {EventEmitter} */
@@ -341,6 +342,9 @@ ${JSON.stringify(data)}`;
         setLocalStoragePrefix(prefix);
         // set up default alert
         this.alert = document.getElementById('alert-main');
+        // set up spell service
+        this.spell_service = SpellService;
+        this.spell_service.initialize();
 
         monitorAuth(this.emitter);
 
