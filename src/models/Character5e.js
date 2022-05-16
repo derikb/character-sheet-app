@@ -2,7 +2,7 @@
  * Model for 5e character data
  */
 
-import { skillAttributes, skillLevels } from './CharacterConstants.js';
+import { skillAttributes, skillLevels } from './CharacterConstants5e.js';
 import Weapon from './Weapon.js';
 import Character from './Character.js';
 
