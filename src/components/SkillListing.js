@@ -96,7 +96,10 @@ class SkillListing extends HTMLElement {
     }
 
     get skillValue () {
-        return 0;
+        if (!this.profCheck.checked) {
+            return 0;
+        }
+        return this.expertCheck.checked ? 2 : 1;
     }
     /**
      * Set skill proficiency/expert status.

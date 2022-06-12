@@ -13,6 +13,7 @@ template.innerHTML = `
     display: flex;
     align-items: baseline;
     position: relative;
+    flex-wrap: wrap;
 }
 
 button {

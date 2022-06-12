@@ -110,6 +110,11 @@ template.innerHTML = `
         <h2>Dice Roller</h2>
         <dice-roller>
             <button type="button" slot="rollbuttons" data-die="1d20">1d20</button>
+            <button type="button" slot="rollbuttons" data-die="1d12">1d12</button>
+            <button type="button" slot="rollbuttons" data-die="1d10">1d10</button>
+            <button type="button" slot="rollbuttons" data-die="1d8">1d8</button>
+            <button type="button" slot="rollbuttons" data-die="1d6">1d6</button>
+            <button type="button" slot="rollbuttons" data-die="1d4">1d4</button>
         </dice-roller>
         <h2>Weapons & Attacks</h2>
         <table-editable columns="Name||Attack||Damage||Notes" data-name="weapons"></table-editable>
