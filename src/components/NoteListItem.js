@@ -85,8 +85,13 @@ class NoteListItem extends HTMLElement {
     }
     /**
      * Focus method since HTMLElement doesn't have that by default (I think).
+     * @param {Boolean} onContent If true focus on the dd instead.
      */
-    focus () {
+    focus (onContent = false) {
+        if (onContent) {
+            this.shadowRoot.querySelector('dd').focus();
+            return;
+        }
         this.shadowRoot.querySelector('dt').focus();
     }
     /**
@@ -94,12 +99,11 @@ class NoteListItem extends HTMLElement {
      * @returns true if empty, false otherwise
      */
     isEmpty () {
-        let empty = false;
         if (this.shadowRoot.querySelector('dt').innerText.trim() === '' &&
                 this.shadowRoot.querySelector('dd').innerText.trim() === '') {
-            empty = true;
+            return true;
         }
-        return empty;
+        return false;
     }
 }
 

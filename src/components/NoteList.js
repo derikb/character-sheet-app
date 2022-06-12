@@ -1,5 +1,6 @@
 import NoteListItem from './NoteListItem.js';
 import CharacterNote from '../models/CharacterNote.js';
+import setCursorAtContentEnd from '../utils/setCursorAtContentEnd.js';
 
 /**
  * Parent container for Definition list pairs used as note header/text.
@@ -122,11 +123,16 @@ class NoteList extends HTMLElement {
             return;
         }
         const el = this.deepActiveElement();
+        // Move to next field on enter.
         if (ev.key === 'Enter') {
             ev.preventDefault();
+            ev.stopPropagation();
             if (el.tagName === 'DT' || el.closest('dt')) {
+                console.log(el);
+                // If this is a child of dt we need to handle this differently.
                 el.nextElementSibling.focus();
             } else if (el.tagName === 'DD' || el.closest('dd')) {
+                console.log(el);
                 if (el.parentNode.host === this.shadowRoot.lastElementChild) {
                     // Last NoteListItem, so add a new item and focus.
                     const newList = new NoteListItem();
@@ -140,18 +146,23 @@ class NoteList extends HTMLElement {
                 }
             }
             return;
-        } else if (ev.key === 'Backspace') {
-            if (el.innerText !== '') {
+        }
+
+        if (ev.key === 'Backspace') {
+            // trim this in case of line breaks, spaces, etc.
+            if (el.innerText.trim() !== '') {
                 return;
             }
+            ev.preventDefault();
+            ev.stopPropagation();
             if (el.tagName === 'DT' || el.closest('dt')) {
                 // If it's not the first NoteListItem, move to the previous one's text field.
                 if (el.parentNode.host !== this.shadowRoot.querySelector('note-list-item')) {
                     const prevItem = el.parentNode.host.previousElementSibling;
 
                     if (prevItem) {
-                        prevItem.focus();
-                        this.deepActiveElement().nextElementSibling.focus();
+                        prevItem.focus(true);
+                        setCursorAtContentEnd(this.deepActiveElement());
 
                         // If both NoteListItem fields are empty, delete it
                         if (el.parentNode.host.isEmpty()) {
@@ -160,7 +171,9 @@ class NoteList extends HTMLElement {
                     }
                 }
             } else if (el.tagName === 'DD' || el.closest('dd')) {
-                el.previousElementSibling.focus();
+                // NoteListItem focus always goes to the DT.
+                el.parentNode.host.focus();
+                setCursorAtContentEnd(this.deepActiveElement());
             }
         }
     }

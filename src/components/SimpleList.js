@@ -1,4 +1,6 @@
 /* eslint-disable prefer-const */
+import setCursorAtContentEnd from '../utils/setCursorAtContentEnd.js';
+
 /**
  * Parent container for a simple list.
  * Add data-number="true" to make it a numbered list.
@@ -166,11 +168,14 @@ class SimpleList extends HTMLElement {
                 }
             }
             return;
-        } else if (ev.key === 'Backspace') {
+        }
+        if (ev.key === 'Backspace') {
             if (el !== this.shadowRoot.querySelector('li')) {
                 if (el.innerText.trim() === '') {
+                    ev.preventDefault();
                     const prevItem = el.previousElementSibling;
                     prevItem.focus();
+                    setCursorAtContentEnd(prevItem);
                     el.remove();
                 }
             }

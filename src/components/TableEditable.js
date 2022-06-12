@@ -1,3 +1,5 @@
+import setCursorAtContentEnd from '../utils/setCursorAtContentEnd.js';
+
 /**
  * Editable table.
  */
@@ -197,15 +199,18 @@ class TableEditable extends HTMLElement {
             const newRow = this.addRow();
             newRow.querySelector('td').focus();
             return;
-        } else if (ev.key === 'Backspace') {
+        }
+        if (ev.key === 'Backspace') {
             if (td.innerText.trim() !== '') {
                 return;
             }
+            ev.preventDefault();
             // if it's not the first cell, move to the previous cell.
             if (td !== row.firstElementChild) {
                 const prevCell = td.previousElementSibling;
                 if (prevCell) {
                     prevCell.focus();
+                    setCursorAtContentEnd(prevCell);
                 }
                 return;
             }
@@ -214,6 +219,7 @@ class TableEditable extends HTMLElement {
             const prevRow = row.previousElementSibling;
             if (prevRow) {
                 prevRow.lastElementChild.focus();
+                setCursorAtContentEnd(prevRow.lastElementChild);
                 let delRow = true;
                 row.querySelectorAll('td').forEach((c) => {
                     if (c.innerText.trim() !== '') {
