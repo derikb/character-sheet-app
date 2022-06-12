@@ -1,4 +1,6 @@
 /* eslint-disable prefer-const */
+import setCursorAtContentEnd from '../utils/setCursorAtContentEnd.js';
+
 /**
  * Parent container for a simple list.
  * Add data-number="true" to make it a numbered list.
@@ -46,7 +48,7 @@ class SimpleList extends HTMLElement {
             this.setAttribute('role', 'list');
         }
         // add event listeners
-        this.addEventListener('keypress', this._keyPress);
+        this.addEventListener('keydown', this._keyDown);
         this.addEventListener('blur', this._blur);
         this._upgradeProperty('fieldName');
         this._upgradeProperty('subFieldName');
@@ -54,7 +56,7 @@ class SimpleList extends HTMLElement {
 
     disconnectedCallback () {
         // remove event listeners
-        this.removeEventListener('keypress', this._keyPress);
+        this.removeEventListener('keydown', this._keyDown);
         this.removeEventListener('blur', this._blur);
     }
     /**
@@ -143,13 +145,15 @@ class SimpleList extends HTMLElement {
      * Handler: Enter to move through the items or add new ones.
      * @param {KeyboardEvent} ev Keypress event
      */
-    _keyPress (ev) {
-        if (ev.key !== 'Enter' || ev.shiftKey) {
+    _keyDown (ev) {
+        if ((ev.key !== 'Enter' && ev.key !== 'Backspace') || ev.shiftKey) {
             return;
         }
-        // Get the focused element.
         const el = this.deepActiveElement();
-        if (el.tagName === 'LI' || el.closest('li')) {
+        if (el.tagName !== 'LI' && !el.closest('li')) {
+            return;
+        }
+        if (ev.key === 'Enter') {
             ev.preventDefault();
             // compare the focused elements parent component node (note-list-item) to the last item in the list.
             if (el === this.shadowRoot.lastElementChild) {
@@ -161,6 +165,18 @@ class SimpleList extends HTMLElement {
                 const nextItem = el.nextElementSibling;
                 if (nextItem) {
                     nextItem.focus();
+                }
+            }
+            return;
+        }
+        if (ev.key === 'Backspace') {
+            if (el !== this.shadowRoot.querySelector('li')) {
+                if (el.innerText.trim() === '') {
+                    ev.preventDefault();
+                    const prevItem = el.previousElementSibling;
+                    prevItem.focus();
+                    setCursorAtContentEnd(prevItem);
+                    el.remove();
                 }
             }
         }

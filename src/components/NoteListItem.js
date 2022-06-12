@@ -45,14 +45,8 @@ class NoteListItem extends HTMLElement {
         if (!this.hasAttribute('role')) {
             this.setAttribute('role', 'list-item');
         }
-        // add event listeners
-        this.addEventListener('keypress', this._keyPress);
     }
 
-    disconnectedCallback () {
-        // remove event listeners
-        this.removeEventListener('keypress', this._keyPress);
-    }
     /**
      * Get the content (header and text) of the pair.
      * @returns {CharacterNote}
@@ -90,26 +84,26 @@ class NoteListItem extends HTMLElement {
         return a;
     }
     /**
-     * Handler: Enter to move through the items.
-     * @param {KeyboardEvent} ev Keypress event
+     * Focus method since HTMLElement doesn't have that by default (I think).
+     * @param {Boolean} onContent If true focus on the dd instead.
      */
-    _keyPress (ev) {
-        if (ev.key !== 'Enter' || ev.shiftKey) {
+    focus (onContent = false) {
+        if (onContent) {
+            this.shadowRoot.querySelector('dd').focus();
             return;
         }
-        const el = this.deepActiveElement();
-        if (el.tagName === 'DT' || el.closest('dt')) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            // focus on the sibling DD
-            this.shadowRoot.querySelector('dd').focus();
-        }
+        this.shadowRoot.querySelector('dt').focus();
     }
     /**
-     * Focus method since HTMLElement doesn't have that by default (I think).
+     * Determine whether NoteListItem is empty, ignoring lead and trailing whitespace
+     * @returns true if empty, false otherwise
      */
-    focus () {
-        this.shadowRoot.querySelector('dt').focus();
+    isEmpty () {
+        if (this.shadowRoot.querySelector('dt').innerText.trim() === '' &&
+                this.shadowRoot.querySelector('dd').innerText.trim() === '') {
+            return true;
+        }
+        return false;
     }
 }
 
