@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/derikb/character-sheet-app/compare/v4.1.0...v4.2.0) (2022-06-12)
+
+
+### Features
+
+* **dice:** Add full set rollers to 5e ([10811c7](https://github.com/derikb/character-sheet-app/commit/10811c7611be6d3eec2704c8437618208f40e3ad)), closes [#100](https://github.com/derikb/character-sheet-app/issues/100)
+* **dice:** Added skill/saving rollers on 5e ([f63275f](https://github.com/derikb/character-sheet-app/commit/f63275f0a86ef1089bbaa163588b6e57e06501be)), closes [#100](https://github.com/derikb/character-sheet-app/issues/100)
+* **keys:** Handle backspace in note/list/table components ([8b9e2c0](https://github.com/derikb/character-sheet-app/commit/8b9e2c0e3c86a268ca8fd64598d6845c8d08f2de)), closes [#109](https://github.com/derikb/character-sheet-app/issues/109)
+
 ## [4.1.0](https://github.com/derikb/character-sheet-app/compare/v4.0.2...v4.1.0) (2022-02-19)
 
 
