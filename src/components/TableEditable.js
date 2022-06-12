@@ -54,7 +54,7 @@ class TableEditable extends HTMLElement {
             this.setAttribute('role', 'table');
         }
         // add event listeners
-        this.addEventListener('keypress', this._keyPress);
+        this.addEventListener('keydown', this._keyDown);
         this.addEventListener('blur', this._blur);
         this._upgradeProperty('fieldName');
         // for now the column names are also the keys of the data.
@@ -71,7 +71,7 @@ class TableEditable extends HTMLElement {
 
     disconnectedCallback () {
         // remove event listeners
-        this.removeEventListener('keypress', this._keyPress);
+        this.removeEventListener('keydown', this._keyDown);
         this.removeEventListener('blur', this._blur);
     }
     /**
@@ -167,37 +167,64 @@ class TableEditable extends HTMLElement {
     }
     /**
      * Handler: Enter to move through the items or add new ones.
-     * @param {KeyboardEvent} ev Keypress event
+     * @param {KeyboardEvent} ev Keydown event
      */
-    _keyPress (ev) {
-        if (ev.key !== 'Enter' || ev.shiftKey) {
+    _keyDown (ev) {
+        if ((ev.key !== 'Enter' && ev.key !== 'Backspace') || ev.shiftKey) {
             return;
         }
-        // Get the focused element.
         const el = this.deepActiveElement();
         if (el.tagName !== 'TD' && !el.closest(`td`)) {
             return;
         }
-        ev.preventDefault();
         const td = el.tagName === 'TD' ? el : el.closest(`td`);
         const row = td.parentElement;
-        // if it's not the last cell, move to the next cell.
-        if (td !== row.lastElementChild) {
-            const nextCell = td.nextElementSibling;
-            if (nextCell) {
-                nextCell.focus();
+        if (ev.key === 'Enter') {
+            ev.preventDefault();
+
+            if (td !== row.lastElementChild) {
+                const nextCell = td.nextElementSibling;
+                if (nextCell) {
+                    nextCell.focus();
+                }
+                return;
             }
+            const nextRow = row.nextElementSibling;
+            if (nextRow) {
+                nextRow.querySelector('td').focus();
+                return;
+            }
+            const newRow = this.addRow();
+            newRow.querySelector('td').focus();
             return;
+        } else if (ev.key === 'Backspace') {
+            if (td.innerText.trim() !== '') {
+                return;
+            }
+            // if it's not the first cell, move to the previous cell.
+            if (td !== row.firstElementChild) {
+                const prevCell = td.previousElementSibling;
+                if (prevCell) {
+                    prevCell.focus();
+                }
+                return;
+            }
+            // it is the first cell.
+            // if there is a prev row, move to its last cell, delete current row if it's empty.
+            const prevRow = row.previousElementSibling;
+            if (prevRow) {
+                prevRow.lastElementChild.focus();
+                let delRow = true;
+                row.querySelectorAll('td').forEach((c) => {
+                    if (c.innerText.trim() !== '') {
+                        delRow = false;
+                    }
+                });
+                if (delRow) {
+                    row.remove();
+                }
+            }
         }
-        // it is the last cell.
-        // if there is a next row focus its first cell.
-        const nextRow = row.nextElementSibling;
-        if (nextRow) {
-            nextRow.querySelector('td').focus();
-            return;
-        }
-        const newRow = this.addRow();
-        newRow.querySelector('td').focus();
     }
     /**
      * On blur dispatch an event so the character model can be updated.
