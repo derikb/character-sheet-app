@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/derikb/character-sheet-app/compare/v4.2.0...v4.3.0) (2022-06-19)
+
+
+### Features
+
+* **vagabonds:** Add some missing fields ([53ff0af](https://github.com/derikb/character-sheet-app/commit/53ff0af6cdef8feafdafa182181a46a47a53277c)), closes [#115](https://github.com/derikb/character-sheet-app/issues/115)
+
+
+### Bug Fixes
+
+* **intro:** Show only if no characters are saved locally ([27264d0](https://github.com/derikb/character-sheet-app/commit/27264d0fd50c40c0ae4696db0900f76827afd38a)), closes [#116](https://github.com/derikb/character-sheet-app/issues/116)
+
 ## [4.2.0](https://github.com/derikb/character-sheet-app/compare/v4.1.0...v4.2.0) (2022-06-12)
 
 
