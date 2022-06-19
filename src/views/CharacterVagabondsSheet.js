@@ -50,7 +50,7 @@ dl.field-horizontal dt {
                 <dt>Experience</dt><dd><field-editable data-name="experience" class="small"></field-editable></dd>
             </div>
             <div>
-                <dt>Speed</dt><dd><field-editable data-name="speed" class="small"></field-editable></dd>
+                <dt>Initiative</dt><dd><field-editable data-name="initiative" class="small"></field-editable></dd>
             </div>
             <div class="with_icon">
                 <dt>Armor</dt><dd><field-editable data-name="armor" placeholder="0" class="small"></field-editable></dd>
@@ -62,7 +62,19 @@ dl.field-horizontal dt {
                 </dd>
             </div>
             <div>
+                <dt>Injuries</dt>
+                <dd>
+                    <simple-list data-name="injuries"></simple-list>
+                </dd>
+            </div>
+            <div>
                 <dt>Coins</dt><dd><field-editable data-name="coins" class="small" placeholder="0"></field-editable></dd>
+            </div>
+            <div>
+                <dt>Level Traits/Tags</dt>
+                <dd>
+                    <simple-list data-name="traits"></simple-list>
+                </dd>
             </div>
             <div>
                 <dt>Lineage</dt><dd><simple-list data-name="lineage"></simple-list></dd>

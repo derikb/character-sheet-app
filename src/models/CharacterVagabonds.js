@@ -16,16 +16,18 @@ export default class CharacterVagabonds extends Character {
       * @prop {String} weakness
       * @prop {String} core_flaw
       * @prop {String[]} techniques
+      * @prop {String[]} traits
       * @prop {Number} hp_cur
       * @prop {Number} hp_max
       * @prop {Number} armor
-      * @prop {Number} speed
+      * @prop {String} initiative
       * @prop {String[]} lineage
       * @prop {Number} experience
       * @prop {String} appearance
       * @prop {String} personality
       * @prop {String[]} inventory
       * @prop {Number} coins
+      * @prop {String[]} injuries
       * @prop {String} notes
       * @prop {CharacterNote[]} notes_adv Adventure notes
       * @prop {CharacterNote[]} notes_cam Campaign notes
@@ -46,16 +48,18 @@ export default class CharacterVagabonds extends Character {
         weakness = '',
         core_flaw = '',
         techniques = [],
+        traits = [],
         hp_cur = 0,
         hp_max = 0,
         armor = 0,
-        speed = 0,
+        initiative = '0',
         lineage = [],
         experience = 0,
         appearance = '',
         personality = '',
         inventory = [],
         coins = 0,
+        injuries = [],
         notes = '',
         notes_adv = [],
         notes_cam = [],
@@ -82,16 +86,18 @@ export default class CharacterVagabonds extends Character {
         this.weakness = weakness;
         this.core_flaw = core_flaw;
         this.techniques = techniques;
+        this.traits = traits;
         this.hp_cur = hp_cur;
         this.hp_max = hp_max;
         this.armor = armor;
-        this.speed = speed;
+        this.initiative = initiative;
         this.lineage = lineage;
         this.experience = experience;
         this.appearance = appearance;
         this.personality = personality;
         this.inventory = inventory;
         this.coins = coins;
+        this.injuries = injuries;
         this.notes = notes;
         this.notes_adv = this._convertNotes(notes_adv);
         this.notes_cam = this._convertNotes(notes_cam);
