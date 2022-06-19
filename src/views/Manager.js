@@ -2,7 +2,7 @@
  * Manager:
  * Interface for save/backup/restore of data...
  */
-import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey, getSheetView } from '../services/CharacterService.js';
+import { generateCharacterKey, getCharacter, removeCharacterLocal, importCharacter, setLocalStoragePrefix, setCurrentCharacter, saveCurrentCharacter, getCurrentCharacterKey, getSheetView, getAllCharactersLocal } from '../services/CharacterService.js';
 import ShortCutKeys from './ShortCutKeys.js';
 import { monitorAuth } from '../services/AuthService.js';
 
@@ -384,9 +384,11 @@ ${JSON.stringify(data)}`;
                 console.log(error);
             });
         } else {
+            // Show intro if they have no characters, since they might be new to this...
+            if (getAllCharactersLocal().length === 0) {
+                this.showIntroDialog();
+            }
             this.triggerNewCharacter();
-            // Show intro, since they might be new to this...
-            this.showIntroDialog();
         }
     }
 };
