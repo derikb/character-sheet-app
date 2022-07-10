@@ -24,6 +24,27 @@ For remote saving you will have to add your own firebase configs to `./src/confi
 
 **If you are doing development**, then you you can `npm install` in the repo and `npm run start` to start the esbuild dev server/build. By default that will run the app at `http://localhost:8080`
 
+## Docker
+
+Still working this out, but...
+
+### Running locally with no database
+
+- Pull the repo.
+- From the main directory:
+    - Run `$ docker build --rm -t "charactersheetapp:latest" ./`
+    - Run `$ docker run --rm -d -p 8080:80/tcp charactersheetapp:latest`
+- That should generate the image and then run it so that the app is accessible via localhost:8080. If you have 8080 in use, you could change that to something else.
+
+## Running locally with a database
+
+Still need to work this out.
+
+## Running via docker for development
+
+Stil need to work this out too.
+
+
 ### Server
 
 * Point your server at the repo so it opens `./dist/index.html`. That's about it...
