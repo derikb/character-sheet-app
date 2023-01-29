@@ -38,7 +38,7 @@ export default class EventEmitter {
                 this.events[event].splice(index, 1);
             }
         }
-        this.events[event].push({ listener: listener, boundObj: boundObj });
+        this.events[event].push({ listener, boundObj });
     }
     /**
      * Stop listening to an event.
