@@ -35,34 +35,57 @@ class AddSpell extends HTMLElement {
     };
 
     connectedCallback () {
-        Array.from(this.children).forEach((buttons) => {
-            buttons.addEventListener('click', this._handleClick.bind(this));
+        const buttons = Array.from(document.querySelectorAll('*[data-level]'));
+        buttons.forEach((button) => {
+            button.addEventListener('click', this._openSpellModal.bind(this));
         });
     };
 
     disconnectedCallback () {
-        Array.from(this.children).forEach((buttons) => {
-            buttons.removeEventListener('click', this._handleClick.bind(this));
+        const buttons = Array.from(document.querySelectorAll('*[data-level]'));
+        buttons.forEach((button) => {
+            button.removeEventListener('click', this._openSpellModal.bind(this));
         });
     };
 
-    async getSpellData () {
+    async getSpellData (spellLevel) {
         // GET API
-        const apiUrl = 'https://www.dnd5eapi.co/api/spells?level=1&level=2&level=3&level=4&level=5&level=6&level=7&level=8&level=9&school=illusion&school=abjuration&school=conjuration&school=divination&school=enchantment&school=evocation&school=necromancy&school=psionic&school=transmutation';
+        const apiUrl = `https://www.dnd5eapi.co/api/spells?level${spellLevel}1&school=illusion&school=abjuration&school=conjuration&school=divination&school=enchantment&school=evocation&school=necromancy&school=psionic&school=transmutation`;
         const response = await fetch(apiUrl, { method: 'GET' });
-        const { count, results } = await response.json();
+        const { results } = await response.json();
 
         return results; // index, name, and url
         // create new element(s)
         // append to dom
-    }
+    };
 
-    async createNewElements () {
+    async _openSpellModal (ev) {
+        this.spellDialog = this.spellDialog || document.getElementById('dialog-spells');
+        this.spellDialog.clear();
 
-    }
+        if (this.spellDialog.isOpen) {
+            this.spellDialog.close();
+            return;
+        };
 
-    _handleClick () {
+        const template = document.getElementById('spellModal');
+        const content = document.importNode(template.content, true);
+        const list = content.querySelector('ul');
+        const spellLevel = ev.target.dataset.level;
 
+        await this.getSpellData(spellLevel).forEach(spell => {
+            const item = document.createElement('div');
+            item.innerHTML = `
+            <div>
+                <p>${spell.name}</p>
+                <button class="btn btn-plain" data-add-spell=${spellLevel}>Add</button>
+            </div>
+            `;
+            list.appendChild(item);
+        });
+
+        this.spellDialog.setContent([...content.children]);
+        this.spellDialog.open();
     };
 
     _handleInput () {
