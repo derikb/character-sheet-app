@@ -78,15 +78,24 @@ class AddSpell extends HTMLElement {
             item.innerHTML = `
             <div>
                 <p>${spell.name}</p>
-                <button class="btn btn-plain" data-add-spell=${spellLevel}>Add</button>
+                <button class="btn btn-plain" data-spell-level=${spellLevel} data-spell-name=${spell.name}>Add</button>
             </div>
             `;
             list.appendChild(item);
         });
 
+        const button = this.spellDialog.querySelector('button');
+
         this.spellDialog.setContent([...content.children]);
+        button.addEventListener('click', this._handleAddNewSpell(ev));
         this.spellDialog.open();
     };
+
+    // _closeSpellModal () {
+    //     if (this.spellDialog !== null) {
+    //         this.spellDialog.closeClear();
+    //     };
+    // };
 
     _handleInput () {
 
