@@ -49,14 +49,11 @@ class AddSpell extends HTMLElement {
     };
 
     async getSpellData (spellLevel) {
-        // GET API
         const apiUrl = `https://www.dnd5eapi.co/api/spells?level${spellLevel}1&school=illusion&school=abjuration&school=conjuration&school=divination&school=enchantment&school=evocation&school=necromancy&school=psionic&school=transmutation`;
         const response = await fetch(apiUrl, { method: 'GET' });
         const { results } = await response.json();
 
         return results; // index, name, and url
-        // create new element(s)
-        // append to dom
     };
 
     async _openSpellModal (ev) {
@@ -78,7 +75,7 @@ class AddSpell extends HTMLElement {
             item.innerHTML = `
             <div>
                 <p>${spell.name}</p>
-                <button class="btn btn-plain" data-spell-level=${spellLevel} data-spell-name=${spell.name}>Add</button>
+                <button class="btn btn-plain" data-subfield=${spellLevel} data-name=${spell.name}>Add</button>
             </div>
             `;
             list.appendChild(item);
@@ -97,12 +94,18 @@ class AddSpell extends HTMLElement {
     //     };
     // };
 
-    _handleInput () {
+    _handleAddNewSpell (ev) {
+        const field = 'spells';
+        const subfield = ev.target.dataset.subfield;
+        const spellName = ev.target.dataset.name;
 
-    };
+        if (typeof this.cur_character[field][subfield] === 'undefined') {
+            return;
+        };
 
-    _handleAddNewSpell () {
-
+        const value = this.cur_character[field][subfield];
+        const newValue = [...value, spellName];
+        this.cur_character[field][subfield] = newValue;
     }
 };
 
