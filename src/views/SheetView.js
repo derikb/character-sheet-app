@@ -66,6 +66,7 @@ class SheetView extends HTMLElement {
     set character (character) {
         this._validateCharacter(character);
         this.cur_character = character;
+        this.emitter.trigger('character:set');
         // render character.
         this.renderCharacter();
     }
@@ -280,6 +281,7 @@ class SheetView extends HTMLElement {
             return;
         }
         const newValue = parseInt(ev.target.value, 10);
+        // console.log(this.cur_character);
         this.cur_character[field][subfield] = newValue;
         this.emitter.trigger('dialog:save:show');
 
