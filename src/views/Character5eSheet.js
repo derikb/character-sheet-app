@@ -2,6 +2,7 @@
 import Character5e from '../models/Character5e.js';
 import Weapon from '../models/Weapon.js';
 import SheetView from './SheetView.js';
+import AddSpell from '../components/AddSpell.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -155,6 +156,7 @@ template.innerHTML = `
             </div>
         </dl>
 
+    
     <h3>Spell Slots</h3>
 
     <dl class="field">
@@ -231,38 +233,47 @@ template.innerHTML = `
     </section>
     <section hidden>
         <h3>1st</h3>
+        <button type="button" data-level="1">Add Spell</button>
         <simple-list data-name="spells" data-subfield="1"></simple-list>
     </section>
     <section hidden>
         <h3>2nd</h3>
+        <button type="button" data-level="2">Add Spell</button>
         <simple-list data-name="spells" data-subfield="2"></simple-list>
     </section>
     <section hidden>
         <h3>3rd</h3>
+        <button type="button" data-level="3">Add Spell</button>
         <simple-list data-name="spells" data-subfield="3"></simple-list>
     </section>
     <section hidden>
         <h3>4th</h3>
+        <button type="button" data-level="4">Add Spell</button>
         <simple-list data-name="spells" data-subfield="4"></simple-list>
     </section>
     <section hidden>
         <h3>5th</h3>
+        <button type="button" data-level="5">Add Spell</button>
         <simple-list data-name="spells" data-subfield="5"></simple-list>
     </section>
     <section hidden>
         <h3>6th</h3>
+        <button type="button" data-level="6">Add Spell</button>
         <simple-list data-name="spells" data-subfield="6"></simple-list>
     </section>
     <section hidden>
         <h3>7th</h3>
+        <button type="button" data-level="7">Add Spell</button>
         <simple-list data-name="spells" data-subfield="7"></simple-list>
     </section>
     <section hidden>
         <h3>8th</h3>
+        <button type="button" data-level="8">Add Spell</button>
         <simple-list data-name="spells" data-subfield="8"></simple-list>
     </section>
     <section hidden>
         <h3>9th</h3>
+        <button type="button" data-level="9">Add Spell</button>
         <simple-list data-name="spells" data-subfield="9"></simple-list>
     </section>
 </section>
@@ -314,8 +325,8 @@ template.innerHTML = `
 `;
 class Character5eSheet extends SheetView {
     /**
-     * @param {EventEmitter} emitter
-     */
+	 * @param {EventEmitter} emitter
+	 */
     constructor ({
         emitter
     }) {
@@ -323,18 +334,34 @@ class Character5eSheet extends SheetView {
             emitter,
             templateNode: template.content.cloneNode(true)
         });
+        this.spellButtons = [];
     }
 
     connectedCallback () {
         super.connectedCallback();
         // Listen for events emitted from the components
-        this.shadowRoot.addEventListener('attributeChange', this._handleAttributeChange.bind(this));
-        this.shadowRoot.addEventListener('saveChange', this._handleSaveChange.bind(this));
+        this.shadowRoot.addEventListener(
+            'attributeChange',
+            this._handleAttributeChange.bind(this)
+        );
+        this.shadowRoot.addEventListener(
+            'saveChange',
+            this._handleSaveChange.bind(this)
+        );
 
         this.emitter.on('character:skill:update', this._updateSkillMod, this);
-        this.emitter.on('character:proficiency:update', this._updateProficiency, this);
-        this.emitter.on('character:attribute:update', this._updateAttributeMods, this);
+        this.emitter.on(
+            'character:proficiency:update',
+            this._updateProficiency,
+            this
+        );
+        this.emitter.on(
+            'character:attribute:update',
+            this._updateAttributeMods,
+            this
+        );
         this.emitter.on('character:save:update', this._updateSaveMods, this);
+        this.emitter.on('character:set', this._addSpellButtonEvents, this);
 
         // Set footer links.
         const nav = document.querySelector('footer-nav');
@@ -344,7 +371,6 @@ class Character5eSheet extends SheetView {
                 { label: 'Skills', tab: 'pane-stats', href: '#page-skills' },
                 { label: 'Spells', tab: 'pane-stats', href: '#page-spells' },
                 { label: 'Notes', tab: 'pane-notes', href: '#page-notes_adv' }
-
             ]);
         }
     }
@@ -352,17 +378,40 @@ class Character5eSheet extends SheetView {
     disconnectedCallback () {
         super.disconnectedCallback();
         // Listen for events emitted from the components
-        this.shadowRoot.removeEventListener('attributeChange', this._handleAttributeChange.bind(this));
-        this.shadowRoot.removeEventListener('saveChange', this._handleSaveChange.bind(this));
+        this.shadowRoot.removeEventListener(
+            'attributeChange',
+            this._handleAttributeChange.bind(this)
+        );
+        this.shadowRoot.removeEventListener(
+            'saveChange',
+            this._handleSaveChange.bind(this)
+        );
 
         this.emitter.off('character:skill:update', this._updateSkillMod, this);
-        this.emitter.off('character:proficiency:update', this._updateProficiency, this);
-        this.emitter.off('character:attribute:update', this._updateAttributeMods, this);
+        this.emitter.off(
+            'character:proficiency:update',
+            this._updateProficiency,
+            this
+        );
+        this.emitter.off(
+            'character:attribute:update',
+            this._updateAttributeMods,
+            this
+        );
         this.emitter.off('character:save:update', this._updateSaveMods, this);
+        this.emitter.off('character:set', this._addSpellButtonEvents, this);
     }
+
+    _addSpellButtonEvents () {
+        const spellButtons = this.shadowRoot.querySelectorAll('[data-level]');
+        Array.prototype.forEach.call(spellButtons, (btn) => {
+            this.spellButtons.push(new AddSpell(btn, this.cur_character));
+        });
+    }
+
     /**
-     * @param {Character5e}
-     */
+	 * @param {Character5e}
+	 */
     _validateCharacter (character) {
         if (!(character instanceof Character5e)) {
             throw new Error('Invalid character type for this view.');
@@ -386,7 +435,8 @@ class Character5eSheet extends SheetView {
     }
 
     _renderCustomPost () {
-        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML = this.cur_character.proficiency;
+        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML =
+			this.cur_character.proficiency;
     }
 
     _customFieldChange (ev, field, subfield) {
@@ -411,40 +461,49 @@ class Character5eSheet extends SheetView {
         }
     }
     /**
-     * Update a skill's modifier in the UI.
-     * @param {String} skill
-     * @param {String} modifier
-     */
+	 * Update a skill's modifier in the UI.
+	 * @param {String} skill
+	 * @param {String} modifier
+	 */
     _updateSkillMod (skill, modifier) {
-        const el = this.shadowRoot.querySelector(`skill-listing[data-subfield="${skill}"]`);
+        const el = this.shadowRoot.querySelector(
+            `skill-listing[data-subfield="${skill}"]`
+        );
         if (!el) {
             return;
         }
         el.skillMod = modifier;
     }
     /**
-     * Update the proficiency modifier in the UI.
-     */
+	 * Update the proficiency modifier in the UI.
+	 */
     _updateProficiency () {
         const proficiency = this.cur_character.proficiency;
-        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML = proficiency;
+        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML =
+			proficiency;
 
-        Array.from(this.shadowRoot.querySelectorAll('skill-listing')).forEach((el) => {
-            const skill = el.skillName;
-            el.skillMod = this.cur_character.getSkillMod(skill);
-        });
+        Array.from(this.shadowRoot.querySelectorAll('skill-listing')).forEach(
+            (el) => {
+                const skill = el.skillName;
+                el.skillMod = this.cur_character.getSkillMod(skill);
+            }
+        );
 
-        Array.from(this.shadowRoot.querySelectorAll('attr-listing')).forEach((el) => {
-            const attr = el.attributeName;
-            el.saveMod = this.cur_character.saveMod(attr);
-        });
+        Array.from(this.shadowRoot.querySelectorAll('attr-listing')).forEach(
+            (el) => {
+                const attr = el.attributeName;
+                el.saveMod = this.cur_character.saveMod(attr);
+            }
+        );
     }
     /**
-     * Update an attribute's modifier in the UI.
-     * @param {String} attribute
-     */
+	 * Update an attribute's modifier in the UI.
+	 * @param {String} attribute
+	 */
     _updateAttributeMods (attribute) {
-        const el = this.shadowRoot.querySelector(`attr-listing[data-name=${attribute}]`);
+        const el = this.shadowRoot.querySelector(
+            `attr-listing[data-name=${attribute}]`
+        );
         if (!el) {
             return;
         }
@@ -452,26 +511,30 @@ class Character5eSheet extends SheetView {
         el.saveMod = this.cur_character.saveMod(attribute);
     }
     /**
-     * Update a save modifier in the UI.
-     * @param {String} attribute
-     */
+	 * Update a save modifier in the UI.
+	 * @param {String} attribute
+	 */
     _updateSaveMods (attribute) {
-        const el = this.shadowRoot.querySelector(`attr-listing[data-name=${attribute}]`);
+        const el = this.shadowRoot.querySelector(
+            `attr-listing[data-name=${attribute}]`
+        );
         if (!el) {
             return;
         }
         el.saveMod = this.cur_character.saveMod(attribute);
     }
     /**
-     * Handle input[name=number] changes.
-     * @param {Event} ev
-     */
+	 * Handle input[name=number] changes.
+	 * @param {Event} ev
+	 */
     _customNumberInputChange (ev) {
         const field = ev.target.dataset.name;
         const subfield = ev.target.dataset.subfield;
         const newValue = parseInt(ev.target.value, 10);
         if (field === 'spell_slots') {
-            const spellList = this.shadowRoot.querySelector(`[data-name="spells"][data-subfield="${subfield}"]`);
+            const spellList = this.shadowRoot.querySelector(
+                `[data-name="spells"][data-subfield="${subfield}"]`
+            );
             if (!newValue) {
                 // this covers 0 and NaN
                 spellList.parentNode.hidden = true;
@@ -481,9 +544,9 @@ class Character5eSheet extends SheetView {
         }
     }
     /**
-     * When an attribute is changed in the UI.
-     * @param {CustomEvent} ev
-     */
+	 * When an attribute is changed in the UI.
+	 * @param {CustomEvent} ev
+	 */
     _handleAttributeChange (ev) {
         const field = ev.detail.field || '';
         if (!field) {
@@ -493,9 +556,9 @@ class Character5eSheet extends SheetView {
         this._showUnsavedDialog();
     }
     /**
-     * When a save is (un)checked in the UI.
-     * @param {CustomEvent} ev
-     */
+	 * When a save is (un)checked in the UI.
+	 * @param {CustomEvent} ev
+	 */
     _handleSaveChange (ev) {
         const field = ev.detail.field || '';
         if (!field) {
