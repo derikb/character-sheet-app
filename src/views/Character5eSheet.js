@@ -362,6 +362,7 @@ class Character5eSheet extends SheetView {
         );
         this.emitter.on('character:save:update', this._updateSaveMods, this);
         this.emitter.on('character:set', this._addSpellButtonEvents, this);
+        this.emitter.on('character:update:spells', this._updateSpellList, this);
 
         // Set footer links.
         const nav = document.querySelector('footer-nav');
@@ -400,14 +401,44 @@ class Character5eSheet extends SheetView {
         );
         this.emitter.off('character:save:update', this._updateSaveMods, this);
         this.emitter.off('character:set', this._addSpellButtonEvents, this);
+        this.emitter.off('character:update:spells', this._updateSpellList, this);
     }
 
     _addSpellButtonEvents () {
         const spellButtons = this.shadowRoot.querySelectorAll('[data-level]');
         Array.prototype.forEach.call(spellButtons, (btn) => {
-            this.spellButtons.push(new AddSpell(btn, this.cur_character));
+            this.spellButtons.push(new AddSpell(btn, this.cur_character, this.emitter));
         });
-    }
+    };
+
+    _updateSpellList () {
+        const fields = Array.from(this.shadowRoot.querySelectorAll('[data-name="spells"]'));
+
+        fields.forEach((el) => {
+            const f = el.getAttribute('data-name');
+        
+            if (typeof this.cur_character[f] === 'undefined') {
+                return;
+            };
+
+            const subf = el.getAttribute('data-subfield');
+            const charValue = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
+            const listItems = charValue || [];
+        
+            el.clear();
+       
+            if (listItems.length > 0) {
+                listItems.forEach((item) => {
+                    if (item.length === 0) {
+                        return;
+                    };
+                    const text = item.replace('-', ' ');
+                    el.addItem(text);
+                });
+            };
+            el.addItem();
+        });
+    };
 
     /**
 	 * @param {Character5e}
