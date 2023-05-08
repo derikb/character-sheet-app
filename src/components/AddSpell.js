@@ -27,9 +27,10 @@ button {
 `;
 
 class AddSpell {
-    constructor (el, cur_character) {
+    constructor (el, cur_character, emitter) {
         this.el = el;
         this.cur_character = cur_character;
+        this.emitter = emitter;
         this.el.addEventListener('click', this._openSpellModal.bind(this));
     };
 
@@ -42,7 +43,6 @@ class AddSpell {
     };
 
     async _openSpellModal (ev) {
-        console.log(this);
         this.spellDialog = this.spellDialog || document.getElementById('dialog-spells');
         this.spellDialog.clear();
 
@@ -59,22 +59,27 @@ class AddSpell {
 
         spells.forEach(spell => {
             const item = document.createElement('div');
-            item.innerHTML = `
-            <div>
-                <p>${spell.name}</p>
-                <button class="btn btn-plain" data-subfield=${spellLevel} data-name=${spell.name}>Add</button>
-            </div>
-            `;
+            const button = document.createElement('button');
+            const spellName = spell.name.replace(/ /g, '-').replace(/'/g, '\'');
+
+            button.innerText = spell.name;
+            button.dataset.field = 'spells';
+            button.dataset.subfield = spellLevel;
+            button.dataset.name = spellName;
+            button.classList.add('btn', 'btn-plain');
+
+            button.addEventListener('click', this._handleAddNewSpell.bind(this));
+
+            item.appendChild(button);
             list.appendChild(item);
         });
 
         this.spellDialog.setContent([...content.children]);
-        this.spellDialog.querySelector('button').addEventListener('click', this._handleAddNewSpell(ev));
         this.spellDialog.open();
     };
 
     _handleAddNewSpell (ev) {
-        const field = 'spells';
+        const field = ev.target.dataset.field;
         const subfield = ev.target.dataset.subfield;
         const spellName = ev.target.dataset.name;
 
@@ -84,8 +89,13 @@ class AddSpell {
 
         const value = this.cur_character[field][subfield];
         const newValue = [...value, spellName];
+        const newLength = this.cur_character.spell_slots[subfield] + 1;
+
+        this.cur_character.spell_slots[subfield] = newLength;
         this.cur_character[field][subfield] = newValue;
-    }
+
+        this.emitter.trigger('character:update:spells');
+    };
 };
 
 if (!window.customElements.get('add-spell')) {
