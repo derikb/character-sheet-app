@@ -418,7 +418,7 @@ class Character5eSheet extends SheetView {
             const listItems = charValue || [];
         
             el.clear();
-       
+
             listItems.forEach((item) => {
                 if (!item) {
                     return;
@@ -426,6 +426,8 @@ class Character5eSheet extends SheetView {
                 const text = item.replace('-', ' ');
                 el.addItem(text);
             });
+
+            if (listItems.length === 0) el.addItem();
         });
     };
 
