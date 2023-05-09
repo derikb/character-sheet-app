@@ -316,8 +316,8 @@ template.innerHTML = `
 `;
 class Character5eSheet extends SheetView {
     /**
-	 * @param {EventEmitter} emitter
-	 */
+     * @param {EventEmitter} emitter
+     */
     constructor ({
         emitter
     }) {
@@ -432,8 +432,8 @@ class Character5eSheet extends SheetView {
     };
 
     /**
-	 * @param {Character5e}
-	 */
+     * @param {Character5e}
+     */
     _validateCharacter (character) {
         if (!(character instanceof Character5e)) {
             throw new Error('Invalid character type for this view.');
@@ -457,8 +457,7 @@ class Character5eSheet extends SheetView {
     }
 
     _renderCustomPost () {
-        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML =
-			this.cur_character.proficiency;
+        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML = this.cur_character.proficiency;
     }
 
     _customFieldChange (ev, field, subfield) {
@@ -483,10 +482,10 @@ class Character5eSheet extends SheetView {
         }
     }
     /**
-	 * Update a skill's modifier in the UI.
-	 * @param {String} skill
-	 * @param {String} modifier
-	 */
+     * Update a skill's modifier in the UI.
+     * @param {String} skill
+     * @param {String} modifier
+     */
     _updateSkillMod (skill, modifier) {
         const el = this.shadowRoot.querySelector(
             `skill-listing[data-subfield="${skill}"]`
@@ -497,12 +496,11 @@ class Character5eSheet extends SheetView {
         el.skillMod = modifier;
     }
     /**
-	 * Update the proficiency modifier in the UI.
-	 */
+     * Update the proficiency modifier in the UI.
+     */
     _updateProficiency () {
         const proficiency = this.cur_character.proficiency;
-        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML =
-			proficiency;
+        this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML = proficiency;
 
         Array.from(this.shadowRoot.querySelectorAll('skill-listing')).forEach(
             (el) => {
@@ -519,9 +517,9 @@ class Character5eSheet extends SheetView {
         );
     }
     /**
-	 * Update an attribute's modifier in the UI.
-	 * @param {String} attribute
-	 */
+     * Update an attribute's modifier in the UI.
+     * @param {String} attribute
+     */
     _updateAttributeMods (attribute) {
         const el = this.shadowRoot.querySelector(
             `attr-listing[data-name=${attribute}]`
@@ -533,9 +531,9 @@ class Character5eSheet extends SheetView {
         el.saveMod = this.cur_character.saveMod(attribute);
     }
     /**
-	 * Update a save modifier in the UI.
-	 * @param {String} attribute
-	 */
+     * Update a save modifier in the UI.
+     * @param {String} attribute
+     */
     _updateSaveMods (attribute) {
         const el = this.shadowRoot.querySelector(
             `attr-listing[data-name=${attribute}]`
@@ -546,9 +544,9 @@ class Character5eSheet extends SheetView {
         el.saveMod = this.cur_character.saveMod(attribute);
     }
     /**
-	 * Handle input[name=number] changes.
-	 * @param {Event} ev
-	 */
+     * Handle input[name=number] changes.
+     * @param {Event} ev
+     */
     _customNumberInputChange (ev) {
         const field = ev.target.dataset.name;
         const subfield = ev.target.dataset.subfield;
@@ -566,9 +564,9 @@ class Character5eSheet extends SheetView {
         }
     }
     /**
-	 * When an attribute is changed in the UI.
-	 * @param {CustomEvent} ev
-	 */
+     * When an attribute is changed in the UI.
+     * @param {CustomEvent} ev
+     */
     _handleAttributeChange (ev) {
         const field = ev.detail.field || '';
         if (!field) {
@@ -578,9 +576,9 @@ class Character5eSheet extends SheetView {
         this._showUnsavedDialog();
     }
     /**
-	 * When a save is (un)checked in the UI.
-	 * @param {CustomEvent} ev
-	 */
+     * When a save is (un)checked in the UI.
+     * @param {CustomEvent} ev
+     */
     _handleSaveChange (ev) {
         const field = ev.detail.field || '';
         if (!field) {
