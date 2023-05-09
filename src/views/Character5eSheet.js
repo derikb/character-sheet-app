@@ -397,37 +397,35 @@ class Character5eSheet extends SheetView {
 
     _addSpellButtonEvents () {
         const spellButtons = this.shadowRoot.querySelectorAll('[data-level]');
-        Array.prototype.forEach.call(spellButtons, (btn) => {
+        spellButtons.forEach((btn) => {
             this.spellButtons.push(new AddSpell(btn, this.cur_character, this.emitter));
         });
     };
 
     _updateSpellList () {
-        const fields = Array.from(this.shadowRoot.querySelectorAll('[data-name="spells"]'));
+        const fields = this.shadowRoot.querySelectorAll('[data-name="spells"]');
 
         fields.forEach((el) => {
-            const f = el.getAttribute('data-name');
+            const f = el.dataset.name || '';
         
-            if (typeof this.cur_character[f] === 'undefined') {
+            if (typeof this.cur_character[f] === 'undefined' || f === '') {
                 return;
             };
 
-            const subf = el.getAttribute('data-subfield');
-            const charValue = (subf) ? this.cur_character[f][subf] : this.cur_character[f];
+            const subf = el.dataset.subfield || '';
+            const charValue = (subf !== '') ? this.cur_character[f][subf] : this.cur_character[f];
+            // spells added the the current character
             const listItems = charValue || [];
         
             el.clear();
        
-            if (listItems.length > 0) {
-                listItems.forEach((item) => {
-                    if (item.length === 0) {
-                        return;
-                    };
-                    const text = item.replace('-', ' ');
-                    el.addItem(text);
-                });
-            };
-            el.addItem();
+            listItems.forEach((item) => {
+                if (!item) {
+                    return;
+                };
+                const text = item.replace('-', ' ');
+                el.addItem(text);
+            });
         });
     };
 
