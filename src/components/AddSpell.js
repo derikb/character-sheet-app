@@ -33,6 +33,10 @@ class AddSpell {
         this.emitter = emitter;
         this.el.addEventListener('click', this._openSpellModal.bind(this));
     };
+    /**
+     * @param {string} spellLevel
+     * @returns array containing the index, name, and url
+     */
 
     async getSpellData (spellLevel) {
         const apiUrl = `https://www.dnd5eapi.co/api/spells?level=${spellLevel}&school=illusion&school=abjuration&school=conjuration&school=divination&school=enchantment&school=evocation&school=necromancy&school=psionic&school=transmutation`;
@@ -42,6 +46,9 @@ class AddSpell {
         return results; // index, name, and url
     };
 
+    /**
+    * @param {event} ev
+    */
     async _openSpellModal (ev) {
         this.spellDialog = this.spellDialog || document.getElementById('dialog-spells');
         this.spellDialog.clear();
@@ -78,6 +85,9 @@ class AddSpell {
         this.spellDialog.open();
     };
 
+    /**
+    * @param {event} ev
+    */
     _handleAddNewSpell (ev) {
         const field = ev.target.dataset.field;
         const subfield = ev.target.dataset.subfield;
