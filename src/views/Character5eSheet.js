@@ -487,9 +487,7 @@ class Character5eSheet extends SheetView {
      * @param {String} modifier
      */
     _updateSkillMod (skill, modifier) {
-        const el = this.shadowRoot.querySelector(
-            `skill-listing[data-subfield="${skill}"]`
-        );
+        const el = this.shadowRoot.querySelector(`skill-listing[data-subfield="${skill}"]`);
         if (!el) {
             return;
         }
@@ -502,28 +500,22 @@ class Character5eSheet extends SheetView {
         const proficiency = this.cur_character.proficiency;
         this.shadowRoot.querySelector('[data-name="proficiency"]').innerHTML = proficiency;
 
-        Array.from(this.shadowRoot.querySelectorAll('skill-listing')).forEach(
-            (el) => {
-                const skill = el.skillName;
-                el.skillMod = this.cur_character.getSkillMod(skill);
-            }
-        );
+        Array.from(this.shadowRoot.querySelectorAll('skill-listing')).forEach((el) => {
+            const skill = el.skillName;
+            el.skillMod = this.cur_character.getSkillMod(skill);
+        });
 
-        Array.from(this.shadowRoot.querySelectorAll('attr-listing')).forEach(
-            (el) => {
-                const attr = el.attributeName;
-                el.saveMod = this.cur_character.saveMod(attr);
-            }
-        );
+        Array.from(this.shadowRoot.querySelectorAll('attr-listing')).forEach((el) => {
+            const attr = el.attributeName;
+            el.saveMod = this.cur_character.saveMod(attr);
+        });
     }
     /**
      * Update an attribute's modifier in the UI.
      * @param {String} attribute
      */
     _updateAttributeMods (attribute) {
-        const el = this.shadowRoot.querySelector(
-            `attr-listing[data-name=${attribute}]`
-        );
+        const el = this.shadowRoot.querySelector(`attr-listing[data-name=${attribute}]`);
         if (!el) {
             return;
         }
@@ -535,9 +527,7 @@ class Character5eSheet extends SheetView {
      * @param {String} attribute
      */
     _updateSaveMods (attribute) {
-        const el = this.shadowRoot.querySelector(
-            `attr-listing[data-name=${attribute}]`
-        );
+        const el = this.shadowRoot.querySelector(`attr-listing[data-name=${attribute}]`);
         if (!el) {
             return;
         }
@@ -552,9 +542,7 @@ class Character5eSheet extends SheetView {
         const subfield = ev.target.dataset.subfield;
         const newValue = parseInt(ev.target.value, 10);
         if (field === 'spell_slots') {
-            const spellList = this.shadowRoot.querySelector(
-                `[data-name="spells"][data-subfield="${subfield}"]`
-            );
+            const spellList = this.shadowRoot.querySelector(`[data-name="spells"][data-subfield="${subfield}"]`);
             if (!newValue) {
                 // this covers 0 and NaN
                 spellList.parentNode.hidden = true;
