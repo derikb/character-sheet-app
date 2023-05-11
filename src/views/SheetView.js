@@ -66,6 +66,7 @@ class SheetView extends HTMLElement {
     set character (character) {
         this._validateCharacter(character);
         this.cur_character = character;
+        this.emitter.trigger('character:set');
         // render character.
         this.renderCharacter();
     }

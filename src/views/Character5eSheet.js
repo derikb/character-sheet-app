@@ -2,6 +2,7 @@
 import Character5e from '../models/Character5e.js';
 import Weapon from '../models/Weapon.js';
 import SheetView from './SheetView.js';
+import AddSpell from '../components/AddSpell.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -155,6 +156,7 @@ template.innerHTML = `
             </div>
         </dl>
 
+    
     <h3>Spell Slots</h3>
 
     <dl class="field">
@@ -230,39 +232,39 @@ template.innerHTML = `
         <simple-list data-name="spells" data-subfield="0"></simple-list>
     </section>
     <section hidden>
-        <h3>1st</h3>
+        <h3>1st <span><button type="button" class="btn btn-plain" data-level="1">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="1"></simple-list>
     </section>
     <section hidden>
-        <h3>2nd</h3>
+        <h3>2nd <span><button type="button" class="btn btn-plain" data-level="2">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="2"></simple-list>
     </section>
     <section hidden>
-        <h3>3rd</h3>
+        <h3>3rd <span><button type="button" class="btn btn-plain" data-level="3">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="3"></simple-list>
     </section>
     <section hidden>
-        <h3>4th</h3>
+        <h3>4th <span><button type="button" class="btn btn-plain" data-level="4">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="4"></simple-list>
     </section>
     <section hidden>
-        <h3>5th</h3>
+        <h3>5th <span><button type="button" class="btn btn-plain" data-level="5">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="5"></simple-list>
     </section>
     <section hidden>
-        <h3>6th</h3>
+        <h3>6th <span><button type="button" class="btn btn-plain" data-level="6">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="6"></simple-list>
     </section>
     <section hidden>
-        <h3>7th</h3>
+        <h3>7th <span><button type="button" class="btn btn-plain" data-level="7">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="7"></simple-list>
     </section>
     <section hidden>
-        <h3>8th</h3>
+        <h3>8th <span><button type="button" class="btn btn-plain" data-level="8">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="8"></simple-list>
     </section>
     <section hidden>
-        <h3>9th</h3>
+        <h3>9th <span><button type="button" class="btn btn-plain" data-level="9">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="9"></simple-list>
     </section>
 </section>
@@ -323,6 +325,7 @@ class Character5eSheet extends SheetView {
             emitter,
             templateNode: template.content.cloneNode(true)
         });
+        this.spellButtons = [];
     }
 
     connectedCallback () {
@@ -335,6 +338,8 @@ class Character5eSheet extends SheetView {
         this.emitter.on('character:proficiency:update', this._updateProficiency, this);
         this.emitter.on('character:attribute:update', this._updateAttributeMods, this);
         this.emitter.on('character:save:update', this._updateSaveMods, this);
+        this.emitter.on('character:set', this._addSpellButtonEvents, this);
+        this.emitter.on('character:update:spells', this._updateSpellList, this);
 
         // Set footer links.
         const nav = document.querySelector('footer-nav');
@@ -344,7 +349,6 @@ class Character5eSheet extends SheetView {
                 { label: 'Skills', tab: 'pane-stats', href: '#page-skills' },
                 { label: 'Spells', tab: 'pane-stats', href: '#page-spells' },
                 { label: 'Notes', tab: 'pane-notes', href: '#page-notes_adv' }
-
             ]);
         }
     }
@@ -359,7 +363,46 @@ class Character5eSheet extends SheetView {
         this.emitter.off('character:proficiency:update', this._updateProficiency, this);
         this.emitter.off('character:attribute:update', this._updateAttributeMods, this);
         this.emitter.off('character:save:update', this._updateSaveMods, this);
+        this.emitter.off('character:set', this._addSpellButtonEvents, this);
+        this.emitter.off('character:update:spells', this._updateSpellList, this);
     }
+
+    _addSpellButtonEvents () {
+        const spellButtons = this.shadowRoot.querySelectorAll('[data-level]');
+        spellButtons.forEach((btn) => {
+            this.spellButtons.push(new AddSpell(btn, this.cur_character, this.emitter));
+        });
+    };
+
+    _updateSpellList () {
+        const fields = this.shadowRoot.querySelectorAll('[data-name="spells"]');
+
+        fields.forEach((el) => {
+            const f = el.dataset.name || '';
+        
+            if (typeof this.cur_character[f] === 'undefined' || f === '') {
+                return;
+            };
+
+            const subf = el.dataset.subfield || '';
+            const charValue = (subf !== '') ? this.cur_character[f][subf] : this.cur_character[f];
+            // spells added the the current character
+            const listItems = charValue || [];
+        
+            el.clear();
+
+            listItems.forEach((item) => {
+                if (!item) {
+                    return;
+                };
+                const text = item.replace('-', ' ');
+                el.addItem(text);
+            });
+
+            if (listItems.length === 0) el.addItem();
+        });
+    };
+
     /**
      * @param {Character5e}
      */

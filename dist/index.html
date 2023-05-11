@@ -36,6 +36,7 @@
         <modal-mib id="dialog-delete" hidden></modal-mib>
         <modal-mib id="dialog-auth" hidden></modal-mib>
         <modal-mib id="dialog-sync" hidden></modal-mib>
+        <modal-mib id="dialog-spells" hidden></modal-mib>
 
         <div class="container">
             <action-menu></action-menu>
@@ -164,6 +165,11 @@
             <span slot="header">Load Character</span>
             <ul id="character_list">
             </ul>
+        </template>
+
+        <template id="spellModal">
+            <span slot="header">Spells</span>
+            <ul id="spell_list"></ul>
         </template>
 
         <template id="authSignInModal">
