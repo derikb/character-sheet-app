@@ -331,26 +331,12 @@ class Character5eSheet extends SheetView {
     connectedCallback () {
         super.connectedCallback();
         // Listen for events emitted from the components
-        this.shadowRoot.addEventListener(
-            'attributeChange',
-            this._handleAttributeChange.bind(this)
-        );
-        this.shadowRoot.addEventListener(
-            'saveChange',
-            this._handleSaveChange.bind(this)
-        );
+        this.shadowRoot.addEventListener('attributeChange', this._handleAttributeChange.bind(this));
+        this.shadowRoot.addEventListener('saveChange', this._handleSaveChange.bind(this));
 
         this.emitter.on('character:skill:update', this._updateSkillMod, this);
-        this.emitter.on(
-            'character:proficiency:update',
-            this._updateProficiency,
-            this
-        );
-        this.emitter.on(
-            'character:attribute:update',
-            this._updateAttributeMods,
-            this
-        );
+        this.emitter.on('character:proficiency:update', this._updateProficiency, this);
+        this.emitter.on('character:attribute:update', this._updateAttributeMods, this);
         this.emitter.on('character:save:update', this._updateSaveMods, this);
         this.emitter.on('character:set', this._addSpellButtonEvents, this);
         this.emitter.on('character:update:spells', this._updateSpellList, this);
@@ -370,26 +356,12 @@ class Character5eSheet extends SheetView {
     disconnectedCallback () {
         super.disconnectedCallback();
         // Listen for events emitted from the components
-        this.shadowRoot.removeEventListener(
-            'attributeChange',
-            this._handleAttributeChange.bind(this)
-        );
-        this.shadowRoot.removeEventListener(
-            'saveChange',
-            this._handleSaveChange.bind(this)
-        );
+        this.shadowRoot.removeEventListener('attributeChange', this._handleAttributeChange.bind(this));
+        this.shadowRoot.removeEventListener('saveChange', this._handleSaveChange.bind(this));
 
         this.emitter.off('character:skill:update', this._updateSkillMod, this);
-        this.emitter.off(
-            'character:proficiency:update',
-            this._updateProficiency,
-            this
-        );
-        this.emitter.off(
-            'character:attribute:update',
-            this._updateAttributeMods,
-            this
-        );
+        this.emitter.off('character:proficiency:update', this._updateProficiency, this);
+        this.emitter.off('character:attribute:update', this._updateAttributeMods, this);
         this.emitter.off('character:save:update', this._updateSaveMods, this);
         this.emitter.off('character:set', this._addSpellButtonEvents, this);
         this.emitter.off('character:update:spells', this._updateSpellList, this);
