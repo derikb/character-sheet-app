@@ -228,43 +228,43 @@ template.innerHTML = `
 </section>
 
     <section>
-        <h3>Cantrips</h3>
+        <h3>Cantrips <span><button type="button" class="btn btn-plain btn-sm" data-level="0">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="0"></simple-list>
     </section>
     <section hidden>
-        <h3>1st <span><button type="button" class="btn btn-plain" data-level="1">Add Spell</button></span></h3>
+        <h3>1st <span><button type="button" class="btn btn-plain btn-sm" data-level="1">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="1"></simple-list>
     </section>
     <section hidden>
-        <h3>2nd <span><button type="button" class="btn btn-plain" data-level="2">Add Spell</button></span></h3>
+        <h3>2nd <span><button type="button" class="btn btn-plain btn-sm" data-level="2">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="2"></simple-list>
     </section>
     <section hidden>
-        <h3>3rd <span><button type="button" class="btn btn-plain" data-level="3">Add Spell</button></span></h3>
+        <h3>3rd <span><button type="button" class="btn btn-plain btn-sm" data-level="3">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="3"></simple-list>
     </section>
     <section hidden>
-        <h3>4th <span><button type="button" class="btn btn-plain" data-level="4">Add Spell</button></span></h3>
+        <h3>4th <span><button type="button" class="btn btn-plain btn-sm" data-level="4">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="4"></simple-list>
     </section>
     <section hidden>
-        <h3>5th <span><button type="button" class="btn btn-plain" data-level="5">Add Spell</button></span></h3>
+        <h3>5th <span><button type="button" class="btn btn-plain btn-sm" data-level="5">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="5"></simple-list>
     </section>
     <section hidden>
-        <h3>6th <span><button type="button" class="btn btn-plain" data-level="6">Add Spell</button></span></h3>
+        <h3>6th <span><button type="button" class="btn btn-plain btn-sm" data-level="6">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="6"></simple-list>
     </section>
     <section hidden>
-        <h3>7th <span><button type="button" class="btn btn-plain" data-level="7">Add Spell</button></span></h3>
+        <h3>7th <span><button type="button" class="btn btn-plain btn-sm" data-level="7">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="7"></simple-list>
     </section>
     <section hidden>
-        <h3>8th <span><button type="button" class="btn btn-plain" data-level="8">Add Spell</button></span></h3>
+        <h3>8th <span><button type="button" class="btn btn-plain btn-sm" data-level="8">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="8"></simple-list>
     </section>
     <section hidden>
-        <h3>9th <span><button type="button" class="btn btn-plain" data-level="9">Add Spell</button></span></h3>
+        <h3>9th <span><button type="button" class="btn btn-plain btn-sm" data-level="9">Add Spell</button></span></h3>
         <simple-list data-name="spells" data-subfield="9"></simple-list>
     </section>
 </section>
