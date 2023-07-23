@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.4.0](https://github.com/derikb/character-sheet-app/compare/v4.3.2...v4.4.0) (2023-07-23)
+
+
+### Features
+
+* **spells:** Add 5e spell lookup ([7139753](https://github.com/derikb/character-sheet-app/commit/7139753f2ad7d9670bdaa30af103efcc0b885c42))
+
 ## [4.3.2](https://github.com/derikb/character-sheet-app/compare/v4.3.1...v4.3.2) (2023-04-07)
 
 ## [4.3.1](https://github.com/derikb/character-sheet-app/compare/v4.3.0...v4.3.1) (2023-01-29)
