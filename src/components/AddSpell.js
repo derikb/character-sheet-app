@@ -1,3 +1,5 @@
+import spellData from '../5e-SRD-Spells.json';
+
 class AddSpell {
     constructor (el, cur_character, emitter) {
         this.el = el;
@@ -10,17 +12,17 @@ class AddSpell {
      * @param {string} spellLevel
      * @returns array containing the index, name, and url
      */
-    async getSpellData (spellLevel) {
-        const apiUrl = `https://www.dnd5eapi.co/api/spells?level=${spellLevel}&school=illusion&school=abjuration&school=conjuration&school=divination&school=enchantment&school=evocation&school=necromancy&school=psionic&school=transmutation`;
-        const response = await fetch(apiUrl, { method: 'GET' });
-        const { results } = await response.json();
+    // async getSpellData (spellLevel) {
+    //    const apiUrl = `https://www.dnd5eapi.co/api/spells?level=${spellLevel}&school=illusion&school=abjuration&school=conjuration&school=divination&school=enchantment&school=evocation&school=necromancy&school=psionic&school=transmutation`;
+    //    const response = await fetch(apiUrl, { method: 'GET' });
+    //    const { results } = await response.json();
 
-        if (!response.ok) {
-            throw new Error('Error fetching API resource.');
-        };
+    //    if (!response.ok) {
+    //        throw new Error('Error fetching API resource.');
+    //    };
 
-        return results; // index, name, and url
-    };
+    //    return results; // index, name, and url
+    // };
 
     /**
     * @param {event} ev
@@ -40,13 +42,13 @@ class AddSpell {
         const spellLevel = ev.target.dataset.level;
 
         try {
-            const spells = await this.getSpellData(spellLevel);
+            const spells = spellData.filter((spell) => spell.level === Number(spellLevel));
 
             spells.forEach(spell => {
                 const item = document.createElement('div');
                 const button = document.createElement('button');
-                const spellName = spell.name.replace(/ /g, '-').replace(/'/g, '\'');
-    
+                const spellName = spell.name;
+
                 button.innerText = spell.name;
                 button.dataset.field = 'spells';
                 button.dataset.subfield = spellLevel;
@@ -54,7 +56,7 @@ class AddSpell {
                 button.classList.add('btn', 'btn-plain');
     
                 button.addEventListener('click', this._handleAddNewSpell.bind(this));
-    
+
                 item.appendChild(button);
                 list.appendChild(item);
             });
@@ -73,16 +75,18 @@ class AddSpell {
     * @param {event} ev
     */
     _handleAddNewSpell (ev) {
-        const field = ev.target.dataset.field;
-        const subfield = ev.target.dataset.subfield;
+        const field = ev.target.dataset.field; // spells
+        const subfield = ev.target.dataset.subfield; // spell level
         const spellName = ev.target.dataset.name;
 
         if (typeof this.cur_character[field][subfield] === 'undefined') {
             return;
         };
 
+        const spell = spellData.filter((spell) => spell.name === spellName)[0]; // filter returns array
+
         const value = this.cur_character[field][subfield];
-        const newValue = [...value, spellName];
+        const newValue = [...value, spell];
         const newLength = this.cur_character.spell_slots[subfield] + 1;
 
         this.cur_character.spell_slots[subfield] = newLength;
