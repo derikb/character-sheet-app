@@ -395,8 +395,8 @@ class Character5eSheet extends SheetView {
                 if (!item) {
                     return;
                 };
-                const text = item.replace('-', ' ');
-                el.addItem(text);
+
+                el.addItem(item.name);
             });
 
             if (listItems.length === 0) el.addItem();
