@@ -1,4 +1,5 @@
 import spellData from '../5e-SRD-Spells.json';
+import { getCurrentCharacter } from '../services/CharacterService';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -16,13 +17,15 @@ class AddSpellButton extends HTMLElement {
     }
 
     connectedCallback () {
-        this.addEventListener('click', function () {});
+        this.cur_character = getCurrentCharacter();
+        this.addEventListener('click', this._handleClick.bind(this));
     }
 
     disconnectedCallback () {
-        this.removeEventListener('click', function () {});
+        this.removeEventListener('click', this._handleClick.bind(this));
     }
 
+    // Opens the spell modal
     _handleClick (ev) {
         this.spellDialog = this.spellDialog || document.getElementById('dialog-spells');
         this.spellDialog.clear();
@@ -41,10 +44,13 @@ class AddSpellButton extends HTMLElement {
             const spells = spellData.filter((spell) => spell.level === Number(spellLevel));
 
             spells.forEach(spell => {
-                const spellItem = document.customElements.define('spell-item');
+                const spellItem = document.createElement('button');
 
                 spellItem.dataset.subfield = spellLevel;
                 spellItem.dataset.name = spell.name;
+                spellItem.innerText = spell.name;
+
+                spellItem.addEventListener('click', this._handleAddNewSpell.bind(this));
 
                 list.appendChild(spellItem);
             });
@@ -58,6 +64,14 @@ class AddSpellButton extends HTMLElement {
         this.spellDialog.setContent([...content.children]);
         this.spellDialog.open();
     }
+
+    _handleAddNewSpell (ev) {
+        const level = ev.target.dataset.subfield;
+        const name = ev.target.dataset.name;
+        const spell = spellData.filter((spell) => spell.name === name)[0]; // filter returns array
+
+        this.cur_character.setSpells(spell, level);
+    };
 }
 
 if (!window.customElements.get('add-spell-button')) {
