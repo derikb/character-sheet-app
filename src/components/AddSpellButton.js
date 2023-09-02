@@ -44,13 +44,33 @@ class AddSpellButton extends HTMLElement {
             const spells = spellData.filter((spell) => spell.level === Number(spellLevel));
 
             spells.forEach(spell => {
-                const spellItem = document.createElement('button');
+                const spellItem = document.createElement('div');
+                const accordion = document.createElement('div');
+                const panel = document.createElement('div');
 
-                spellItem.dataset.subfield = spellLevel;
-                spellItem.dataset.name = spell.name;
-                spellItem.innerText = spell.name;
+                accordion.classList.add('accordion');
+                accordion.innerHTML = `
+                    <div class="spell-item-name">${spell.name}</div>
+                    <button class="spell-item-add">Add</button>
+                `;
 
-                spellItem.addEventListener('click', this._handleAddNewSpell.bind(this));
+                panel.classList.add('panel');
+                panel.innerHTML = `
+                    <p>${spell.desc}</p>
+                `;
+                panel.style.display = 'none';
+
+                spellItem.appendChild(accordion);
+                spellItem.appendChild(panel);
+                
+                accordion.addEventListener('click', this._handleAccordionClick.bind(this));
+
+                const button = spellItem.querySelector('button.spell-item-add');
+                
+                button.dataset.subfield = spellLevel;
+                button.dataset.name = spell.name;
+
+                button.addEventListener('click', this._handleAddNewSpell.bind(this));
 
                 list.appendChild(spellItem);
             });
@@ -68,10 +88,25 @@ class AddSpellButton extends HTMLElement {
     _handleAddNewSpell (ev) {
         const level = ev.target.dataset.subfield;
         const name = ev.target.dataset.name;
-        const spell = spellData.filter((spell) => spell.name === name)[0]; // filter returns array
+        // filter returns array
+        const spell = spellData.filter((spell) => spell.name === name)[0];
 
         this.cur_character.setSpells(spell, level);
     };
+
+    _handleAccordionClick (ev) {
+        const target = ev.target.nextElementSibling;
+
+        if (!target.classList.contains('panel')) {
+            return;
+        }
+        
+        if (target.style.display === 'block') {
+            target.style.display = 'none';
+        } else {
+            target.style.display = 'block';
+        }
+    }
 }
 
 if (!window.customElements.get('add-spell-button')) {
