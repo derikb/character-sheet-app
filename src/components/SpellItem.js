@@ -3,11 +3,20 @@ import { getCurrentCharacter } from '../services/CharacterService';
 
 const template = document.createElement('template');
 template.innerHTML = `
+<style>
+    .panel {
+        display: none;
+    }
+</style>
 <div class="accordion">
     <div class="spell-item-name"></div>
     <button class="spell-item-add">Add</button>
 </div>
-<div class="panel"></div>
+<div class="panel">
+    <p class="spell-item-desc"></p>
+    <p class="spell-item-hl"></p>
+    <span class="spell-item-range"></span>
+</div>
 `;
 
 class SpellItem extends HTMLElement {
@@ -22,27 +31,74 @@ class SpellItem extends HTMLElement {
         this.panel = this.shadowRoot.querySelector('.panel');
         this.add_button = this.shadowRoot.querySelector('.spell-item-add');
     
-        this.accordion.addEventListener('click', this._handleOpenAccordion);
+        this.accordion.addEventListener('click', this._handleAccordionClick);
+        this.add_button.addEventListener('click', this._handleAddNewSpell.bind(this));
 
-        this.spell = spellData.filter((spell) => spell.name === this.dataset.name)[0];
+        this.spell = spellData.filter((spell) => spell.name === this.dataset.name)[0]; // filter returns an array
         this.cur_character = getCurrentCharacter();
         
         this.populateSpellItem();
     }
 
     disconnectedCallback () {
-        this.accordion.removeEventListener('click');
+        this.accordion.removeEventListener('click', this._handleAccordionClick);
+        this.add_button.removeEventListener('click', this._handleAddNewSpell);
     }
-
-    populateSpellItem () {
-        const nameElem = this.accordion.querySelector('.spell-item-name');
-
-        nameElem.innerHTML = this.spell.name;
+    /**
+     * Getter: Content of spell name
+     * @returns {String}
+     */
+    get spellName () {
+        return this.accordion.querySelector('.spell-item-name').innerHTML;
+    }
+    /**
+     * Setter: Content of spell name
+     */
+    set spellName (value) {
+        this.accordion.querySelector('.spell-item-name').innerHTML = value;
+    }
+    /**
+     * Getter: Content of spell's higher-level-casting
+     * @returns {String}
+     */
+    get spellHl () {
+        return this.panel.querySelector('.spell-item-hl').innerHTML;
+    }
+    /**
+     * Setter: Content of spell's higher-level-casting
+     */
+    set spellHl (value) {
+        this.panel.querySelector('.spell-item-hl').innerHTML = value;
+    }
+    /**
+     * Getter: Content of spell range
+     * @returns {String}
+     */
+    get spellRange () {
+        return this.panel.querySelector('.spell-item-range').innerHTML;
+    }
+    /**
+     * Setter: Content of spell range
+     */
+    set spellRange (value) {
+        this.panel.querySelector('.spell-item-range').innerHTML = value;
+    }
+    /**
+     * Getter: Content of spell description
+     * @returns {String}
+     */
+    get spellDesc () {
+        return this.panel.querySelector('.spell-item-desc').innerHTML;
+    }
+    /**
+     * Setter: Content of spell description
+     */
+    set spellDesc (value) {
+        this.panel.querySelector('.spell-item-desc').innerHTML = value;
     }
 
     _handleAddNewSpell (ev) {
-        const level = ev.target.dataset.subfield;
-        // const name = ev.target.dataset.name;
+        const level = this.dataset.subfield;
 
         this.cur_character.setSpells(this.spell, level);
     }
@@ -50,7 +106,7 @@ class SpellItem extends HTMLElement {
     _handleAccordionClick (ev) {
         const target = ev.target.nextElementSibling;
 
-        if (!target.classList.contains('panel')) {
+        if (target === null || !target.classList.contains('panel')) {
             return;
         }
         
@@ -60,49 +116,18 @@ class SpellItem extends HTMLElement {
             target.style.display = 'block';
         }
     }
+    /**
+     * Populate the content of the spell item
+     */
+    populateSpellItem () {
+        this.spellName = this.spell.name;
+        this.spellRange = this.spell.range;
+        this.spellDesc = this.spell.desc;
 
-    // _renderSpellItems () {
-    //     const name = this.dataset.name;
-
-    //     const spell = spellData.filter((spell) => spell.name === name)[0];
-    //     console.log(spell);
-
-    //     const spellName = this.shadowRoot.querySelector('span.spell-item-name');
-    //     const content = document.createElement('p');
-    //     content.innerText = name;
-
-    //     spellName.appendChild(content);
-    //     // this.shadowRoot.querySelector('spell-item-name').innerText = spell;
-    // }
-
-    _handleOpenAccordion () {
-        if (this.panel.style.display === 'block') {
-            this.panel.style = 'none';
-        } else {
-            this.panel.style = 'block';
+        if (this.spell.higher_level !== undefined) {
+            this.spellHl = this.spell.higher_level;
         }
     }
-
-    // _handleAddNewSpell (ev) {
-    //     const field = ev.target.dataset.field; // spells
-    //     const subfield = ev.target.dataset.subfield; // spell level
-    //     const spellName = ev.target.dataset.name;
-
-    //     if (typeof this.cur_character[field][subfield] === 'undefined') {
-    //         return;
-    //     };
-
-    //     const spell = spellData.filter((spell) => spell.name === spellName)[0]; // filter returns array
-
-    //     const value = this.cur_character[field][subfield];
-    //     const newValue = [...value, spell];
-    //     const newLength = this.cur_character.spell_slots[subfield] + 1;
-
-    //     this.cur_character.spell_slots[subfield] = newLength;
-    //     this.cur_character[field][subfield] = newValue;
-
-    //     this.emitter.trigger('character:update:spells');
-    // };
 }
 
 if (!window.customElements.get('spell-item')) {
