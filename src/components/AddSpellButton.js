@@ -44,33 +44,37 @@ class AddSpellButton extends HTMLElement {
             const spells = spellData.filter((spell) => spell.level === Number(spellLevel));
 
             spells.forEach(spell => {
-                const spellItem = document.createElement('div');
-                const accordion = document.createElement('div');
-                const panel = document.createElement('div');
+                // const spellItem = document.createElement('div');
+                // const accordion = document.createElement('div');
+                // const panel = document.createElement('div');
 
-                accordion.classList.add('accordion');
-                accordion.innerHTML = `
-                    <div class="spell-item-name">${spell.name}</div>
-                    <button class="spell-item-add">Add</button>
-                `;
+                // accordion.classList.add('accordion');
+                // accordion.innerHTML = `
+                //     <div class="spell-item-name">${spell.name}</div>
+                //     <button class="spell-item-add">Add</button>
+                // `;
 
-                panel.classList.add('panel');
-                panel.innerHTML = `
-                    <p>${spell.desc}</p>
-                `;
-                panel.style.display = 'none';
+                // panel.classList.add('panel');
+                // panel.innerHTML = `
+                //     <p>${spell.desc}</p>
+                // `;
+                // panel.style.display = 'none';
 
-                spellItem.appendChild(accordion);
-                spellItem.appendChild(panel);
+                // spellItem.appendChild(accordion);
+                // spellItem.appendChild(panel);
                 
-                accordion.addEventListener('click', this._handleAccordionClick.bind(this));
+                // accordion.addEventListener('click', this._handleAccordionClick.bind(this));
 
-                const button = spellItem.querySelector('button.spell-item-add');
+                // const button = spellItem.querySelector('button.spell-item-add');
                 
-                button.dataset.subfield = spellLevel;
-                button.dataset.name = spell.name;
+                // button.dataset.subfield = spellLevel;
+                // button.dataset.name = spell.name;
 
-                button.addEventListener('click', this._handleAddNewSpell.bind(this));
+                // button.addEventListener('click', this._handleAddNewSpell.bind(this));
+                const spellItem = document.createElement('spell-item');
+
+                spellItem.dataset.name = spell.name;
+                spellItem.dataset.subfield = spell.level;
 
                 list.appendChild(spellItem);
             });
