@@ -428,12 +428,21 @@ export default class Character5e extends Character {
         }
         return this.spells;
     }
-
+    /**
+     * Set the spells
+     * @param {Object} spell
+     * @param {Number} level
+     */
     setSpells (spell, level) {
         const spells = this.spells[level];
 
         if (typeof spells === 'undefined') {
             return;
+        }
+
+        // Temporary
+        if (typeof spell === 'object') {
+            spell = spell.name;
         }
 
         const newSpellsList = [...spells, spell];
