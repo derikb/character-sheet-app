@@ -2,8 +2,6 @@
 import Character5e from '../models/Character5e.js';
 import Weapon from '../models/Weapon.js';
 import SheetView from './SheetView.js';
-import AddSpell, { SpellItem } from '../components/AddSpell.js';
-import AddSpellButton from '../components/AddSpellButton.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -368,13 +366,6 @@ class Character5eSheet extends SheetView {
         this.emitter.off('character:update:spells', this._updateSpellList, this);
     }
 
-    _addSpellButtonEvents () {
-        // const spellButtons = this.shadowRoot.querySelectorAll('[data-level]');
-        // spellButtons.forEach((btn) => {
-        //     this.spellButtons.push(new AddSpell(btn, this.cur_character, this.emitter));
-        // });
-    };
-
     _updateSpellList () {
         const fields = this.shadowRoot.querySelectorAll('[data-name="spells"]');
 
@@ -396,7 +387,7 @@ class Character5eSheet extends SheetView {
                 if (!item) {
                     return;
                 };
-                el.addItem(item.name);
+                el.addItem(item);
             });
 
             if (listItems.length === 0) el.addItem();
