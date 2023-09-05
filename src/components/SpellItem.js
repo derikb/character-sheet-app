@@ -92,7 +92,11 @@ class SpellItem extends HTMLElement {
         this.cur_character.setSpells(this.spell, level);
     }
 
-    _handleAccordionClick () {
+    _handleAccordionClick (ev) {
+        if (ev.target === this.add_button) {
+            return;
+        }
+
         if (this.panel.style.display === 'flex') {
             this.panel.style.display = 'none';
         } else {
