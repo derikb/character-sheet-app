@@ -16,6 +16,9 @@ import EditableField from './components/EditableField.js';
 import FooterNav from './components/FooterNav.js';
 import ConfirmButton from './components/ConfirmButton.js';
 import Modal from './components/Modal.js';
+import SpellItem from './components/SpellItem.js';
+import AddSpellButton from './components/AddSpellButton.js';
+
 /**
 * Register service worker if it's supported
 */
@@ -33,7 +36,7 @@ const emitter = new EventEmitter();
 document.querySelector('action-menu').setEmitter(emitter);
 
 Manager.initialize({
-    emitter: emitter,
+    emitter,
     prefix: 'charsheet-app-',
     appname: 'character-sheet'
 });
