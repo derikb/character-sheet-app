@@ -1,5 +1,4 @@
 import spellData from '../5e-SRD-Spells.json';
-import { getCurrentCharacter } from '../services/CharacterService';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -17,7 +16,6 @@ class AddSpellButton extends HTMLElement {
     }
 
     connectedCallback () {
-        this.cur_character = getCurrentCharacter();
         this.addEventListener('click', this._handleClick.bind(this));
     }
 
@@ -60,29 +58,6 @@ class AddSpellButton extends HTMLElement {
 
         this.spellDialog.setContent([...content.children]);
         this.spellDialog.open();
-    }
-
-    _handleAddNewSpell (ev) {
-        const level = ev.target.dataset.subfield;
-        const name = ev.target.dataset.name;
-        // filter returns array
-        const spell = spellData.filter((spell) => spell.name === name)[0];
-
-        this.cur_character.setSpells(spell, level);
-    };
-
-    _handleAccordionClick (ev) {
-        const target = ev.target.nextElementSibling;
-
-        if (!target.classList.contains('panel')) {
-            return;
-        }
-        
-        if (target.style.display === 'block') {
-            target.style.display = 'none';
-        } else {
-            target.style.display = 'block';
-        }
     }
 }
 
