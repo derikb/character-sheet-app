@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.4.1](https://github.com/derikb/character-sheet-app/compare/v4.4.0...v4.4.1) (2023-09-12)
+
 ## [4.4.0](https://github.com/derikb/character-sheet-app/compare/v4.3.2...v4.4.0) (2023-07-23)
 
 
