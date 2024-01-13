@@ -136,15 +136,18 @@ class SpellItem extends HTMLElement {
         const spell = this.spell;
 
         this.#setElementContent('spell_name', spell.name);
-        this.#setElementContent('spell_description', spell.desc);
-        this.#setElementContent('spell_components', spell.components);
-        this.#setElementContent('spell_duration', spell.duration);
-        this.#setElementContent('spell_casting', spell.casting_time);
-        this.#setElementContent('spell_range', spell.range);
-        this.#setElementContent('spell_concentration', spell.concentration);
+        this.#setElementContent('spell_range', `<b>Range:</b> ${spell.range}`);
+        this.#setElementContent('spell_components', `<b>Components:</b> ${spell.components}`);
+        this.#setElementContent('spell_duration', `<b>Duration:</b> ${spell.duration}`);
+        this.#setElementContent('spell_casting', `<b>Casting Time:</b> ${spell.casting_time}`);
+        this.#setElementContent('spell_description', `<b>Description:</b><br> ${spell.desc}`);
+        
+        if (spell.concentration) {
+            this.#setElementContent('spell_concentration', `<b><i>Requires Concentration</i></b>`);
+        }
 
-        if (this.spell.higher_level !== undefined) {
-            this.#setElementContent('spell_higher_level', spell.higher_level);
+        if (spell.higher_level !== undefined) {
+            this.#setElementContent('spell_higher_level', `<b>At Higher Levels:</b><br> ${spell.higher_level}`);
         }
     }
 
