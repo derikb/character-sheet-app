@@ -8,12 +8,15 @@ template.innerHTML = `
     .panel {
         display: none;
         flex-direction: column;
+        max-width: 644px;
+        padding: 8px;
     }
     .accordion {
         display: flex;
         align-items: center;
         padding: 4px;
         gap: 4px;
+        max-width: 660px;
     }
     .accordion-content {
         display: flex;
@@ -26,9 +29,6 @@ template.innerHTML = `
     .accordion:hover {
         cursor: pointer;
         background-color: #f7f7f7;
-    }
-    .spell-item-name {
-        font-weight: bold;
     }
     .spell-item-add {
         margin-bottom: 0;
@@ -45,9 +45,6 @@ template.innerHTML = `
         grid-template-columns: 1fr 1fr;
         gap: 4px;
         padding: 4px;
-    }
-    p {
-        max-width: 72ch;
     }
     </style>
 <div class="accordion">
@@ -135,12 +132,13 @@ class SpellItem extends HTMLElement {
     #populateSpellItem () {
         const spell = this.spell;
 
-        this.#setElementContent('spell_name', spell.name);
+        this.#setElementContent('spell_name', `<b>${spell.name}</b>`);
         this.#setElementContent('spell_range', `<b>Range:</b> ${spell.range}`);
         this.#setElementContent('spell_components', `<b>Components:</b> ${spell.components}`);
         this.#setElementContent('spell_duration', `<b>Duration:</b> ${spell.duration}`);
         this.#setElementContent('spell_casting', `<b>Casting Time:</b> ${spell.casting_time}`);
-        this.#setElementContent('spell_description', `<b>Description:</b><br> ${spell.desc}`);
+        // Break up each section of the spell description
+        this.#setElementContent('spell_description', `<b>Description:</b><br> ${spell.desc.join('<br><br>')}`);
         
         if (spell.concentration) {
             this.#setElementContent('spell_concentration', `<b><i>Requires Concentration</i></b>`);
@@ -159,7 +157,7 @@ class SpellItem extends HTMLElement {
 
     _handleAccordionClick (ev) {
         // Prevent the dropdown from opening on add
-        if (ev.target === this.add_button) {
+        if (ev.target === this.elements.add_button) {
             return;
         }
 
