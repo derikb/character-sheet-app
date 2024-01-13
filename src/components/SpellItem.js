@@ -11,9 +11,17 @@ template.innerHTML = `
     }
     .accordion {
         display: flex;
-        justify-content: space-between;
         align-items: center;
         padding: 4px;
+        gap: 4px;
+    }
+    .accordion-content {
+        display: flex;
+        justify-content: flex-end;
+        gap: 4px;
+        align-items: center;
+        flex-grow: 1;
+        border-radius: 4px;
     }
     .accordion:hover {
         cursor: pointer;
@@ -41,10 +49,13 @@ template.innerHTML = `
     p {
         max-width: 72ch;
     }
-</style>
+    </style>
 <div class="accordion">
     <div class="spell-item-name"></div>
-    <button class="spell-item-add">Add</button>
+    <div class="accordion-content">
+        <button class="spell-item-add">Learn</button>
+        <div class="accordion-icon"></div>
+    </div>
 </div>
 <div class="panel">
     <ul class="spell-item-stats">
@@ -68,6 +79,9 @@ class SpellItem extends HTMLElement {
 
     connectedCallback () {
         this.accordion = this.shadowRoot.querySelector('.accordion');
+        this.accordion_content = this.shadowRoot.querySelector('.accordion-content');
+        this.accordion_icon = this.shadowRoot.querySelector('.accordion-icon');
+
         this.panel = this.shadowRoot.querySelector('.panel');
         this.add_button = this.shadowRoot.querySelector('.spell-item-add');
         this.stats = this.shadowRoot.querySelector('.spell-item-stats');
@@ -79,6 +93,8 @@ class SpellItem extends HTMLElement {
         this.cur_character = getCurrentCharacter();
         
         this.populateSpellItem();
+
+        this.accordion_icon.innerHTML = '&#8964;';
     }
 
     disconnectedCallback () {
@@ -99,8 +115,10 @@ class SpellItem extends HTMLElement {
 
         if (this.panel.style.display === 'flex') {
             this.panel.style.display = 'none';
+            this.accordion_icon.innerHTML = '&#8964;';
         } else {
             this.panel.style.display = 'flex';
+            this.accordion_icon.innerHTML = '&#8963;';
         }
     }
     /**
