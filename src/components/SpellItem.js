@@ -50,6 +50,7 @@ template.innerHTML = `
 <div class="accordion">
     <div class="spell-item-name"></div>
     <div class="accordion-content">
+        <span class="spell-item-added"></span>
         <button class="spell-item-add">Learn</button>
         <div class="accordion-icon"></div>
     </div>
@@ -101,7 +102,8 @@ class SpellItem extends HTMLElement {
             spell_concentration: this.shadowRoot.querySelector('.spell-item-conc'),
             spell_name: this.shadowRoot.querySelector('.spell-item-name'),
             spell_description: this.shadowRoot.querySelector('.spell-item-desc'),
-            spell_higher_level: this.shadowRoot.querySelector('.spell-item-hl')
+            spell_higher_level: this.shadowRoot.querySelector('.spell-item-hl'),
+            added_indicator: this.shadowRoot.querySelector('.spell-item-added')
         };
     }
 
@@ -149,10 +151,20 @@ class SpellItem extends HTMLElement {
         }
     }
 
+    #updateAddedIndicator () {
+        const characterSpells = this.cur_character.getSpells(this.dataset.subfield);
+        const spellWasAdded = characterSpells.includes(this.spell.name);
+
+        if (spellWasAdded) {
+            this.#setElementContent('added_indicator', `<i>Added &#10003;</i>`);
+        };
+    }
+
     _handleAddNewSpell (ev) {
         const level = this.dataset.subfield;
 
         this.cur_character.setSpells(this.spell, level);
+        this.#updateAddedIndicator();
     }
 
     _handleAccordionClick (ev) {
@@ -164,7 +176,7 @@ class SpellItem extends HTMLElement {
         const panelStyle = this.elements.panel.style;
 
         panelStyle.display = panelStyle.display === 'flex' ? 'none' : 'flex';
-        this.elements.accordion_icon.innerHTML = panelStyle.display === 'flex' ? '&#8964;' : '&#8963;'; // down chevron and up chevron
+        this.elements.accordion_icon.innerHTML = panelStyle.display === 'flex' ? '&#8963;' : '&#8964;'; // up chevron and down chevron
     }
 }
 
