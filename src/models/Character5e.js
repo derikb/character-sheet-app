@@ -423,9 +423,10 @@ export default class Character5e extends Character {
      * @returns {Array}
      */
     getSpells (level = undefined) {
-        if (typeof level === 'number') {
+        if (level in this.spells) {
             return this.spells[level];
         }
+
         return this.spells;
     }
     /**
@@ -453,6 +454,7 @@ export default class Character5e extends Character {
 
         if (this.emitter) {
             this.emitter.trigger('character:update:spells');
+            this.emitter.trigger('dialog:save:show');
         }
     }
 };
