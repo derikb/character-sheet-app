@@ -416,4 +416,45 @@ export default class Character5e extends Character {
             this.emitter.trigger('character:save:update', attr);
         }
     }
+
+    /**
+     * Returns the spells. Include the level to get by level
+     * @param {Number} level
+     * @returns {Array}
+     */
+    getSpells (level = undefined) {
+        if (level in this.spells) {
+            return this.spells[level];
+        }
+
+        return this.spells;
+    }
+    /**
+     * Set the spells
+     * @param {Object} spell
+     * @param {Number} level
+     */
+    setSpells (spell, level) {
+        const spells = this.spells[level];
+
+        if (typeof spells === 'undefined') {
+            return;
+        }
+
+        // Temporary
+        if (typeof spell === 'object') {
+            spell = spell.name;
+        }
+
+        const newSpellsList = [...spells, spell];
+        const newSpellSlotsLength = this.spell_slots[level] + 1;
+
+        this.spell_slots[level] = newSpellSlotsLength;
+        this.spells[level] = newSpellsList;
+
+        if (this.emitter) {
+            this.emitter.trigger('character:update:spells');
+            this.emitter.trigger('dialog:save:show');
+        }
+    }
 };
