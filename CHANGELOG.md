@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.5.0](https://github.com/derikb/character-sheet-app/compare/v4.4.1...v4.5.0) (2024-01-21)
+
+
+### Features
+
+* **5e:** spell info modal  ([27d8557](https://github.com/derikb/character-sheet-app/commit/27d85574d2985b55ce687945e19de919fa9897af)), closes [#123](https://github.com/derikb/character-sheet-app/issues/123) [#126](https://github.com/derikb/character-sheet-app/issues/126)
+
 ## [4.4.1](https://github.com/derikb/character-sheet-app/compare/v4.4.0...v4.4.1) (2023-09-12)
 
 ## [4.4.0](https://github.com/derikb/character-sheet-app/compare/v4.3.2...v4.4.0) (2023-07-23)
