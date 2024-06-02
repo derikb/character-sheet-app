@@ -1,6 +1,6 @@
 {
   "name": "character-sheet-app",
-  "version": "4.5.1",
+  "version": "4.5.2",
   "description": "Online character sheet for Tabletop Role-Playing Games",
   "repository": {
     "type": "git",
@@ -23,13 +23,11 @@
     "rpg-table-randomizer": "^1.3.2"
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^2.1.0",
     "commit-and-tag-version": "^12.0.0",
-    "esbuild": "^0.19",
-    "eslint": "^8.33.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.27.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
+    "esbuild": "^0.21",
+    "eslint": "^9.4.0",
+    "globals": "^15.3.0",
     "normalize.css": "^8.0.1"
   },
   "scripts": {

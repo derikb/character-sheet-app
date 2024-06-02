@@ -297,15 +297,15 @@ class ActionMenu extends HTMLElement {
         }
         this.authDialog.setContent([...document.importNode(template.content, true).children]);
         if (isAuthed()) {
-            this.authDialog.querySelector('#signOut').addEventListener('click', (ev) => {
+            this.authDialog.querySelector('#signOut').addEventListener('click', () => {
                 signOut();
             });
-            this.authDialog.querySelector('#syncData').addEventListener('click', (ev) => {
+            this.authDialog.querySelector('#syncData').addEventListener('click', () => {
                 this._openSyncModal();
                 this.authDialog.close();
             });
         } else {
-            this.authDialog.querySelector('#googleSignIn').addEventListener('click', (ev) => {
+            this.authDialog.querySelector('#googleSignIn').addEventListener('click', () => {
                 signIn();
             });
         }
@@ -434,7 +434,7 @@ class ActionMenu extends HTMLElement {
     /**
      * Open the new character modal.
      */
-    _newCharacterModal (button) {
+    _newCharacterModal () {
         this.newDialog = this.newDialog || document.getElementById('dialog-new');
         this.newDialog.clear();
         if (this.newDialog.isOpen) {
@@ -682,7 +682,7 @@ class ActionMenu extends HTMLElement {
         }
         this.setTabFocusToButton(button);
     }
-};
+}
 
 if (!window.customElements.get('action-menu')) {
     window.customElements.define('action-menu', ActionMenu);
