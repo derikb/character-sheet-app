@@ -115,7 +115,7 @@ class SyncInfo extends HTMLElement {
         switch (action) {
             case 'upload':
                 uploadCharacter(this._key)
-                    .then((success) => {
+                    .then(() => {
                         this.remoteDiv.querySelector('.summary').innerHTML = this.localDiv.querySelector('.summary').innerHTML;
                         this.remoteDiv.querySelector('.updated').innerHTML = this.localDiv.querySelector('.updated').innerHTML;
                         this.remoteDiv.querySelector('.action').innerHTML = '';
@@ -129,7 +129,7 @@ class SyncInfo extends HTMLElement {
                 break;
             case 'removeremote':
                 deleteRemote(this._key)
-                    .then((success) => {
+                    .then(() => {
                         this.remoteDiv.querySelector('.summary').innerHTML = 'No remote copy.';
                         this.remoteDiv.querySelector('.updated').innerHTML = '';
                         this.remoteDiv.querySelector('.action').innerHTML = '';
@@ -143,7 +143,7 @@ class SyncInfo extends HTMLElement {
                 break;
             case 'download':
                 downloadCharacter(this._key)
-                    .then((success) => {
+                    .then(() => {
                         this.localDiv.querySelector('.summary').innerHTML = this.remoteDiv.querySelector('.summary').innerHTML;
                         this.localDiv.querySelector('.updated').innerHTML = this.remoteDiv.querySelector('.updated').innerHTML;
                         this.localDiv.querySelector('.action').innerHTML = '';
@@ -161,7 +161,7 @@ class SyncInfo extends HTMLElement {
                     return;
                 }
                 deleteLocal(this._key)
-                    .then((success) => {
+                    .then(() => {
                         this.localDiv.querySelector('.summary').innerHTML = 'No local copy.';
                         this.localDiv.querySelector('.updated').innerHTML = '';
                         this.localDiv.querySelector('.action').innerHTML = '';
@@ -175,7 +175,7 @@ class SyncInfo extends HTMLElement {
                 break;
             case 'syncup':
                 syncToRemote(this._key)
-                    .then((success) => {
+                    .then(() => {
                         this.remoteDiv.querySelector('.summary').innerHTML = this.localDiv.querySelector('.summary').innerHTML;
                         this.remoteDiv.querySelector('.updated').innerHTML = this.localDiv.querySelector('.updated').innerHTML;
                         this.remoteDiv.querySelector('.action').innerHTML = '';
@@ -194,7 +194,7 @@ class SyncInfo extends HTMLElement {
                     return;
                 }
                 syncToLocal(this._key)
-                    .then((success) => {
+                    .then(() => {
                         this.localDiv.querySelector('.summary').innerHTML = this.remoteDiv.querySelector('.summary').innerHTML;
                         this.localDiv.querySelector('.updated').innerHTML = this.remoteDiv.querySelector('.updated').innerHTML;
                         this.localDiv.querySelector('.action').innerHTML = '';
