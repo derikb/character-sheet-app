@@ -147,7 +147,7 @@ ${JSON.stringify(data)}`;
             Array.from(input_file.files).forEach((f) => {
                 const reader = new FileReader();
                 // Closure to capture the file information.
-                reader.onload = ((theFile) => {
+                reader.onload = (() => {
                     return (e) => {
                         this.restoreCharacters(e.target.result);
                     };
@@ -207,7 +207,7 @@ ${JSON.stringify(data)}`;
                 const a = document.createElement('a');
                 a.setAttribute('href', `#${newCharacter.key}`);
                 a.textContent = 'View character now.';
-                a.addEventListener('click', (e) => {
+                a.addEventListener('click', () => {
                     this.alert.closeClear();
                 });
                 li.appendChild(a);
@@ -359,9 +359,9 @@ ${JSON.stringify(data)}`;
         });
 
         // Event: Listen for hashchange and change the current character
-        window.addEventListener('hashchange', (e) => { this.changeCharacter(); }, false);
+        window.addEventListener('hashchange', () => { this.changeCharacter(); }, false);
 
-        this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', (ev) => {
+        this.dialog_unsaved.querySelector('.btn-save').addEventListener('click', () => {
             this.emitter.trigger('character:save');
         });
         this.dialog_undo.querySelector('.btn-delete-undo').addEventListener('click', (ev) => {

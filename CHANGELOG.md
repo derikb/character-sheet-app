@@ -1,6 +1,32 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [4.5.3](https://github.com/derikb/character-sheet-app/compare/v4.5.2...v4.5.3) (2024-06-28)
+
+## [4.5.2](https://github.com/derikb/character-sheet-app/compare/v4.5.1...v4.5.2) (2024-06-02)
+
+## [4.5.1](https://github.com/derikb/character-sheet-app/compare/v4.5.0...v4.5.1) (2024-03-02)
+
+## [4.5.0](https://github.com/derikb/character-sheet-app/compare/v4.4.1...v4.5.0) (2024-01-21)
+
+
+### Features
+
+* **5e:** spell info modal  ([27d8557](https://github.com/derikb/character-sheet-app/commit/27d85574d2985b55ce687945e19de919fa9897af)), closes [#123](https://github.com/derikb/character-sheet-app/issues/123) [#126](https://github.com/derikb/character-sheet-app/issues/126)
+
+## [4.4.1](https://github.com/derikb/character-sheet-app/compare/v4.4.0...v4.4.1) (2023-09-12)
+
+## [4.4.0](https://github.com/derikb/character-sheet-app/compare/v4.3.2...v4.4.0) (2023-07-23)
+
+
+### Features
+
+* **spells:** Add 5e spell lookup ([7139753](https://github.com/derikb/character-sheet-app/commit/7139753f2ad7d9670bdaa30af103efcc0b885c42))
+
+## [4.3.2](https://github.com/derikb/character-sheet-app/compare/v4.3.1...v4.3.2) (2023-04-07)
+
+## [4.3.1](https://github.com/derikb/character-sheet-app/compare/v4.3.0...v4.3.1) (2023-01-29)
 
 ## [4.3.0](https://github.com/derikb/character-sheet-app/compare/v4.2.0...v4.3.0) (2022-06-19)
 

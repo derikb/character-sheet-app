@@ -24,7 +24,7 @@ const getCharacterMatchings = async function () {
     localCharacters.forEach((local) => {
         const match = {
             key: local.key,
-            local: local
+            local
         };
         const remote = remoteCharacters.get(local.key);
         if (remote) {
@@ -39,7 +39,7 @@ const getCharacterMatchings = async function () {
     remoteCharacters.forEach((remote) => {
         const match = {
             key: remote.key,
-            remote: remote
+            remote
         };
         matches.push(match);
     });

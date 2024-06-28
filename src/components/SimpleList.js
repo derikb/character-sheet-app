@@ -1,4 +1,3 @@
-/* eslint-disable prefer-const */
 import setCursorAtContentEnd from '../utils/setCursorAtContentEnd.js';
 
 /**
@@ -100,7 +99,7 @@ class SimpleList extends HTMLElement {
      */
     get contentArray () {
         const items = Array.from(this.shadowRoot.querySelectorAll('li'));
-        let array = [];
+        const array = [];
         items.forEach((item) => {
             const content = item.innerHTML;
             if (content === '') {
@@ -185,7 +184,7 @@ class SimpleList extends HTMLElement {
      * On blur dispatch an event so the character model can be updated.
      * @param {Event} ev
      */
-    _blur (ev) {
+    _blur () {
         const detail = {
             field: this.fieldName,
             subfield: this.subFieldName,
