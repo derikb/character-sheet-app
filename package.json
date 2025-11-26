@@ -1,6 +1,6 @@
 {
   "name": "character-sheet-app",
-  "version": "4.5.4",
+  "version": "4.5.5",
   "description": "Online character sheet for Tabletop Role-Playing Games",
   "repository": {
     "type": "git",
@@ -19,13 +19,13 @@
   "author": "Derik A Badman",
   "license": "GPL-3.0",
   "dependencies": {
-    "firebase": "^11.4.0",
+    "firebase": "^12.6.0",
     "rpg-table-randomizer": "^1.5.0"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin-js": "^4.2.0",
     "commit-and-tag-version": "^12.5.0",
-    "esbuild": "^0.25",
+    "esbuild": "^0.27",
     "eslint": "^9.22.0",
     "globals": "^16.0.0",
     "normalize.css": "^8.0.1"
