@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,8 +55,8 @@
         <template id="introAlert">
             <span slot="header">Character Sheet. App.</span>
             <p>An online character sheet for tabletop role-playing games, usable offline (in some browsers).</p>
-            <p>Designed for modern browsers, if all else fails Chrome is your best bet and Safari is your worst bet.</p>
-            <p><strong>Warning:</strong> Unless you login, character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers even on the same computer. Please Save and Backup often (or at least at the end of every gaming session)!</p>
+            <p>This app is designed for modern browsers. For loading this app, Chrome is your best bet and Safari is your worst bet.</p>
+            <p><strong>Warning:</strong> Unless you login, character data is saved to your browser's local storage. This means it can be erased if you delete browser data and will not automatically transfer between browsers <em>even on the same computer</em>. Please Save and Backup often (or at least at the end of every gaming session)!</p>
             <p>This message will only appear until you save your first character.</p>
         </template>
         <template id="helpDialog">
@@ -64,51 +64,76 @@
 
             <h2>Most importantly</h2>
             <ul>
-                <li>This app only saves data to your browsers' local storage. If your browser's data is deleted, your saved characters will be deleted. Use the backup options to save character data when you make changes.</li>
-                <li>To save remotely, login via the "Login" button and then use the Sync option to save data remotely. Right now the only Auth is via Google.</li>
+                <li>This app only saves data to your browsers' local storage. If your browser's data is deleted, <strong>your saved characters will be deleted</strong>. Use the backup options to save character data when you make changes.</li>
+                <li>To save remotely, login via the <b>Login</b> button and then use the <b>Sync</b> option to save data remotely. Right now, the only Auth is via Google.</li>
                 <li>This app is designed for modern web browsers.</li>
                 <li>After you've loaded the app, it will work offline in Chrome, Firefox, and Safari (desktop) as well as Safari (iOS) and Chrome (Android). Chrome (iOS) does not seem to work offline, and I haven't tried any other browsers.</li>
             </ul>
 
             <h2>Actions</h2>
 
-            <ul>
-                <li><strong>Save</strong> This will save the current character to local storage. If the character already exists it will update.</li>
-                <li><strong>Load</strong> This will show you a list of saved characters (if you have any). Clicking on a character's name will load that character. Note: You will lose any unsaved data if you load a character without saving the one currently displayed.</li>
-                <li><strong>New Character</strong> This will load up a new/blank character sheet. Note: You will lose any unsaved data if you create a new character without saving the one currently displayed.</li>
-                <li><strong>File Backup</strong> This will create data in the JSON format that can be loaded into this app in another browser/device. It will either:
+            <dl>
+                <dt>Save</dt>
+                <dd>
+                    This saves the current character to local storage. If the character already exists, it saves the updated version.
+                </dd>
+                <dt>Load</dt>
+                <dd>
+                    This shows you a list of saved characters (if you have any). Clicking on a character's name loads that character. <strong>Note:</strong> You will lose any unsaved data if you load a character without saving the one currently displayed.
+                </dd>
+                <dt>New Character</dt>
+                <dd>
+                    This loads a new/blank character sheet. <strong>Note:</strong> You will lose any unsaved data if you create a new character without saving the one currently displayed.
+                </dd>
+                <dt>File Backup</dt>
+                <dd>
+                    This creates data (in the JSON format) that can be loaded into this app in another browser/device. The <b>File Backup</b> option either:
                     <ul>
-                        <li>Generate a download file with the currently viewed character's backup data.</li>
-                        <li>Pop up the currently viewed character's backup data so it can be copied and pasted somewhere else.</li>
+                        <li>Generates a download file with the currently viewed character's backup data <em>or</em></li>
+                        <li>Displays the currently viewed character's backup data so it can be copied and pasted somewhere else.</li>
                     </ul>
-                </li>
-                <li><strong>Email Backup</strong> This will open your default email client and start a new message containing the currently viewed character's backup data as well as instructions on how to use that data.</li>
-                <li><strong>Restore Backup</strong> This opens a form for uploading a file or pasting in character backup data to save that character in the current browser. If the character already exists they will be updated to match the restored data (so be careful).</li>
-                <li><strong>Login</strong> Authenticate via a Google account to save data remotely.</li>
-                <li><strong>Sync/Logout</strong> Download/Upload data to/from the remote database; logout.</li>
-            </ul>
+                </dd>
+                <dt>Email Backup</dt>
+                <dd>
+                    This opens your default email client and start a new message containing the currently viewed character's backup data as well as instructions on how to use that data.
+                </dd>
+                <dt>Restore Backup</dt>
+                <dd>
+                    This opens a form for uploading a file or pasting in character backup data to save that character in the current browser. If the character already exists, they will be updated to match the restored data (so be careful).
+                </dd>
+                <dt>Login</dt>
+                <dd>
+                    Authenticates via a Google account to save data remotely.
+                </dd>
+                <dt>Sync/Logout</dt>
+                <dd>
+                    Download/Upload data to/from the remote database; logout.
+                </dd>
+            </dl>
 
             <h2>Character Sheet</h2>
 
             <ul>
-                <li>Click on data or empty areas to edit. Data is NOT automatically saved; you must hit the <strong>Save</strong> button (or use the keyboard shortcut).</li>
-                <li>Press <em>enter</em> while editing any list field to add another empty field to the list. (Use <em>Shift+Enter</em> to add a new line.)</li>
-                <li><ul>For 5e:</ul>
-                    <li>Ability, saving throw, and skill modifiers are all automatically calculated when the proficiency, ability, save, or skill fields are changed.</li>
-                <li>All other fields are manually changed.</li>
-                <li>Spell lists only appear if the corresponding spell slot is greater than 0.</li>
-                </ul></li>
+                <li>Click on data or empty areas to edit. Data is <strong>NOT</strong> automatically saved; you must click or tap <b>Save</b> (or use the keyboard shortcut).</li>
+                <li>Press <kbd>ENTER</kbd> while editing any list field to add another empty field to the list. (Use <kbd>Shift+Enter</kbd> to add a new line.)</li>
+                <li>For 5e:
+                    <ul>
+                        <li>Ability, saving throw, and skill modifiers are all automatically calculated when the proficiency, ability, save, or skill fields are changed.</li>
+                        <li>All other fields are manually changed.</li>
+                        <li>Spell lists only appear if the corresponding spell slot is greater than 0.</li>
+                    </ul>
+                </li>
             </ul>
 
             <h2>Keyboard Shortcuts</h2>
             <table>
-                <thead><tr><th>Keys</th><th>Action</th></tr></thead>
+                <thead><tr><th>Key(s)</th><th>Action</th></tr></thead>
                 <tbody>
-                    <tr><td><em>Ctrl+Shift+ArrowDown</em></td><td>Save current character</td></tr>
-                    <tr><td><em>Ctrl+Shift+ArrowLeft</em></td><td>Switch Tabs</td></tr>
-                    <tr><td><em>Ctrl+Shift+ArrowUp</em></td><td>Toggle Load Character menu (and focus on it).</td></tr>
-                    <tr><td><em>Esc</em></td><td>Close modals/dialogs.</td></tr>
-                    <tr><td><em>ArrowRight, ArrowLeft</em></td><td>Navigate the action toolbar at the top.</td></tr>
+                    <tr><td><kbd>Ctrl+Shift+ArrowDown</kbd></td><td>Save current character</td></tr>
+                    <tr><td><kbd>Ctrl+Shift+ArrowLeft</kbd></td><td>Switch Tabs</td></tr>
+                    <tr><td><kbd>Ctrl+Shift+ArrowUp</kbd></td><td>Toggle Load Character menu (and focus on it).</td></tr>
+                    <tr><td><kbd>Esc</kbd></td><td>Close modals/dialogs.</td></tr>
+                    <tr><td><kbd>ArrowRight</kbd>, <kbd>ArrowLeft</kbd></td><td>Navigate the action toolbar at the top.</td></tr>
                 </tbody>
             </table>
         </template>
@@ -146,7 +171,7 @@
 
         <template id="deleteModal">
             <span slot="header">Delete Characters</span>
-            <p>This will delete locally stored characters. If you have saved characters remotely, use the sync modal to remove the remote copies.</p>
+            <p>This deletes locally-stored characters. If you have saved characters remotely, use the sync modal to remove the remote copies.</p>
             <ul id="delete_list">
             </ul>
         </template>
@@ -176,7 +201,7 @@
             <span slot="header">Sign-in</span>
             <div>
                 <p>By signing in, you can save data remotely, and then access your characters from any browser/device.</p>
-                <p>Your auth credentials are saved for use with Google's Firebase Firestore. I get access to very little information about you, other than email and some other publicly available profile data.</p>
+                <p>Your auth credentials are saved for use with <a href="https://firebase.google.com/docs/firestore">Google's Firebase Firestore</a>. I get access to very little information about you, other than email and some other publicly-available profile data.</p>
                 <p><button type="button" id="googleSignIn">Sign in with Google</button></p>
             </div>
         </template>
@@ -184,7 +209,7 @@
         <template id="authSignOutModal">
             <span slot="header">You are signed in...</span>
             <div>
-                <p>Sync data between the remote database and your local browser. If you are using multiple devices make sure to save and sync before switching between them. <strong>Don't forget to backup.</strong></p>
+                <p>Sync data between the remote database and your local browser. If you are using multiple devices, make sure to save and sync before switching between them. <strong>Don't forget to backup.</strong></p>
                 <p><button type="button" id="syncData">Sync with Remote</button></p>
             </div>
             <hr/>
@@ -198,7 +223,7 @@
             <span slot="header">Sync Characters with Remote</span>
             <div>
                 <p><strong>WARNING:</strong> There is currently no merge conflict resolution on the syncing. You can either download or upload but both operations will overwrite data <em>NOT</em> merge it. (I still need to figure out how to handle that well.)</p>
-                <p>If you are working with multiple devices/browsers, please be aware of this. Don't edit in both places without first saving and up/downloading.</p>
+                <p>If you are working with multiple devices/browsers, please be aware of this. Don't edit in both places without first saving and uploading/downloading.</p>
                 <ul id="characterSyncList">
                 </ul>
             </div>
