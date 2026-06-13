@@ -1,12 +1,12 @@
+**As of Jan 1 2027 the hosted version of this app will be going away. I'll be archiving this repository then too.**
+
 # Character Sheet. App.
 
 A responsive, online/offline web app to act as a character sheet for tabletop roleplaying games. Right now supporting a limited number of games (mostly D&amp;D 5e), but coded so more can be added.
 
 ## Synopsis
 
-If you just want to use the app, I am running a copy of it here: https://charsheet.derikbadman.com Try it out. Check out the "Help" link in the footer for some instructions.
-
-If you want to run the app on your own server, assist in development, or fork your own, continue on...
+If you want to run the app on your own server or fork your own, continue on...
 
 ## Motivation
 
@@ -41,17 +41,6 @@ If you want to take advantage of the offline mode, it's a little more complicate
         expires -1;
     }
 ```
-
-
-## Tests
-
-No tests yet, as I am not sure how to best go about that.
-
-## Contributors
-
-I'd be happy to accept feature requests (including other games to support), bug reports, and pull requests via the github repository. There is an eslint config file for javascript style, which your IDE should pick up. Run ```npm run start``` to run the dev server and `npm run build` to build the files.
-
-Conventional Changelog is installed for commit messages. Standard Version is used for releases, changelogs, etc.
 
 ## License
 

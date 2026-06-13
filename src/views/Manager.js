@@ -383,13 +383,9 @@ ${JSON.stringify(data)}`;
             this.loadCharacter(urlhash).catch((error) => {
                 console.log(error);
             });
-        } else {
-            // Show intro if they have no characters, since they might be new to this...
-            if (getAllCharactersLocal().length === 0) {
-                this.showIntroDialog();
-            }
-            this.triggerNewCharacter();
         }
+        this.showIntroDialog();
+        this.triggerNewCharacter();
     }
 };
 
